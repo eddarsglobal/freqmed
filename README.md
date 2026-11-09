@@ -17,7 +17,7 @@ FREQMED is intended to be a 10-language, multiplatform open-source platform for 
 
 | Milestone | Status |
 |---|---|
-| P0.00 | REVIEW_READY_NOT_CERTIFIED (R2 preflight succeeded on user's Mac) |
+| P0.00 | IN_PROGRESS — R3_REVIEW_REQUIRED_NOT_CERTIFIED (R1/R2 PASS; R3 Mac verification pending) |
 | P0.01 | BLOCKED_BY_P0.00 |
 | Hardware/biological experiments | NOT_AUTHORIZED |
 | Production | NOT_AUTHORIZED |

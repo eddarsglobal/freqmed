@@ -1,6 +1,6 @@
 # RoadMap.md — FREQMED : plateforme de recherche par mesures physiques réelles
 
-**Version :** 0.3.0 — P0.00-R1, amendement constitutionnel « JAMAIS DE SIMULATION »  
+**Version :** 0.3.1 — P0.00-R3, cohérence des rôles métrologiques sans simulation  
 **Date :** 2026-11-09  
 **Nom :** FREQMED (nom de travail, sans promesse médicale)  
 **Mission :** développer une plateforme multilingue et multiplateforme de **mesure, acquisition, analyse et traçabilité de phénomènes acoustiques et électromagnétiques réels**. Rechercher, uniquement dans des cadres expérimentaux autorisés, s'il existe des effets physiquement et biologiquement reproductibles différents entre tissus pathologiques et tissus sains.  
@@ -59,18 +59,18 @@ Les ultrasons et champs électromagnétiques peuvent interagir avec les cellules
 ## 2. Bureau de compétences et références scientifiques
 
 
-The following are **required disciplines/roles, not people already hired**. A role can initially be covered by an auditable research process where appropriate, but *independent qualified review* is necessary before any biological/human experimentation.
+Ces responsabilités restent **à pourvoir** ; les chercheurs cités ailleurs ne sont pas membres du projet. Une revue indépendante et qualifiée sera nécessaire avant toute expérimentation biologique ou humaine, sous autorisations séparées.
 
 | Code | Discipline / owner role | Core duty | Status |
 |---|---|---|---|
 | B01 | Clinical oncology + neuro-oncology | Indications, comparators, meaningful clinical endpoints and contraindications | UNFILLED |
 | B02 | Pathology, cancer cell biology, molecular biology | Diseased vs healthy phenotype definitions; biomarkers and controls | UNFILLED |
 | B03 | Biophysics + mechanobiology | Forces, receptors, cell responses; causal tests and negative controls | UNFILLED |
-| B04 | Therapeutic ultrasound + cavitation | Wave propagation, focusing, thermal/mechanical safety | UNFILLED |
-| B05 | Electrical engineering + computational electromagnetics | Maxwell solvers, material models, field exposure and dosimetry | UNFILLED |
-| B06 | Biomedical imaging + modelling | Geometry, imaging registration, segmentation, validation phantoms | UNFILLED |
+| B04 | Métrologie acoustique et ultrasons | Propagation et cavitation mesurées sur banc non biologique autorisé ; étalonnage et sécurité | UNFILLED |
+| B05 | Métrologie électrique et électromagnétique | Mesures instrumentales réelles, étalonnage et sécurité sur banc non biologique ; aucun solveur ni émission libre | UNFILLED |
+| B06 | Imagerie et métrologie instrumentale | Images réellement acquises, étalonnage spatial et références physiques non biologiques | UNFILLED |
 | B07 | Acoustics + digital signal processing | Waveforms, spectral accuracy, spectral artefacts and calibration | UNFILLED |
-| B08 | Numerical computing + scientific software | Solvers, verification, sensitivity and uncertainty | UNFILLED |
+| B08 | Analyse de données réelles et logiciel scientifique | Vérification numérique de relevés instrumentaux, statistiques et incertitudes ; aucun solveur de simulation | UNFILLED |
 | B09 | Multiplatform software + cyber/privacy + UX/i18n | App architecture, security, accessibility, 10 locales | UNFILLED |
 | B10 | Safety/regulatory quality + ethics/biostatistics | Risk management, preregistration, study design, review gates | UNFILLED |
 
@@ -93,7 +93,7 @@ These are **literature and expertise references** only. No endorsement, partners
 | Real-time sound programming | **Prof. Miller Puckette** (UC San Diego, emeritus) | Max and Pure Data, programmable audio systems | [R11](https://msp.ucsd.edu/bio.htm) |
 | Audio signal processing / scientific programming | **Prof. Brian McFee** (NYU) | Audio features, open-source `librosa`, scientific validation | [R12](https://steinhardt.nyu.edu/people/brian-mcfee) |
 | Biomedical signals / scientific computing | **Dr. Alexandre Gramfort** (research scientist; formerly Inria) | Biosignals, scientific software, MNE-Python and machine learning | [R13](https://alexandre.gramfort.net/) |
-| Dynamics / data-driven modelling | **Prof. Steven L. Brunton** (University of Washington) | Modelling, system identification and uncertainty/sensitivity methods | [R14](https://www.me.washington.edu/facultyfinder/steve-brunton) |
+| Identification de systèmes à partir de mesures | **Prof. Steven L. Brunton** (University of Washington) | Travaux de référence uniquement ; aucun simulateur ni modèle de phénomène à intégrer | [R14](https://www.me.washington.edu/facultyfinder/steve-brunton) |
 
 **Open scientific questions ≠ demonstrated “undetermined powers.”** Maintain a *Hypothesis Registry* listing negative results, unsupported ideas, confidence levels, competing mechanisms and falsifiable predictions. Never label an unknown effect as confirmed.
 
@@ -136,7 +136,7 @@ These are **literature and expertise references** only. No endorsement, partners
 
 | ID | Travail | Critères d'acceptation | Test et preuve | Responsable | Statut |
 |---|---|---|---|---|---|
-| **P0.00** | Charte et gouvernance R1 | Constitution **JAMAIS DE SIMULATION**, FOSS zéro coût, dix langues, sécurité, bureau et règle de certification cohérents | Vérificateur statique, SHA-256, revue propriétaire de la charte amendée | B09+B10 / Owner | **IN_PROGRESS — R1_REVIEW_REQUIRED** |
+| **P0.00** | Charte et gouvernance R3 | Constitution **JAMAIS DE SIMULATION**, FOSS zéro coût, dix langues, sécurité, bureau et règle de certification cohérents | Vérificateur statique, SHA-256, revue de la charte R3 sur Mac Intel | B09+B10 / Owner | **IN_PROGRESS — R3_REVIEW_REQUIRED** |
 | P0.01 | Ré-audit des technologies de **mesure réelle** | Inventaire documenté : provenance, licence gratuite et compatible, dépendances transitives, faisabilité instruments et Mac Intel ; aucun solveur retenu | SBOM, scan droits, étude sans installation payante, rapport d'écarts | B05+B07+B09 | **PENDING — BLOCKED_BY_P0.00** |
 | P0.02 | Bibliographie critique et résultats expérimentaux | ≥30 sources vérifiables, mécanismes séparés des hypothèses, limites et résultats négatifs inclus | Sources/DOI contrôlés, revue critique, absence d'allégations indues | B01+B02+B03+B10 | PENDING |
 | P0.03 | Sécurité et cadre d'usage non médical | Pas d'exposition humaine ou biologique, pas de commande d'émetteurs, registre risques/permissions | Audit de fonctions et dispositifs, contrôle des permissions, BLOCK sur contournement | B01+B04+B05+B10 | PENDING |
@@ -207,7 +207,7 @@ These are **literature and expertise references** only. No endorsement, partners
 
 ### 4.1 Gates de sortie
 
-- **G0 :** le propriétaire approuve la charte R1, le vérificateur de RoadMap PASS, aucun franchissement non autorisé.
+- **G0 :** la charte R3 est approuvée explicitement par le propriétaire, puis vérifiée sur Mac Intel ; aucun franchissement avant certification.
 - **G1 :** droits, instruments, données et références traçables ; aucune dépendance de simulation intégrée.
 - **G2 :** le logiciel affiche uniquement des données physiques acquises, avec provenance et contrôle de métrologie.
 - **G3 :** des mesures non biologiques, si autorisées et possibles, sont répétées indépendamment.
@@ -234,7 +234,7 @@ These are **literature and expertise references** only. No endorsement, partners
 **Base de provenance :** `RoadMap.md` v0.2.0, SHA-256 `fad5e2f7b9e416ead84c7b00beb865383f3caa5725ae11df450652f836f3d6c6`.  
 **Amendement demandé :** interdiction permanente de simulation, remplacement de tous les livrables orientés simulation par des étapes empiriques de mesure réelle ; maintien de la politique FOSS à zéro coût, des dix langues et des 28 jalons.
 
-**État de preuve :** la validation technique P0.00 v0.2.0 (ZIP/manifest/autotests sur Mac Intel) était `PASS`, avec verdict `REVIEW_READY_NOT_CERTIFIED`. Le nouveau contenu v0.3.0 doit être **vérifié séparément** ; aucune validation du présent document sur Mac n'est encore enregistrée.
+**État de preuve historique :** la validation P0.00 v0.2.0 était `PASS`, sans certification. La v0.3.0 a ensuite passé R1 et R2 sur Mac Intel selon les journaux fournis par le propriétaire (R1 : 6/6 fichiers, 3/3 autotests ; R2 : 5 fichiers, 4/4 autotests). La nouvelle version R3 nécessite sa propre vérification locale.
 
 **Décision restante :** revue du propriétaire sur le périmètre `NO_SIMULATION` et la charte actualisée avant `P0.00=CERTIFIED`. `P0.01` ne commence pas avant cette certification.
 
@@ -248,4 +248,15 @@ These are **literature and expertise references** only. No endorsement, partners
 - [S4] [US NCI — HIFU](https://www.cancer.gov/publications/dictionaries/cancer-terms/def/high-intensity-focused-ultrasound-therapy).
 - [S5] [ISO 14971 — gestion des risques](https://www.iso.org/standard/72704.html).
 
-**VERDICT DOCUMENTAIRE INITIAL :** `R1_DOCUMENT_PREPARED`; `P000_CERTIFIED=NO`; `P001=BLOCKED_BY_P000`; `NO_SIMULATION=YES`; `PRODUCTION=NOT_AUTHORIZED`.
+**VERDICT DOCUMENTAIRE R3 :** `R3_REVIEW_REQUIRED`; `P000_CERTIFIED=NO`; `P001=BLOCKED_BY_P000`; `NEVER_SIMULATION=ENFORCED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## 8. P0.00-R3 — Revue de cohérence avant certification
+
+**2026-11-09 — correctif strictement documentaire :** fonctions B04, B05, B06 et B08 recentrées sur des mesures physiques réelles, suppression des responsabilités de simulation et clarification de la référence scientifique B14. Aucun composant, solveur ou générateur de signal n'est intégré.
+
+**Preuves antérieures communiquées par le propriétaire :** R1 (6/6 fichiers et 3/3 autotests PASS) et R2 (5 fichiers et 4/4 autotests PASS), macOS Intel x86_64. Le journal R1 a été contrôlé avec SHA-256 `f461b548e6842ed34733461130bb417f9a2fb1736cfbac2c7c303fe3785c1334`. Les journaux sources ne sont pas archivés dans le dépôt GitHub. Le contrôle R3 sur Mac reste nécessaire.
+
+**Décision :** « au suivant » autorise cette remédiation documentaire, **pas la certification de P0.00**. Le propriétaire doit approuver explicitement la charte amendée R3 après les vérifications.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `P0.00=IN_PROGRESS` ; `P0.01=BLOCKED_BY_P0.00` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
