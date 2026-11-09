@@ -18,7 +18,7 @@ FREQMED is intended to be a 10-language, multiplatform open-source platform for 
 | Milestone | Status |
 |---|---|
 | P0.00 | CERTIFIED — GOVERNANCE_ONLY (R4 Mac verification and explicit owner decision) |
-| P0.01 | PENDING_ELIGIBLE_NOT_STARTED |
+| P0.01 | IN_PROGRESS_DOCUMENTARY_ONLY (R1 source survey, no code or instruments) |
 | Hardware/biological experiments | NOT_AUTHORIZED |
 | Production | NOT_AUTHORIZED |
 

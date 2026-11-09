@@ -1,13 +1,13 @@
 # RoadMap.md — FREQMED : plateforme de recherche par mesures physiques réelles
 
-**Version :** 0.3.2 — P0.00-R4, certification de gouvernance uniquement
+**Version :** 0.3.3 — P0.01-R1, ouverture de l'audit documentaire des instruments réels
 **Date :** 2026-11-09  
 **Nom :** FREQMED (nom de travail, sans promesse médicale)  
 **Mission :** développer une plateforme multilingue et multiplateforme de **mesure, acquisition, analyse et traçabilité de phénomènes acoustiques et électromagnétiques réels**. Rechercher, uniquement dans des cadres expérimentaux autorisés, s'il existe des effets physiquement et biologiquement reproductibles différents entre tissus pathologiques et tissus sains.  
 **Nature du produit :** instrument logiciel de recherche empirique ; ni outil de diagnostic, ni traitement, ni dispositif d'exposition médicale.  
 **Budget logiciel :** **0 CHF / EUR / USD** ; uniquement des composants open source, légalement réutilisables et redistribuables, sans licence payante, abonnement, API ou service propriétaire requis.  
 **Gouvernance :** un seul `RoadMap.md`, progression séquentielle, statut `PENDING → IN_PROGRESS → TESTING → CERTIFIED` ; une validation logicielle ne prouve jamais l'efficacité clinique.  
-**État :** `P0.00=CERTIFIED_GOVERNANCE_ONLY / P0.01=PENDING_ELIGIBLE_NOT_STARTED / CLINICALLY_VALIDATED=NO / PRODUCTION=NOT_AUTHORIZED`.
+**État :** `P0.00=CERTIFIED_GOVERNANCE_ONLY / P0.01=IN_PROGRESS_DOCUMENTARY_ONLY / CLINICALLY_VALIDATED=NO / PRODUCTION=NOT_AUTHORIZED`.
 
 ## 0. CONSTITUTION — RÈGLE ABSOLUE : « JAMAIS DE SIMULATION »
 
@@ -137,7 +137,7 @@ These are **literature and expertise references** only. No endorsement, partners
 | ID | Travail | Critères d'acceptation | Test et preuve | Responsable | Statut |
 |---|---|---|---|---|---|
 | **P0.00** | Charte et gouvernance R4 | Constitution **JAMAIS DE SIMULATION**, FOSS zéro coût, dix langues, sécurité, bureau et règle de certification cohérents | Contrôle Mac Intel sur commit R3 et décision explicite du propriétaire ; aucun aval clinique | B09+B10 / Owner | **CERTIFIED — GOVERNANCE_ONLY** |
-| P0.01 | Ré-audit des technologies de **mesure réelle** | Inventaire documenté : provenance, licence gratuite et compatible, dépendances transitives, faisabilité instruments et Mac Intel ; aucun solveur retenu | SBOM, scan droits, étude sans installation payante, rapport d'écarts | B05+B07+B09 | **PENDING — ELIGIBLE_NOT_STARTED** |
+| P0.01 | Ré-audit des technologies de **mesure réelle** | Inventaire documenté : provenance, licence gratuite et compatible, dépendances transitives, faisabilité instruments et Mac Intel ; aucun solveur retenu | SBOM, scan droits, étude sans installation payante, rapport d'écarts | B05+B07+B09 | **IN_PROGRESS — DOCUMENTARY_ONLY_R1** |
 | P0.02 | Bibliographie critique et résultats expérimentaux | ≥30 sources vérifiables, mécanismes séparés des hypothèses, limites et résultats négatifs inclus | Sources/DOI contrôlés, revue critique, absence d'allégations indues | B01+B02+B03+B10 | PENDING |
 | P0.03 | Sécurité et cadre d'usage non médical | Pas d'exposition humaine ou biologique, pas de commande d'émetteurs, registre risques/permissions | Audit de fonctions et dispositifs, contrôle des permissions, BLOCK sur contournement | B01+B04+B05+B10 | PENDING |
 | P0.04 | Première question de mesure réelle | Choisir un phénomène **non biologique** objectivement mesurable, témoins physiques et équipement disponible ; pas d'étude tissulaire non autorisée | Faisabilité instrumentale et protocole de métrologie | B04+B05+B07 | PENDING |
@@ -270,3 +270,10 @@ These are **literature and expertise references** only. No endorsement, partners
 **Périmètre :** certification de la charte et des contrôles documentaires uniquement. Elle n'atteste ni étalonnage, ni mesure physique, ni effet sur cellules, ni conformité médicale.
 
 `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `P0.00=CERTIFIED_GOVERNANCE_ONLY` ; `P0.01=PENDING_ELIGIBLE_NOT_STARTED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## 10. P0.01-R1 — Audit documentaire des instruments réels
+
+Ouverture de `P0.01=IN_PROGRESS_DOCUMENTARY_ONLY` le 9 novembre 2026, sur la base de P0.00 certifié. Sources et candidats documentés dans [docs/P0_01_R1_AUDIT_SCOPE.md](docs/P0_01_R1_AUDIT_SCOPE.md). **Aucune dépendance installée ou approuvée** ; contrôles Mac, licences transitives et moyens d'acquisition encore à vérifier.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.

@@ -25,3 +25,14 @@ Date UTC : `2026-11-09T16:37:29+00:00`. Le propriétaire a autorisé localement 
 `ZERO_COST_FOSS=ENFORCED`
 `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`
 `PRODUCTION=NOT_AUTHORIZED`
+
+## P0.01-R1 — Ouverture documentaire (2026-11-09)
+
+Le commit de certification P0.00 a été vérifié sur GitHub (`fc84354e061abb2e73f1d94ea363fc625eb4196f`). Ouverture du travail documentaire de P0.01 avec un inventaire **provisoire** de logiciels amont. Aucun SBOM complet, aucun test Mac de bibliothèques, aucune connexion d'instrument et aucune mesure physique n'ont été réalisés.
+
+`P0.01=IN_PROGRESS_DOCUMENTARY_ONLY`  
+`INTEGRATED_DEPENDENCIES=0`  
+`NEVER_SIMULATION=ENFORCED`  
+`ZERO_COST_FOSS=ENFORCED`  
+`BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`  
+`PRODUCTION=NOT_AUTHORIZED`
