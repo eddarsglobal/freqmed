@@ -14,3 +14,14 @@ Date : 2026-11-09. Les journaux originaux Mac ne sont pas archivés dans ce dép
 `PRODUCTION=NOT_AUTHORIZED`
 
 Aucune approbation explicite de certification n'a encore été enregistrée. Aucune mesure réelle ou validation médicale n'est produite par ce commit.
+
+## Certification P0.00-R4
+
+Date UTC : `2026-11-09T16:37:29+00:00`. Le propriétaire a autorisé localement la certification documentaire par la confirmation `APPROVE_FREQMED_P000_GOVERNANCE_ONLY` après vérification Mac Intel du commit R3. Le reçu officiel est `docs/P0_00_R4_GOVERNANCE_CERTIFICATE.md`. Cet événement supplante l'état R3, conservé ci-dessus à titre historique.
+
+`P0.00=CERTIFIED_GOVERNANCE_ONLY`
+`P0.01=PENDING_ELIGIBLE_NOT_STARTED`
+`NEVER_SIMULATION=ENFORCED`
+`ZERO_COST_FOSS=ENFORCED`
+`BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`
+`PRODUCTION=NOT_AUTHORIZED`
