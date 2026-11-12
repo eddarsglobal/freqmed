@@ -17,7 +17,8 @@ clang -arch x86_64 -std=c11 -O2 -Wall -Wextra -Werror \
   "$ROOT/src/acoustic_probe_macos.c" "$ROOT/src/output_hard_denied.c" \
   "$ROOT/src/em_backend.c" -framework CoreAudio -lm
 # Symbol-level verification that the binary has no playback/start API imports.
-if nm -u "$WORK/freqmed-gen" | grep -Eq '_(AudioQueueStart|AudioQueueNewOutput|AudioDeviceStart|AudioObjectSetPropertyData|AudioQueueEnqueueBuffer|AudioUnitRender|AudioOutputUnitStart)($|[^A-Za-z])'; then
+NM_UNDEFINED="$(nm -u "$WORK/freqmed-gen")" || { echo "R2_SYMBOL_AUDIT_UNAVAILABLE=BLOCK" >&2; exit 8; }
+if printf '%s\n' "$NM_UNDEFINED" | grep -Eq '_(AudioQueueStart|AudioQueueNewOutput|AudioDeviceStart|AudioObjectSetPropertyData|AudioQueueEnqueueBuffer|AudioUnitRender|AudioOutputUnitStart)($|[^A-Za-z])'; then
   echo "R2_FORBIDDEN_OUTPUT_SYMBOL_PRESENT=BLOCK" >&2
   exit 8
 fi
