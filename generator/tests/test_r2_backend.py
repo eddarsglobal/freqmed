@@ -4,6 +4,10 @@ ROOT=pathlib.Path(__file__).resolve().parents[1]
 SRC=ROOT/'src'
 
 class R2Contract(unittest.TestCase):
+    def test_coreaudio_elementmain_sdk_fix1(self):
+        source=(SRC/'acoustic_probe_macos.c').read_text()
+        self.assertEqual(3,source.count('kAudioObjectPropertyElementMain'))
+        self.assertNotIn('kAudioObjectPropertyElementMaster',source)
     def test_real_default_output_query(self):
         text=(SRC/'acoustic_probe_macos.c').read_text()
         self.assertIn('kAudioHardwarePropertyDefaultOutputDevice',text)

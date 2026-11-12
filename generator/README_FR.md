@@ -26,3 +26,7 @@ Cette version progresse vers la génération physique sans émission prématuré
 Le probe ne certifie **ni le transducteur ni l'étalonnage**. Aucun contact fabricant obligatoire. Le design UI V5 Windows 11 × macOS reste gelé. Aucun nouveau CSV ni faux signal.
 
 **NEVER_SIMULATION=ENFORCED ; REAL_OUTPUT=NOT_AUTHORIZED ; ACOUSTIC_EMISSION=NONE ; EM_EMISSION=NONE ; BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED ; PRODUCTION=NOT_AUTHORIZED.**
+
+## FIX1 — Compatibilité SDK Apple
+
+Correction des 3 occurrences dépréciées de `kAudioObjectPropertyElementMaster` en `kAudioObjectPropertyElementMain` dans `src/acoustic_probe_macos.c`. Les avertissements restent traités comme erreurs (`-Werror`). Aucun backend d'émission n'est relié au binaire de contrôle. Le défaut initial empêchait la compilation, donc les tests et le probe Mac R2 n'avaient pas été exécutés. Le test final sur Mac Intel et les données audio réellement observées restent à confirmer.

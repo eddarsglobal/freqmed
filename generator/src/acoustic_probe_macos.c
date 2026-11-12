@@ -16,7 +16,7 @@ int fm_acoustic_readonly_probe(FMOutputCapabilities *out) {
   const AudioObjectPropertyAddress def = {
     kAudioHardwarePropertyDefaultOutputDevice,
     kAudioObjectPropertyScopeGlobal,
-    kAudioObjectPropertyElementMaster
+    kAudioObjectPropertyElementMain
   };
   AudioDeviceID dev = kAudioObjectUnknown;
   UInt32 n=(UInt32)sizeof(dev);
@@ -26,7 +26,7 @@ int fm_acoustic_readonly_probe(FMOutputCapabilities *out) {
   const AudioObjectPropertyAddress rate_address={
     kAudioDevicePropertyNominalSampleRate,
     kAudioObjectPropertyScopeGlobal,
-    kAudioObjectPropertyElementMaster
+    kAudioObjectPropertyElementMain
   };
   Float64 sample_rate=0.0;
   n=(UInt32)sizeof(sample_rate);
@@ -36,7 +36,7 @@ int fm_acoustic_readonly_probe(FMOutputCapabilities *out) {
   const AudioObjectPropertyAddress config_address={
     kAudioDevicePropertyStreamConfiguration,
     kAudioDevicePropertyScopeOutput,
-    kAudioObjectPropertyElementMaster
+    kAudioObjectPropertyElementMain
   };
   UInt32 size=0;
   if (AudioObjectGetPropertyDataSize(dev,&config_address,0,NULL,&size)!=noErr ||
