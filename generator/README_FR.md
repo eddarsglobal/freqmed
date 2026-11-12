@@ -1,13 +1,28 @@
-# FREQMED GEN-R1 — Développement des générateurs physiques
+# FREQMED GEN-R2 — Couche matérielle acoustique en lecture seule
 
-**AUCUNE ÉMISSION PHYSIQUE dans cette version.** Il s'agit du premier code des moteurs acoustique et EM, pas d'une lecture CSV ni d'une simulation. Toutes les commandes de sortie sont bloquées, y compris si des drapeaux d'autorisation sont falsifiés.
+**AUCUNE ÉMISSION PHYSIQUE n’est possible avec l’exécutable GEN-R2.**
 
-Le module src/generator_core.c gère les consignes typées et les blocages du Guardian. Le backend macOS src/acoustic_macos.c contient une première implémentation AudioQueue vers du matériel audio réel, non raccordée et non qualifiée ; ce backend doit encore être compilé et revu sur Mac Intel. Le module src/em_backend.c est une interface fail-closed : il n'existe aucun pilote EM sans appareil dédié qualifié.
+**R1 a compilé et réussi 13/13 tests sur le Mac Intel du propriétaire. R2 est candidat.**
 
-Commande sûre : bash RUN_GEN_R1_MAC_INTEL.command selftest (compile et teste, sans lancer ni son ni RF). Le mode status ne fait qu'imprimer le statut.
+Cette version progresse vers la génération physique sans émission prématurée : elle interroge réellement la sortie audio par défaut via **CoreAudio en lecture seule**, relève son nombre de canaux de sortie et sa fréquence nominale d'échantillonnage. L'information **n'est pas une mesure de pression acoustique ni une qualification**. Une sortie système peut être virtuelle ou non reliée à un transducteur.
 
-Le Bureau B04/B05/B07/B09/B10 doit examiner matériel, mesure indépendante de sortie, interverrouillages, dangers d'exposition et code avant tout banc physique non biologique. Aucun contact fabricant obligatoire.
+## Architecture
 
-Zéro dépendance payante. Code FREQMED Apache-2.0 ; frameworks macOS propriétaires déclarés. Dix langues UI prévues, design Windows 11 × macOS conservé.
+- `src/generator_core.c` : commandes acoustiques/EM et Guardian durci OFF/BLOCK.
+- `src/acoustic_probe_macos.c` : vérification matérielle **réelle**, API CoreAudio `AudioObjectGetPropertyData` uniquement ; aucun accès microphone, aucune sortie.
+- `src/acoustic_macos.c` : code source d'un backend physique AudioQueue **non lié** et non autorisé, conservé pour revue ultérieure.
+- `src/output_hard_denied.c` : seule implémentation du symbole public de sortie acoustique liée au binaire ; retourne toujours `-1`.
+- `src/em_backend.c` : le pilote électromagnétique demeure BLOCKED sans instrument dédié qualifié.
+- `RUN_GEN_R2_MAC_INTEL.command` : build Mac Intel, vérification des symboles natifs interdits, tests, état, sonde de sortie réelle.
 
-NEVER_SIMULATION=ENFORCED ; REAL_OUTPUT=NOT_AUTHORIZED ; BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED ; PRODUCTION=NOT_AUTHORIZED.
+## Commandes
+
+`bash RUN_GEN_R2_MAC_INTEL.command selftest` : compile et vérifie le code, sans émission.
+
+`bash RUN_GEN_R2_MAC_INTEL.command probe` : consulte l'interface audio **en lecture seule** puis affiche ses propriétés techniques non sensibles. Aucun UID, numéro de série ou marque.
+
+`bash RUN_GEN_R2_MAC_INTEL.command status` : état de verrouillage.
+
+Le probe ne certifie **ni le transducteur ni l'étalonnage**. Aucun contact fabricant obligatoire. Le design UI V5 Windows 11 × macOS reste gelé. Aucun nouveau CSV ni faux signal.
+
+**NEVER_SIMULATION=ENFORCED ; REAL_OUTPUT=NOT_AUTHORIZED ; ACOUSTIC_EMISSION=NONE ; EM_EMISSION=NONE ; BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED ; PRODUCTION=NOT_AUTHORIZED.**

@@ -26,4 +26,13 @@ int fm_acoustic_native_backend_available(void);
 int fm_acoustic_physical_output(const FMCommand *command);
 int fm_em_backend_available(void);
 int fm_em_physical_output(const FMCommand *command);
+
+/* Real read-only CoreAudio output metadata; no unique identifiers exposed. */
+typedef struct {
+  unsigned output_channels;
+  double nominal_sample_rate_hz;
+  int metadata_observed;
+} FMOutputCapabilities;
+/* Returns 0 only for readable actual default output metadata on Mac. */
+int fm_acoustic_readonly_probe(FMOutputCapabilities *out);
 #endif

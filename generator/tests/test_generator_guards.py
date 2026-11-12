@@ -34,7 +34,7 @@ class SourceGuards(unittest.TestCase):
         for p in ROOT.rglob('*.csv'):
             self.fail(f"CSV measurement fixture forbidden: {p}")
     def test_user_visible_release_locked(self):
-        self.assertIn('HARD_LOCKED_NOT_CERTIFIED', (SRC/'main.c').read_text())
+        self.assertIn('NOT_LINKED_HARD_DENIED', (SRC/'main.c').read_text())
         self.assertIn('BLOCKED_NO_QUALIFIED_EM_DEVICE', (SRC/'main.c').read_text())
     def test_doc_does_not_claim_output(self):
         t=(ROOT/'README_FR.md').read_text()
@@ -61,7 +61,7 @@ class ExecutableGuards(unittest.TestCase):
         self.assertEqual(0,r.returncode)
         j=json.loads(r.stdout)
         self.assertEqual('NONE',j['physical_emission'])
-        self.assertEqual('HARD_LOCKED_NOT_CERTIFIED',j['acoustic_output'])
+        self.assertEqual('NOT_LINKED_HARD_DENIED',j['acoustic_output'])
         self.assertEqual('BLOCKED_NO_QUALIFIED_EM_DEVICE',j['electromagnetic_output'])
     def test_unknown_action_cannot_start_output(self):
         if not self.bin: self.skipTest('Requires compiled native binary')
