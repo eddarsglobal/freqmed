@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R3.
+/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R5.
  * Caution: a PCM command does NOT establish emitted sound pressure, safety,
  * acoustic level or calibration. This backend cannot be enabled by changing
  * runtime flags. A separate certified source revision is required.
  */
 #include "generator.h"
 #include "acoustic_route_guard.h"
+#include "acoustic_device_pin.h"
 
 #if defined(__APPLE__)
 #include <AudioToolbox/AudioToolbox.h>
@@ -101,6 +102,12 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   fmt.mBytesPerFrame=2;
   fmt.mBytesPerPacket=2;
   if (AudioQueueNewOutput(&fmt,output_callback,&ctx,NULL,NULL,0,&ctx.queue)!=noErr) return -1;
+  /* Pin by CoreAudio device UID and read it back, before any sample is
+   * queued. On rejection: dispose queue immediately with no playback. */
+  if (fm_acoustic_bind_queue_to_route((void *)ctx.queue,&route)!=0) {
+    (void)AudioQueueDispose(ctx.queue,true);
+    return -1;
+  }
   int err=0;
   for (int k=0;k<3;k++) {
     AudioQueueBufferRef b=NULL;

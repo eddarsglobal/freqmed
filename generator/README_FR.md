@@ -1,21 +1,27 @@
-# FREQMED — GEN-R4 : route acoustique surveillée et arrêt immédiat
+# FREQMED GEN-R5 — Périphérique acoustique explicitement fixé
 
-**AUCUNE ÉMISSION PHYSIQUE** dans le binaire R4. Il s'agit du développement du véritable backend du générateur, pas d'un logiciel de simulation ou de relevés.
+Cette étape développe le véritable code du **générateur acoustique**, sans produire de signal et sans modification du design approuvé Windows 11 × macOS.
 
-GEN-R3 : la compilation CoreAudio isolée et les 50 tests ont réussi sur le Mac Intel. La sortie audio par défaut a déclaré deux canaux et une cadence nominale de 44 100 Hz. Ce n'est pas une fréquence acoustique émise.
+**AUCUNE ÉMISSION PHYSIQUE.** L'exécutable GEN-R5 n'émet absolument aucun son et ne pilote aucun émetteur EM.
 
-**GEN-R4 ajoute au code source de sortie acoustique :**
+## Changement technique significatif
 
-- Empreinte de route interne (jeton éphémère de périphérique OS, fréquence nominale et nombre de canaux), sans publication du jeton.
-- Comparaison de la route avant préparation, juste avant le démarrage prévu et pendant le fonctionnement futur.
-- Demande d'arrêt immédiat en cas de changement de route ou d'erreur, sans vidange prolongée des tampons.
-- Compilation indépendante du code AudioQueue et du module de surveillance, dans deux objets **non liés** au programme lancé.
-- Refus toujours actif de toute émission acoustique et EM dans l'exécutable livré.
+L'ancienne version R4 surveillait uniquement la sortie audio *par défaut*. Si un autre périphérique devenait la sortie par défaut entre deux vérifications, le backend préparé pouvait être ambigu. R5 ajoute, dans le **source du backend non lié**, la fixation de la queue AudioQueue à un périphérique précis, par `kAudioQueueProperty_CurrentDevice` et son identifiant CoreAudio UID. L'UID est utilisé uniquement en mémoire ; il n'est ni imprimé ni sauvegardé.
 
-**Limites importantes :** ce contrôle n'empêche pas une bascule de périphérique entre deux lectures, ne fixe pas explicitement un transducteur physique, ne fournit aucun arrêt matériel indépendant et ne démontre aucun niveau acoustique sûr. Le code générateur ne doit pas être activé avant les revues et essais du Bureau.
+Le code vérifie ensuite par lecture de retour : même UID, nombre de canaux, fréquence d'échantillonnage nominale, et route initiale inchangée. En cas d'échec, le backend prévu détruit la queue sans démarrer.
 
-**Commande Mac Intel :** `bash RUN_GEN_R4_MAC_INTEL.command selftest`, puis `bash RUN_GEN_R4_MAC_INTEL.command probe` pour afficher les seules métadonnées CoreAudio. Aucune installation ni connexion Internet.
+Ces vérifications assurent une *meilleure préparation logicielle*, pas un contrôle matériel de sûreté. Elles ne garantissent ni émission réelle, ni fréquence acoustique produite, ni SPL sûr.
 
-Logiciel libre Apache-2.0 ; frameworks CoreAudio propriétaires de macOS comme dépendance de plateforme. Design Windows 11 × macOS inchangé, 10 langues conservées dans la feuille de route.
+## Test sur Mac Intel
 
-`NEVER_SIMULATION=ENFORCED` · `ACOUSTIC_EMISSION=NONE` · `EM_OUTPUT=BLOCKED` · `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` · `PRODUCTION=NOT_AUTHORIZED`.
+`bash RUN_GEN_R5_MAC_INTEL.command selftest` — compile trois composants CoreAudio comme objets séparés, sans les lier à l'exécutable, effectue des tests logiciels et un audit `nm` strict des symboles.
+
+`bash RUN_GEN_R5_MAC_INTEL.command probe` — consulte seulement les propriétés OS de la sortie audio par défaut.
+
+Aucune installation, aucune simulation scientifique, aucun accès microphone, aucune émission physique, aucune synchronisation automatique GitHub.
+
+**L'état R4 réel déjà observé** : 70/70 tests sur Mac Intel, deux canaux, 44 100 Hz nominaux. Ce ne sont pas des fréquences acoustiques émises.
+
+Logiciel Apache-2.0, avec API CoreAudio propriétaire de plateforme. B04/B05/B07/B09/B10 doivent valider les profils matériels et la sécurité avant tout futur essai de sortie. Le générateur EM reste bloqué faute de matériel qualifié.
+
+`NEVER_SIMULATION=ENFORCED` · `ACOUSTIC_OUTPUT=NOT_AUTHORIZED` · `EM_OUTPUT=BLOCKED` · `PRODUCTION=NOT_AUTHORIZED`.
