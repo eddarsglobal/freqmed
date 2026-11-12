@@ -26,9 +26,9 @@ class AcousticBackendR3Guards(unittest.TestCase):
         self.assertIn('return -1;',source)
         self.assertNotIn('acoustic_output_impl(',source)
     def test_backend_uses_actual_os_nominal_rate(self):
-        self.assertIn('fm_acoustic_readonly_probe(&observed)',AUD)
-        self.assertIn('observed.nominal_sample_rate_hz',AUD)
-        self.assertIn('const double sr=observed.nominal_sample_rate_hz;',AUD)
+        self.assertIn('fm_route_capture(&route)',AUD)
+        self.assertIn('route.nominal_sample_rate_hz',AUD)
+        self.assertIn('const double sr=route.nominal_sample_rate_hz;',AUD)
     def test_no_assumed_48khz_sample_rate(self):
         self.assertNotIn('const double sr=48000.0',AUD)
         self.assertNotIn('48000.0',AUD)
@@ -37,9 +37,9 @@ class AcousticBackendR3Guards(unittest.TestCase):
         self.assertIn('ctx->fade_frames',AUD)
         self.assertNotIn('if (at<480U)',AUD)
     def test_numerical_boundaries_in_source(self):
-        for expected in ('!isfinite(observed.nominal_sample_rate_hz)',
-                         'observed.nominal_sample_rate_hz<8000.0',
-                         'observed.nominal_sample_rate_hz>384000.0',
+        for expected in ('!isfinite(route.nominal_sample_rate_hz)',
+                         'route.nominal_sample_rate_hz<8000.0',
+                         'route.nominal_sample_rate_hz>384000.0',
                          'request->frequency_hz>=sr/2.0',
                          'request->duration_ms>60000U',
                          'request->normalized_level>1.0'):

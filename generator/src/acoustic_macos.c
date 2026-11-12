@@ -5,6 +5,7 @@
  * runtime flags. A separate certified source revision is required.
  */
 #include "generator.h"
+#include "acoustic_route_guard.h"
 
 #if defined(__APPLE__)
 #include <AudioToolbox/AudioToolbox.h>
@@ -24,6 +25,7 @@ typedef struct {
   uint64_t frames_written, total_frames, fade_frames;
   atomic_int last_frame_enqueued;
   atomic_int failed;
+  atomic_int stop_requested;
 } AcousticContext;
 
 static void fill_audio(AcousticContext *ctx, AudioQueueBufferRef buf) {
@@ -57,7 +59,8 @@ static void fill_audio(AcousticContext *ctx, AudioQueueBufferRef buf) {
 static void output_callback(void *ptr, AudioQueueRef queue, AudioQueueBufferRef buf) {
   AcousticContext *ctx=(AcousticContext*)ptr;
   (void)queue;
-  if (!atomic_load(&ctx->failed) && !atomic_load(&ctx->last_frame_enqueued))
+  if (!atomic_load(&ctx->stop_requested) &&
+      !atomic_load(&ctx->failed) && !atomic_load(&ctx->last_frame_enqueued))
     fill_audio(ctx,buf);
 }
 static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request) {
@@ -65,13 +68,13 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   /* Prevent hard-coded 48 kHz PCM on a 44.1 kHz default output, as observed
    * by the owner Mac in GEN-R2. This is only a preflight OS metadata value;
    * it is NOT a proof of physical output frequency or device pinning. */
-  FMOutputCapabilities observed={0};
-  if (fm_acoustic_readonly_probe(&observed)!=0 ||
-      observed.metadata_observed!=1 || observed.output_channels==0 ||
-      !isfinite(observed.nominal_sample_rate_hz) ||
-      observed.nominal_sample_rate_hz<8000.0 ||
-      observed.nominal_sample_rate_hz>384000.0) return -1;
-  const double sr=observed.nominal_sample_rate_hz;
+  FMRouteFingerprint route={0};
+  if (fm_route_capture(&route)!=0 || route.output_channels==0 ||
+      !isfinite(route.nominal_sample_rate_hz) ||
+      route.nominal_sample_rate_hz<8000.0 ||
+      route.nominal_sample_rate_hz>384000.0) return -1;
+  if (!fm_route_unchanged(&route)) return -1;
+  const double sr=route.nominal_sample_rate_hz;
   /* Technical format constraints, not biological safety limits. */
   if (!isfinite(request->frequency_hz) || request->frequency_hz<=0.0 || request->frequency_hz>=sr/2.0 ||
       !isfinite(request->normalized_level) || request->normalized_level<=0.0 || request->normalized_level>1.0 ||
@@ -80,6 +83,7 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   memset(&ctx,0,sizeof(ctx));
   atomic_init(&ctx.last_frame_enqueued,0);
   atomic_init(&ctx.failed,0);
+  atomic_init(&ctx.stop_requested,0);
   ctx.phase_step=6.28318530717958647693*request->frequency_hz/sr;
   ctx.normalized_level=request->normalized_level;
   ctx.total_frames=(uint64_t)((sr*(double)request->duration_ms)/1000.0);
@@ -104,19 +108,32 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
     fill_audio(&ctx,b);
     if (atomic_load(&ctx.failed)) {err=1;break;}
   }
+  /* Recheck default output before start; not a physical hardware pin. */
+  if (!err && !fm_route_unchanged(&route)) err=1;
   if (!err && AudioQueueStart(ctx.queue,NULL)!=noErr) err=1;
   if (!err) {
     /* A bounded watchdog; AudioQueueStop(..., false) drains the queue. */
     unsigned wait_cycles=0;
     const unsigned max_cycles=request->duration_ms/10U+300U;
-    while (!atomic_load(&ctx.last_frame_enqueued) && !atomic_load(&ctx.failed) && wait_cycles<max_cycles) {
+    while (!atomic_load(&ctx.last_frame_enqueued) &&
+           !atomic_load(&ctx.failed) &&
+           !atomic_load(&ctx.stop_requested) && wait_cycles<max_cycles) {
       (void)CFRunLoopRunInMode(kCFRunLoopDefaultMode,0.01,false);
       ++wait_cycles;
+      /* Read-only drift check at intervals; never a safety certification. */
+      if ((wait_cycles%10U)==0U && !fm_route_unchanged(&route)) {
+        atomic_store(&ctx.stop_requested,1);
+        err=1;
+        break;
+      }
     }
-    if (atomic_load(&ctx.failed) || wait_cycles>=max_cycles) err=1;
+    if (atomic_load(&ctx.failed) || atomic_load(&ctx.stop_requested) ||
+        wait_cycles>=max_cycles) err=1;
   }
+  /* Immediate stop: never drain queued output after route drift/fault. */
+  atomic_store(&ctx.stop_requested,1);
   if (ctx.queue) {
-    (void)AudioQueueStop(ctx.queue,err?true:false);
+    (void)AudioQueueStop(ctx.queue,true);
     (void)AudioQueueDispose(ctx.queue,true);
   }
   return err?-1:0;
