@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Physical CoreAudio path — implementation candidate, NEVER callable in R1.
+/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R3.
  * Caution: a PCM command does NOT establish emitted sound pressure, safety,
  * acoustic level or calibration. This backend cannot be enabled by changing
  * runtime flags. A separate certified source revision is required.
@@ -15,12 +15,13 @@
 #include <stdbool.h>
 #include <string.h>
 
-/* This code is compiled on Mac and represents an actual hardware output
- * implementation for a later reviewed version. It has NO R1 call path. */
+/* GEN-R3 compiles this file to a SEPARATE OBJECT for review, never links it
+ * into the executable, never loads it and never executes it. Full safety,
+ * output-device pinning, and independent hardware interlocks are pending. */
 typedef struct {
   AudioQueueRef queue;
   double phase, phase_step, normalized_level;
-  uint64_t frames_written, total_frames;
+  uint64_t frames_written, total_frames, fade_frames;
   atomic_int last_frame_enqueued;
   atomic_int failed;
 } AcousticContext;
@@ -34,9 +35,10 @@ static void fill_audio(AcousticContext *ctx, AudioQueueBufferRef buf) {
     const uint64_t at=ctx->frames_written;
     const uint64_t remaining=ctx->total_frames-at;
     double envelope=1.0;
-    if (at<480U) envelope=(double)at/480.0;
-    if (remaining<480U && (double)remaining/480.0<envelope)
-      envelope=(double)remaining/480.0;
+    if (at<ctx->fade_frames) envelope=(double)at/(double)ctx->fade_frames;
+    if (remaining<ctx->fade_frames &&
+        (double)remaining/(double)ctx->fade_frames<envelope)
+      envelope=(double)remaining/(double)ctx->fade_frames;
     const double value=sin(ctx->phase)*ctx->normalized_level*envelope;
     p[count]=(int16_t)(value*32767.0);
     ctx->phase+=ctx->phase_step;
@@ -58,9 +60,18 @@ static void output_callback(void *ptr, AudioQueueRef queue, AudioQueueBufferRef 
   if (!atomic_load(&ctx->failed) && !atomic_load(&ctx->last_frame_enqueued))
     fill_audio(ctx,buf);
 }
-static int acoustic_output_impl(const FMCommand *request) {
+static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request) {
   if (!request || request->channel!=FM_ACOUSTIC) return -1;
-  const double sr=48000.0;
+  /* Prevent hard-coded 48 kHz PCM on a 44.1 kHz default output, as observed
+   * by the owner Mac in GEN-R2. This is only a preflight OS metadata value;
+   * it is NOT a proof of physical output frequency or device pinning. */
+  FMOutputCapabilities observed={0};
+  if (fm_acoustic_readonly_probe(&observed)!=0 ||
+      observed.metadata_observed!=1 || observed.output_channels==0 ||
+      !isfinite(observed.nominal_sample_rate_hz) ||
+      observed.nominal_sample_rate_hz<8000.0 ||
+      observed.nominal_sample_rate_hz>384000.0) return -1;
+  const double sr=observed.nominal_sample_rate_hz;
   /* Technical format constraints, not biological safety limits. */
   if (!isfinite(request->frequency_hz) || request->frequency_hz<=0.0 || request->frequency_hz>=sr/2.0 ||
       !isfinite(request->normalized_level) || request->normalized_level<=0.0 || request->normalized_level>1.0 ||
@@ -73,6 +84,8 @@ static int acoustic_output_impl(const FMCommand *request) {
   ctx.normalized_level=request->normalized_level;
   ctx.total_frames=(uint64_t)((sr*(double)request->duration_ms)/1000.0);
   if (!ctx.total_frames) return -1;
+  ctx.fade_frames=(uint64_t)(sr/100.0); /* nominal 10 ms digital ramp */
+  if (ctx.fade_frames==0U) return -1;
   AudioStreamBasicDescription fmt;
   memset(&fmt,0,sizeof(fmt));
   fmt.mSampleRate=sr;
@@ -114,8 +127,8 @@ int fm_acoustic_native_backend_available(void) { return 0; }
 #endif
 
 int fm_acoustic_physical_output(const FMCommand *command) {
-  /* R1: unconditionally denied, even if compiled for macOS and even if
-   * a caller forges all guardian fields. acoustic_output_impl is NOT called. */
+  /* GEN-R3: unconditional hard denial, even if a caller forges all
+   * guardian flags. acoustic_output_impl is never called. */
   (void)command;
   return -1;
 }
