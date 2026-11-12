@@ -1,35 +1,32 @@
-# FREQMED — Empirical Measurement Research Platform
+# FREQMED — Physical Acoustic & Electromagnetic Frequency Generators
 
-**Status: research foundation only. Not a medical device, diagnosis or treatment. No evidence of clinical effectiveness is claimed.**
+**Mission (owner-directed, 12 November 2026): build a system capable of generating real physical acoustic and electromagnetic frequencies through suitable hardware.**
 
-FREQMED is intended to be a 10-language, multiplatform open-source platform for traceable acquisition and analysis of **real, instrument-measured** acoustic, electrical and electromagnetic phenomena. No hardware control or biological exposure is implemented or authorized.
+FREQMED is **not** primarily a CSV reader, a document-research platform, or a simulator. The Bureau described in [RoadMap.md](RoadMap.md) owns the scientific research agenda, specifications, safety reviews and certifications. Engineering develops both generator subsystems.
 
-## Foundational rules
+## Generator architecture
 
-- **NEVER_SIMULATION=ENFORCED** — no simulation, synthetic biological measurements, fake sensor traces or simulated experimental claims.
-- **ZERO_COST_FOSS=ENFORCED** — free and open-source software only; review all direct and transitive dependencies and their licenses before integration; no paid license, service, subscription or mandatory commercial API.
-- **REAL_MEASUREMENT_REQUIRED** — identify real instrumentation, calibration, source, units, timestamps, uncertainties and protocols for any experimental claim.
-- **BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED** — no cell, animal or human exposure; no hardware excitation during foundation stages.
-- **PRODUCTION=NOT_AUTHORIZED** — do not confuse software checks with clinical or safety certification.
-- Single official [RoadMap.md](RoadMap.md); sequential guardian-controlled milestones. No milestone is automatically certified by repository creation.
+- **GEN-CORE** — typed frequency commands, state machine, stop mechanisms, immutable safety gates.
+- **GEN-ACOUSTIC** — native physical acoustic-output backend for an identified output device (Mac Intel first); no inference of physical sound pressure from digital amplitude.
+- **GEN-EM** — driver interface for specifically identified, qualified external EM-generating equipment; no universal RF transmitter or arbitrary use of built-in wireless radios.
+- **Guardian** — equipment constraints, safe shutdown and independent approvals.
+- **UI** — preserve user-approved Windows 11 Fluent × macOS visual direction and 10 languages (en, fr, de, ar, es, pt, hr, it, zh, ko).
 
-## Governance status (9 Nov 2026)
+The previous V4/V5 previews and R29–R32 CSV/ledger/analysis prototypes are **historical secondary components**. They are neither the generators nor evidence of physical output.
 
-| Milestone | Status |
-|---|---|
-| P0.00 | CERTIFIED — GOVERNANCE_ONLY (R4 Mac verification and explicit owner decision) |
-| P0.01 | IN_PROGRESS_DOCUMENTARY_ONLY (R1 source survey, no code or instruments) |
-| Hardware/biological experiments | NOT_AUTHORIZED |
-| Production | NOT_AUTHORIZED |
+## Non-negotiable controls
 
-The project supports planned locales `en, fr, de, ar, es, pt, hr, it, zh, ko`. The source currently contains governance documents only; **no scientific engine** is installed.
+- `NEVER_SIMULATION=ENFORCED`: no simulated physical experiment, fabricated signal measurement, fake device or hidden simulation mode.
+- `ZERO_COST_FOSS=ENFORCED`: FOSS project code and no paid mandatory software. macOS system APIs are proprietary platform dependencies and must be disclosed.
+- `REAL_OUTPUT=NOT_AUTHORIZED`: no acoustic or electromagnetic output test before qualified hardware, relevant safety controls and approval.
+- `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`: no cell, animal or human exposure; no treatment, diagnostic or clinical claim.
+- `PRODUCTION=NOT_AUTHORIZED`: software tests are not scientific or regulatory certification.
+- Manufacturer partnerships are **not mandatory**; device identity, limits and safety evidence still matter.
 
-## Repository
+## Governance as of 12 November 2026
 
-Canonical remote: `https://github.com/eddarsglobal/freqmed`  
-Canonical local workspace: `$HOME/Documents/App_py/freqmed`  
-Initial documentation is licensed under Apache-2.0 (see [LICENSE](LICENSE)); third-party integrations are not yet approved.
+P0.00 retains its historical **CERTIFIED_GOVERNANCE_ONLY** status. P0.01 is **IN_PROGRESS_REBASE_REVIEW** for the radical mission change; subsequent milestones remain pending/locked, with explicit sequential Bureau/Guardian certification required.
 
-## Français
+Read the authoritative [RoadMap.md](RoadMap.md) for the 28-stage generator development and safety plan. The early standalone generator source kit is a **candidate**, not an authorized hardware-output application.
 
-Le projet est **strictement documentaire** à ce stade. *JAMAIS DE SIMULATION*, logiciels 100 % libres et gratuits, aucune émission physique pilotée, aucune exposition biologique, et aucune prétention thérapeutique. La preuve clinique ne découle jamais des autotests informatiques.
+Repository: `eddarsglobal/freqmed` (canonical local location: `~/Documents/App_py/freqmed`).
