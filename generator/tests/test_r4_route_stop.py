@@ -35,17 +35,17 @@ class RouteAndStop(unittest.TestCase):
         self.assertIn('if (!fm_route_unchanged(&route)) return -1;',A[i:j])
     def test_backend_checks_route_immediately_before_start(self):
         i=A.index('if (!err && !fm_route_unchanged(&route)) err=1;')
-        j=A.index('AudioQueueStart(ctx.queue,NULL)')
+        j=A.index('AudioQueueStart(ctx->queue,NULL)')
         self.assertLess(i,j)
     def test_backend_periodically_checks_during_running(self):
         self.assertIn('if ((wait_cycles%10U)==0U && !fm_route_unchanged(&route))',A)
-        self.assertIn('atomic_store(&ctx.stop_requested,1)',A)
+        self.assertIn('atomic_store(&ctx->stop_requested,1)',A)
     def test_callback_observes_stop_flag(self):
         self.assertIn('atomic_int stop_requested;',A)
         self.assertIn('!atomic_load(&ctx->stop_requested)',A)
     def test_immediate_queue_stop(self):
-        self.assertIn('AudioQueueStop(ctx.queue,true)',A)
-        self.assertNotIn('AudioQueueStop(ctx.queue,err?true:false)',A)
+        self.assertIn('AudioQueueStop(ctx->queue,true)',A)
+        self.assertNotIn('AudioQueueStop(ctx->queue,err?true:false)',A)
     def test_runner_compiles_both_objects_separately(self):
         for p in ('src/acoustic_macos.c','src/acoustic_route_guard_macos.c'):
             self.assertIn('"$ROOT/'+p+'"',SH)
