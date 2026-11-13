@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R10.
+/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R11.
  * Caution: a PCM command does NOT establish emitted sound pressure, safety,
  * acoustic level or calibration. This backend cannot be enabled by changing
  * runtime flags. A separate certified source revision is required.
@@ -18,9 +18,22 @@
 #include <string.h>
 #include <time.h>
 
-/* GEN-R10 keeps this file as a SEPARATE OBJECT for review, never links it
+/* GEN-R11 keeps this file as a SEPARATE OBJECT for review, never links it
  * into the executable, never loads it and never executes it. Full safety,
  * output-device pinning, and independent hardware interlocks are pending. */
+/* Internal diagnostic causes; not measurements, device states or permissions.
+ * The first recorded fault wins. This is an unlinked candidate only. */
+typedef enum {
+  FM_FAULT_NONE=0,
+  FM_FAULT_BAD_BUFFER=1,
+  FM_FAULT_ENQUEUE=2,
+  FM_FAULT_GRACEFUL_STOP=3,
+  FM_FAULT_PROPERTY_LISTENER=4,
+  FM_FAULT_MONOTONIC_CLOCK=5,
+  FM_FAULT_ROUTE_CHANGED=6,
+  FM_FAULT_SHUTDOWN=7
+} FMInternalAcousticFault;
+
 typedef struct {
   AudioQueueRef queue;
   double phase, phase_step, normalized_level;
@@ -31,7 +44,19 @@ typedef struct {
   atomic_int queue_started;
   atomic_int queue_stopped;
   atomic_int graceful_drain_requested;
+  atomic_int shutdown_in_progress;
+  atomic_int first_fault_reason;
 } AcousticContext;
+
+/* Single-assignment fault evidence, bounded to this invocation only.
+ * No identity, hardware readings, or measurements are written to logs. */
+static void fm_latch_first_fault(AcousticContext *ctx, FMInternalAcousticFault reason) {
+  if (!ctx || reason==FM_FAULT_NONE) return;
+  int unset=FM_FAULT_NONE;
+  (void)atomic_compare_exchange_strong(&ctx->first_fault_reason,
+                                        &unset,(int)reason);
+  atomic_store(&ctx->failed,1);
+}
 
 /* Actual OS monotonic timer, never a simulated clock or measurement. */
 static int fm_read_monotonic_ns(uint64_t *out) {
@@ -50,6 +75,7 @@ static void fill_audio(AcousticContext *ctx, AudioQueueBufferRef buf) {
   if (!ctx || !buf || !buf->mAudioData ||
       buf->mAudioDataBytesCapacity < (UInt32)sizeof(int16_t) ||
       (buf->mAudioDataBytesCapacity % (UInt32)sizeof(int16_t))!=0U) {
+    if (ctx) fm_latch_first_fault(ctx,FM_FAULT_BAD_BUFFER);
     if (ctx) atomic_store(&ctx->failed,1);
     return;
   }
@@ -75,6 +101,7 @@ static void fill_audio(AcousticContext *ctx, AudioQueueBufferRef buf) {
   buf->mAudioDataByteSize=count*(uint32_t)sizeof(int16_t);
   if (count>0) {
     if (AudioQueueEnqueueBuffer(ctx->queue,buf,0,NULL)!=noErr) {
+      fm_latch_first_fault(ctx,FM_FAULT_ENQUEUE);
       atomic_store(&ctx->failed,1);
       return; /* Failed enqueue cannot confirm a final queued frame. */
     }
@@ -90,11 +117,15 @@ static void fill_audio(AcousticContext *ctx, AudioQueueBufferRef buf) {
 static void request_graceful_queue_drain(AcousticContext *ctx) {
   if (!atomic_load(&ctx->queue_started) ||
       !atomic_load(&ctx->last_frame_enqueued) ||
-      atomic_load(&ctx->stop_requested) || atomic_load(&ctx->failed)) return;
+      atomic_load(&ctx->stop_requested) || atomic_load(&ctx->failed) ||
+      atomic_load(&ctx->shutdown_in_progress) ||
+      atomic_load(&ctx->first_fault_reason)!=FM_FAULT_NONE) return;
   int pending=0;
   if (atomic_compare_exchange_strong(&ctx->graceful_drain_requested,&pending,1)) {
-    if (AudioQueueStop(ctx->queue,false)!=noErr)
+    if (AudioQueueStop(ctx->queue,false)!=noErr) {
+      fm_latch_first_fault(ctx,FM_FAULT_GRACEFUL_STOP);
       atomic_store(&ctx->failed,1);
+    }
   }
 }
 
@@ -105,19 +136,23 @@ static void queue_running_listener(void *data, AudioQueueRef queue,
   UInt32 running=1U, n=(UInt32)sizeof(running);
   if (AudioQueueGetProperty(queue,kAudioQueueProperty_IsRunning,
                             &running,&n)!=noErr || n!=sizeof(running)) {
+    fm_latch_first_fault(ctx,FM_FAULT_PROPERTY_LISTENER);
     atomic_store(&ctx->failed,1);
     return;
   }
   if (running==0U && atomic_load(&ctx->graceful_drain_requested) &&
       atomic_load(&ctx->queue_started) && !atomic_load(&ctx->failed) &&
-      !atomic_load(&ctx->stop_requested))
+      !atomic_load(&ctx->stop_requested) &&
+      !atomic_load(&ctx->shutdown_in_progress) &&
+      atomic_load(&ctx->first_fault_reason)==FM_FAULT_NONE)
     atomic_store(&ctx->queue_stopped,1);
 }
 
 static void output_callback(void *ptr, AudioQueueRef queue, AudioQueueBufferRef buf) {
   AcousticContext *ctx=(AcousticContext*)ptr;
   (void)queue;
-  if (!atomic_load(&ctx->stop_requested) && !atomic_load(&ctx->failed)) {
+  if (!atomic_load(&ctx->stop_requested) && !atomic_load(&ctx->failed) &&
+      !atomic_load(&ctx->shutdown_in_progress)) {
     if (!atomic_load(&ctx->last_frame_enqueued)) fill_audio(ctx,buf);
     /* Callback never requests stop: the control loop owns the drain. */
   }
@@ -146,6 +181,8 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   atomic_init(&ctx.queue_started,0);
   atomic_init(&ctx.queue_stopped,0);
   atomic_init(&ctx.graceful_drain_requested,0);
+  atomic_init(&ctx.shutdown_in_progress,0);
+  atomic_init(&ctx.first_fault_reason,FM_FAULT_NONE);
   ctx.phase_step=6.28318530717958647693*request->frequency_hz/sr;
   ctx.normalized_level=request->normalized_level;
   ctx.total_frames=(uint64_t)((sr*(double)request->duration_ms)/1000.0);
@@ -189,6 +226,7 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
     atomic_store(&ctx.queue_started,1);
     uint64_t started_ns=0U;
     if (fm_read_monotonic_ns(&started_ns)!=0) {
+      fm_latch_first_fault(&ctx,FM_FAULT_MONOTONIC_CLOCK);
       atomic_store(&ctx.failed,1);
       err=1;
     } else {
@@ -204,6 +242,7 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
         uint64_t now_ns=0U;
         if (fm_read_monotonic_ns(&now_ns)!=0 || now_ns<started_ns ||
             now_ns-started_ns>max_elapsed_ns) {
+          fm_latch_first_fault(&ctx,FM_FAULT_MONOTONIC_CLOCK);
           atomic_store(&ctx.failed,1);
           err=1;
           break;
@@ -211,6 +250,7 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
         (void)CFRunLoopRunInMode(kCFRunLoopDefaultMode,0.01,false);
         ++wait_cycles;
         if ((wait_cycles%10U)==0U && !fm_route_unchanged(&route)) {
+          fm_latch_first_fault(&ctx,FM_FAULT_ROUTE_CHANGED);
           atomic_store(&ctx.stop_requested,1);
           err=1;
           break;
@@ -221,6 +261,7 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
       if (fm_read_monotonic_ns(&finished_ns)!=0 ||
           finished_ns<started_ns ||
           finished_ns-started_ns>max_elapsed_ns) {
+        fm_latch_first_fault(&ctx,FM_FAULT_MONOTONIC_CLOCK);
         atomic_store(&ctx.failed,1);
         err=1;
       }
@@ -228,9 +269,13 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
           wait_cycles>=max_cycles || !atomic_load(&ctx.queue_stopped)) err=1;
     }
   }
-  /* GEN-R9: teardown has one control-thread owner. The output callback
-   * only enqueues buffers and writes atomic state. Listener removal precedes
-   * synchronous disposal. Neither is an independent hardware cutoff. */
+  /* GEN-R11: a one-shot barrier closes the drain and callback paths
+   * before listener removal and synchronous disposal. This software
+   * boundary is NOT an independently certified hardware stop. */
+  if (atomic_exchange(&ctx.shutdown_in_progress,1)!=0) {
+    fm_latch_first_fault(&ctx,FM_FAULT_SHUTDOWN);
+    err=1;
+  }
   atomic_store(&ctx.stop_requested,1);
   if (ctx.queue) {
     if (err && atomic_load(&ctx.queue_started)) {
@@ -244,6 +289,9 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
     if (AudioQueueDispose(ctx.queue,true)!=noErr) err=1;
     ctx.queue=NULL;
   }
+  /* No successful return after a latched first fault or cleanup failure. */
+  if (err) fm_latch_first_fault(&ctx,FM_FAULT_SHUTDOWN);
+  if (atomic_load(&ctx.first_fault_reason)!=FM_FAULT_NONE) err=1;
   return err?-1:0;
 }
 int fm_acoustic_native_backend_available(void) { return 1; }
