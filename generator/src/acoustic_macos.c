@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R8.
+/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R10.
  * Caution: a PCM command does NOT establish emitted sound pressure, safety,
  * acoustic level or calibration. This backend cannot be enabled by changing
  * runtime flags. A separate certified source revision is required.
@@ -16,8 +16,9 @@
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 
-/* GEN-R9 keeps this file as a SEPARATE OBJECT for review, never links it
+/* GEN-R10 keeps this file as a SEPARATE OBJECT for review, never links it
  * into the executable, never loads it and never executes it. Full safety,
  * output-device pinning, and independent hardware interlocks are pending. */
 typedef struct {
@@ -32,7 +33,26 @@ typedef struct {
   atomic_int graceful_drain_requested;
 } AcousticContext;
 
+/* Actual OS monotonic timer, never a simulated clock or measurement. */
+static int fm_read_monotonic_ns(uint64_t *out) {
+  if (!out) return -1;
+  struct timespec stamp;
+  if (clock_gettime(CLOCK_MONOTONIC,&stamp)!=0 ||
+      stamp.tv_sec<0 || stamp.tv_nsec<0 ||
+      stamp.tv_nsec>=1000000000L) return -1;
+  const uint64_t seconds=(uint64_t)stamp.tv_sec;
+  if (seconds>(UINT64_MAX-(uint64_t)stamp.tv_nsec)/1000000000ULL) return -1;
+  *out=seconds*1000000000ULL+(uint64_t)stamp.tv_nsec;
+  return 0;
+}
+
 static void fill_audio(AcousticContext *ctx, AudioQueueBufferRef buf) {
+  if (!ctx || !buf || !buf->mAudioData ||
+      buf->mAudioDataBytesCapacity < (UInt32)sizeof(int16_t) ||
+      (buf->mAudioDataBytesCapacity % (UInt32)sizeof(int16_t))!=0U) {
+    if (ctx) atomic_store(&ctx->failed,1);
+    return;
+  }
   const uint32_t cap=(uint32_t)(buf->mAudioDataBytesCapacity / sizeof(int16_t));
   int16_t *p=(int16_t*)buf->mAudioData;
   uint32_t count=0;
@@ -54,8 +74,10 @@ static void fill_audio(AcousticContext *ctx, AudioQueueBufferRef buf) {
   }
   buf->mAudioDataByteSize=count*(uint32_t)sizeof(int16_t);
   if (count>0) {
-    if (AudioQueueEnqueueBuffer(ctx->queue,buf,0,NULL)!=noErr)
+    if (AudioQueueEnqueueBuffer(ctx->queue,buf,0,NULL)!=noErr) {
       atomic_store(&ctx->failed,1);
+      return; /* Failed enqueue cannot confirm a final queued frame. */
+    }
   }
   if (ctx->frames_written >= ctx->total_frames)
     atomic_store(&ctx->last_frame_enqueued,1);
@@ -86,7 +108,9 @@ static void queue_running_listener(void *data, AudioQueueRef queue,
     atomic_store(&ctx->failed,1);
     return;
   }
-  if (running==0U && atomic_load(&ctx->graceful_drain_requested))
+  if (running==0U && atomic_load(&ctx->graceful_drain_requested) &&
+      atomic_load(&ctx->queue_started) && !atomic_load(&ctx->failed) &&
+      !atomic_load(&ctx->stop_requested))
     atomic_store(&ctx->queue_stopped,1);
 }
 
@@ -163,27 +187,46 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   if (!err && AudioQueueStart(ctx.queue,NULL)!=noErr) err=1;
   if (!err) {
     atomic_store(&ctx.queue_started,1);
-    /* Short runs can enqueue every frame BEFORE AudioQueueStart.
-     * Draining is requested only after the queue successfully starts. */
-    request_graceful_queue_drain(&ctx);
-    unsigned wait_cycles=0;
-    const unsigned max_cycles=request->duration_ms/10U+300U;
-    while (!atomic_load(&ctx.queue_stopped) &&
-           !atomic_load(&ctx.failed) &&
-           !atomic_load(&ctx.stop_requested) && wait_cycles<max_cycles) {
-      (void)CFRunLoopRunInMode(kCFRunLoopDefaultMode,0.01,false);
-      ++wait_cycles;
-      if ((wait_cycles%10U)==0U && !fm_route_unchanged(&route)) {
-        atomic_store(&ctx.stop_requested,1);
-        err=1;
-        break;
-      }
-      /* The listener signals normal completion; the producer must also
-       * request draining after its final frame has been queued. */
+    uint64_t started_ns=0U;
+    if (fm_read_monotonic_ns(&started_ns)!=0) {
+      atomic_store(&ctx.failed,1);
+      err=1;
+    } else {
+      const uint64_t max_elapsed_ns=
+        ((uint64_t)request->duration_ms+3000ULL)*1000000ULL;
+      /* Short runs can enqueue every frame BEFORE AudioQueueStart. */
       request_graceful_queue_drain(&ctx);
+      unsigned wait_cycles=0;
+      const unsigned max_cycles=request->duration_ms/10U+300U;
+      while (!atomic_load(&ctx.queue_stopped) &&
+             !atomic_load(&ctx.failed) &&
+             !atomic_load(&ctx.stop_requested) && wait_cycles<max_cycles) {
+        uint64_t now_ns=0U;
+        if (fm_read_monotonic_ns(&now_ns)!=0 || now_ns<started_ns ||
+            now_ns-started_ns>max_elapsed_ns) {
+          atomic_store(&ctx.failed,1);
+          err=1;
+          break;
+        }
+        (void)CFRunLoopRunInMode(kCFRunLoopDefaultMode,0.01,false);
+        ++wait_cycles;
+        if ((wait_cycles%10U)==0U && !fm_route_unchanged(&route)) {
+          atomic_store(&ctx.stop_requested,1);
+          err=1;
+          break;
+        }
+        request_graceful_queue_drain(&ctx);
+      }
+      uint64_t finished_ns=0U;
+      if (fm_read_monotonic_ns(&finished_ns)!=0 ||
+          finished_ns<started_ns ||
+          finished_ns-started_ns>max_elapsed_ns) {
+        atomic_store(&ctx.failed,1);
+        err=1;
+      }
+      if (atomic_load(&ctx.failed) || atomic_load(&ctx.stop_requested) ||
+          wait_cycles>=max_cycles || !atomic_load(&ctx.queue_stopped)) err=1;
     }
-    if (atomic_load(&ctx.failed) || atomic_load(&ctx.stop_requested) ||
-        wait_cycles>=max_cycles || !atomic_load(&ctx.queue_stopped)) err=1;
   }
   /* GEN-R9: teardown has one control-thread owner. The output callback
    * only enqueues buffers and writes atomic state. Listener removal precedes
