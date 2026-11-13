@@ -56,10 +56,20 @@ class R9SafetyContracts(unittest.TestCase):
 
     def test_dispose_is_synchronous(self):
         # R12 preserves synchronous disposal and adds explicit fault evidence.
-        self.assertRegex(SRC, r"if \(AudioQueueDispose\(ctx->queue,true\)!=noErr\) \{\s*"
-                              r"fm_latch_first_fault\(ctx,FM_FAULT_DISPOSAL\);\s*"
-                              r"err=1;\s*\} else \{\s*"
-                              r"atomic_store\(&ctx->dispose_confirmed,1\);")
+        # R15: audit both C branches, not a formatting-sensitive regex.
+        # Failed disposal retains the queue and callback userdata; only the
+        # successful branch confirms disposal and drops the queue ref.
+        marker = "if (AudioQueueDispose(ctx->queue,true)!=noErr) {"
+        self.assertEqual(SRC.count(marker), 1)
+        tail = SRC.split(marker, 1)[1]
+        failure, separator, remainder = tail.partition("} else {")
+        self.assertTrue(separator, "DISPOSE_SUCCESS_BRANCH_MISSING")
+        self.assertIn("fm_latch_first_fault(ctx,FM_FAULT_DISPOSAL);", failure)
+        self.assertIn("err=1;", failure)
+        self.assertNotIn("ctx->queue=NULL;", failure)
+        success = remainder.split("}", 1)[0]
+        self.assertIn("atomic_store(&ctx->dispose_confirmed,1);", success)
+        self.assertIn("ctx->queue=NULL;", success)
         self.assertIn("if (!atomic_load(&ctx->dispose_confirmed)) err=1;", SRC)
         self.assertNotIn("AudioQueueDispose(ctx->queue,false)", SRC)
 
