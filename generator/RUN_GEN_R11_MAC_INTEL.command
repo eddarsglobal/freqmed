@@ -20,7 +20,13 @@ clang -arch x86_64 -std=c11 -O2 -Wall -Wextra -Werror -c \
   -I"$ROOT/src" "$ROOT/src/em_device_contract.c" \
   -o "$WORK/em_contract.isolated.o"
 test -s "$WORK/em_contract.isolated.o"
-echo 'R11_ACOUSTIC_LIFECYCLE_OBJECT=COMPILED_UNLINKED; FOUR_BACKEND_OBJECTS=COMPILED_NOT_LINKED'
+# Documentary EM evidence screen is source-only, never linked/loaded or used
+# to unlock an instrument. Compile only for native C review.
+clang -arch x86_64 -std=c11 -O2 -Wall -Wextra -Werror -c \
+  -I"$ROOT/src" "$ROOT/src/em_qualification_gate.c" \
+  -o "$WORK/em_qualification.isolated.o"
+test -s "$WORK/em_qualification.isolated.o"
+echo 'R11_ACOUSTIC_LIFECYCLE_OBJECT=COMPILED_UNLINKED; FIVE_BACKEND_OBJECTS=COMPILED_NOT_LINKED'
 # Real software admission tests only; USB descriptor codes are USB-IF facts.
 clang -arch x86_64 -std=c11 -O2 -Wall -Wextra -Werror \
   -I"$ROOT/src" -o "$WORK/em-contract-software-tests" \
