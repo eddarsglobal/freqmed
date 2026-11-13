@@ -122,7 +122,8 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - 2026-11-13 : GEN-R11 FIX1 Mac Intel validé logiciellement : **215/215 tests Python + 33/33 assertions C PASS**, cinq objets natifs non liés, aucune émission. Certification du Bureau toujours PENDING.
 - 2026-11-13 : GEN-R12 Mac Intel première exécution : 70/70 fichiers intègres, 5 objets isolés compilés, 33/33 assertions C, contrôle de symboles PASS; 235 tests Python exécutés, **3 FAIL** hérités R9/R10/R11, donc R12 non validé.
 - 2026-11-13 : GEN-R12 FIX1 validé logiciellement sur Mac Intel : **235/235 tests Python + 33/33 assertions natives C PASS**, cinq objets isolés, aucune émission, Bureau PENDING.
-- 2026-11-13 : GEN-R13 préparation source-only : contexte callback sur tas, refus de session concurrente et quarantaine permanente après une libération CoreAudio incertaine ; validation native Mac Intel en attente, aucune émission ni nouvelle autorisation. P0.01 demeure IN_PROGRESS.
+- 2026-11-13 : GEN-R13 validé logiciellement sur Mac Intel : **255/255 Python PASS + 33/33 assertions C PASS**, 74 fichiers intègres, 5 objets compilés non liés et aucune émission ; certification Bureau PENDING.
+- 2026-11-13 : GEN-R14 candidat source-only : pointeur CoreAudio explicite, suppression du macro-alias, tests historiques mis à jour et 20 nouveaux tests ; validation Mac Intel **en attente**, aucune autorisation d'émission ou de production. P0.01 demeure IN_PROGRESS.
 
 - 2026-11-09 : P0.00-R4 gouvernance initiale certifiée ; **l'ancien P0.01 est un audit documentaire, pas une certification du nouveau générateur**.
 - 2026-11-10/12 : séries documentaires R2–R28 ; UI V4/V5 ; moteurs candidats R29–R32 en dehors de la branche officielle.
