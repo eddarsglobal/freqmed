@@ -109,8 +109,9 @@ class R17EvidenceIntegrity(unittest.TestCase):
         self.reject(lambda e: e.__setitem__("verdict", "REMEDIATE"))
 
     def test_r16_detects_removed_early_heap_release(self):
-        self.static_reject("free(owner_ctx);",
-                           "(void)owner_ctx;")
+        self.static_reject(
+            "if (!ctx->total_frames) {\n    free(owner_ctx);",
+            "if (!ctx->total_frames) {\n    (void)owner_ctx;")
 
     def test_r16_detects_unsound_failed_disposal_pointer_clear(self):
         self.static_reject(
