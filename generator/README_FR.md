@@ -1,27 +1,34 @@
-# FREQMED GEN-R5 — Périphérique acoustique explicitement fixé
+# FREQMED GEN-R6 — Fondations logicielles du générateur électromagnétique
 
-Cette étape développe le véritable code du **générateur acoustique**, sans produire de signal et sans modification du design approuvé Windows 11 × macOS.
+**Mission principale : produire, à terme, des fréquences physiques acoustiques et électromagnétiques à l'aide de matériels réels adaptés.** Le Bureau de la RoadMap définit et certifie les exigences scientifiques et de sécurité. Le design Windows 11 × macOS est conservé.
 
-**AUCUNE ÉMISSION PHYSIQUE.** L'exécutable GEN-R5 n'émet absolument aucun son et ne pilote aucun émetteur EM.
+**AUCUNE ÉMISSION PHYSIQUE dans GEN-R6.** Ni le nouveau module EM ni le programme livré n'ouvrent de matériel, ne produisent de champs, ne génèrent d'ondes ou ne pilotent de radio. Il n'y a aucune simulation scientifique.
 
-## Changement technique significatif
+## Vrai développement GEN-R6
 
-L'ancienne version R4 surveillait uniquement la sortie audio *par défaut*. Si un autre périphérique devenait la sortie par défaut entre deux vérifications, le backend préparé pouvait être ambigu. R5 ajoute, dans le **source du backend non lié**, la fixation de la queue AudioQueue à un périphérique précis, par `kAudioQueueProperty_CurrentDevice` et son identifiant CoreAudio UID. L'UID est utilisé uniquement en mémoire ; il n'est ni imprimé ni sauvegardé.
+Le nouvel élément `src/em_device_contract.h/.c` définit un contrat de contrôle d'un générateur **physique identifié** : empreinte SHA-256 de son identité (forme seulement), transport série ou USBTMC, unité de sortie (tension efficace V RMS, courant efficace A RMS, ou puissance conduite dBm), limites minimales et maximales de fréquence et de commande, durée maximale autorisée par le profil, ainsi qu'un ensemble de refus stricts pour toute incohérence.
 
-Le code vérifie ensuite par lecture de retour : même UID, nombre de canaux, fréquence d'échantillonnage nominale, et route initiale inchangée. En cas d'échec, le backend prévu détruit la queue sans démarrer.
+Ces limites doivent provenir de la qualification **d'un équipement réel**, jamais d'une valeur dite « sûre » universelle. Aucune marque ou partenariat commercial n'est obligatoire. Le code ne considère **jamais** qu'un fichier de profil ou une empreinte saisis par l'utilisateur prouvent l'existence, la conformité ou la sécurité d'un dispositif.
 
-Ces vérifications assurent une *meilleure préparation logicielle*, pas un contrôle matériel de sûreté. Elles ne garantissent ni émission réelle, ni fréquence acoustique produite, ni SPL sûr.
+`src/em_instrument_driver_abi.h` spécifie les responsabilités d'un futur pilote **spécifique au matériel** : identification par lecture seule, vérification de l'état matériel OFF et coupure matérielle. Aucune commande d'activation, aucun protocole SCPI inventé, et aucun pilote réel ne sont intégrés ici. Le programme public maintient le refus de toute sortie EM.
 
-## Test sur Mac Intel
+**Important :** le contrat est un module de validation de commandes, et non un simulateur de générateur ni un générateur EM déjà opérationnel. Le raccordement physique attend l'identification d'un appareil, son protocole documenté, des contrôles indépendants et une décision du Bureau.
 
-`bash RUN_GEN_R5_MAC_INTEL.command selftest` — compile trois composants CoreAudio comme objets séparés, sans les lier à l'exécutable, effectue des tests logiciels et un audit `nm` strict des symboles.
+## État des deux générateurs
 
-`bash RUN_GEN_R5_MAC_INTEL.command probe` — consulte seulement les propriétés OS de la sortie audio par défaut.
+- **Acoustique :** les sources CoreAudio R5, la fixation explicite du périphérique et la surveillance de route sont conservées, sans modification. Trois objets compilés mais **jamais liés** dans le programme exécutable. R5 a obtenu 90/90 tests PASS sur le Mac Intel du propriétaire.
+- **Électromagnétique :** nouveau contrat logiciel C compilé et testé, mais aucune source EM, aucun transducteur, appareil ou interface de sortie qualifiés. Le programme bloque toujours l'émission.
 
-Aucune installation, aucune simulation scientifique, aucun accès microphone, aucune émission physique, aucune synchronisation automatique GitHub.
+## Mac Intel — contrôle sans sortie
 
-**L'état R4 réel déjà observé** : 70/70 tests sur Mac Intel, deux canaux, 44 100 Hz nominaux. Ce ne sont pas des fréquences acoustiques émises.
+`bash RUN_GEN_R6_MAC_INTEL.command selftest`
 
-Logiciel Apache-2.0, avec API CoreAudio propriétaire de plateforme. B04/B05/B07/B09/B10 doivent valider les profils matériels et la sécurité avant tout futur essai de sortie. Le générateur EM reste bloqué faute de matériel qualifié.
+`bash RUN_GEN_R6_MAC_INTEL.command probe` (optionnel, lecture seule de la sortie audio du Mac ; ne produit aucune fréquence).
 
-`NEVER_SIMULATION=ENFORCED` · `ACOUSTIC_OUTPUT=NOT_AUTHORIZED` · `EM_OUTPUT=BLOCKED` · `PRODUCTION=NOT_AUTHORIZED`.
+Le lanceur vérifie toutes les empreintes SHA-256, compile les trois objets acoustiques et le module EM, exécute les assertions C et la suite Python, vérifie les symboles du binaire. Sans émetteur ni microphone.
+
+Code projet sous Apache-2.0, sans dépendance externe au C et à la bibliothèque standard Python. Le framework CoreAudio est une dépendance propriétaire native du système macOS et n'est pas présenté comme du FOSS.
+
+**Bureau demandé :** B05 pour la nature et le protocole de l'appareil EM, B09 pour la sûreté du pilote et les tests, B10 pour les interverrouillages matériels et la conformité applicable ; B04/B07 pour la chaîne acoustique.
+
+**NEVER_SIMULATION=ENFORCED · ACOUSTIC_OUTPUT=NOT_AUTHORIZED · EM_OUTPUT=NOT_AUTHORIZED · BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED · PRODUCTION=NOT_AUTHORIZED.**
