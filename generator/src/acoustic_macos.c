@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R14.
+/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R15.
  * Caution: a PCM command does NOT establish emitted sound pressure, safety,
  * acoustic level or calibration. This backend cannot be enabled by changing
  * runtime flags. A separate certified source revision is required.
@@ -19,7 +19,7 @@
 #include <string.h>
 #include <time.h>
 
-/* GEN-R14 keeps this file as a SEPARATE OBJECT for review, never links it
+/* GEN-R15 keeps this file as a SEPARATE OBJECT for review, never links it
  * into the executable, never loads it and never executes it. Full safety,
  * output-device pinning, and independent hardware interlocks are pending. */
 /* Internal diagnostic causes; not measurements, device states or permissions.
@@ -36,7 +36,9 @@ typedef enum {
   FM_FAULT_DISPOSAL=8,
   FM_FAULT_OUTPUT_CALLBACK_INFLIGHT=9,
   FM_FAULT_PROPERTY_LISTENER_INFLIGHT=10,
-  FM_FAULT_OVERLAPPING_PCM_CALLBACK=11
+  FM_FAULT_OVERLAPPING_PCM_CALLBACK=11,
+  FM_FAULT_LISTENER_REGISTRATION=12,
+  FM_FAULT_LISTENER_REMOVAL=13
 } FMInternalAcousticFault;
 
 typedef struct {
@@ -218,6 +220,12 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
     return -1;
   if (atomic_flag_test_and_set_explicit(&fm_session_claim,memory_order_acquire))
     return -1;
+  /* Close a publication race: quarantine may become visible after the
+   * first read but before session claim. Never re-open admission. */
+  if (atomic_load_explicit(&fm_context_quarantined,memory_order_acquire)) {
+    atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
+    return -1;
+  }
   AcousticContext *owner_ctx=(AcousticContext*)calloc(1,sizeof(*owner_ctx));
   if (!owner_ctx) {
     atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
@@ -278,8 +286,16 @@ AcousticContext *ctx=owner_ctx;
     atomic_store(&ctx->stop_requested,1);
     const OSStatus bind_dispose_status=AudioQueueDispose(ctx->queue,true);
     if (bind_dispose_status==noErr) {
-      free(owner_ctx);
-      atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
+      /* Do not infer callback quiescence solely from an OS return. */
+      if (atomic_load_explicit(&ctx->active_output_callbacks,
+                               memory_order_acquire)==0U &&
+          atomic_load_explicit(&ctx->active_property_listeners,
+                               memory_order_acquire)==0U) {
+        free(owner_ctx);
+        atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
+      } else {
+        atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);
+      }
     } else {
       atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);
     }
@@ -287,11 +303,17 @@ AcousticContext *ctx=owner_ctx;
   }
   int err=0;
   int listener_installed=0;
+  int listener_registration_uncertain=0;
+  int listener_remove_failed=0;
   /* Subscribe to running -> stopped transition; queued frames are not
    * considered played merely because they have been enqueued. */
   if (AudioQueueAddPropertyListener(ctx->queue,kAudioQueueProperty_IsRunning,
-                                    queue_running_listener,ctx)!=noErr) err=1;
-  else listener_installed=1;
+                                    queue_running_listener,ctx)!=noErr) {
+    /* A failed OS registration is not evidence that no callback escaped. */
+    listener_registration_uncertain=1;
+    fm_latch_first_fault(ctx,FM_FAULT_LISTENER_REGISTRATION);
+    err=1;
+  } else listener_installed=1;
   for (int k=0;!err && k<3;k++) {
     AudioQueueBufferRef b=NULL;
     if (AudioQueueAllocateBuffer(ctx->queue,1024U,&b)!=noErr || !b) {err=1;break;}
@@ -362,16 +384,21 @@ AcousticContext *ctx=owner_ctx;
     }
     if (listener_installed) {
       if (AudioQueueRemovePropertyListener(ctx->queue,
-            kAudioQueueProperty_IsRunning,queue_running_listener,ctx)!=noErr)
+            kAudioQueueProperty_IsRunning,queue_running_listener,ctx)!=noErr) {
+        listener_remove_failed=1;
+        fm_latch_first_fault(ctx,FM_FAULT_LISTENER_REMOVAL);
         err=1;
+      }
     }
     if (AudioQueueDispose(ctx->queue,true)!=noErr) {
       fm_latch_first_fault(ctx,FM_FAULT_DISPOSAL);
       err=1;
+      /* Retain queue reference and heap userdata for forensic review;
+       * no automatic retry is allowed from this failed process. */
     } else {
       atomic_store(&ctx->dispose_confirmed,1);
+      ctx->queue=NULL;
     }
-    ctx->queue=NULL;
   }
   /* The *successful* synchronous disposal is an OS API contract. Counters
    * are additional diagnostics, NOT a substitute for that contract. A
@@ -399,6 +426,8 @@ AcousticContext *ctx=owner_ctx;
    * closed and no retry is permitted. */
   const int context_quiescent=
       atomic_load(&ctx->dispose_confirmed) &&
+      !listener_registration_uncertain &&
+      !listener_remove_failed &&
       atomic_load_explicit(&ctx->active_output_callbacks,
                            memory_order_acquire)==0U &&
       atomic_load_explicit(&ctx->active_property_listeners,
