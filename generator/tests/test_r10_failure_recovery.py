@@ -52,7 +52,12 @@ class R10FailureRecoveryContracts(unittest.TestCase):
         self.assertNotIn("request_graceful_queue_drain(", cb)
     def test_cleanup_removes_listener_then_disposes(self):
         self.assertLess(SRC.index("AudioQueueRemovePropertyListener("), SRC.rfind("AudioQueueDispose(ctx.queue,true)"))
-        self.assertIn("if (AudioQueueDispose(ctx.queue,true)!=noErr) err=1;", SRC)
+        # R12 preserves synchronous disposal and adds explicit fault evidence.
+        self.assertRegex(SRC, r"if \(AudioQueueDispose\(ctx\.queue,true\)!=noErr\) \{\s*"
+                              r"fm_latch_first_fault\(&ctx,FM_FAULT_DISPOSAL\);\s*"
+                              r"err=1;\s*\} else \{\s*"
+                              r"atomic_store\(&ctx\.dispose_confirmed,1\);")
+        self.assertIn("if (!atomic_load(&ctx.dispose_confirmed)) err=1;", SRC)
     def test_fault_immediate_stop_retained(self):
         self.assertIn("if (err && atomic_load(&ctx.queue_started))", SRC)
         self.assertIn("AudioQueueStop(ctx.queue,true)", SRC)
