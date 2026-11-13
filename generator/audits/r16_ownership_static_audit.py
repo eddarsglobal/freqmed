@@ -238,7 +238,6 @@ def audit(root):
           not contains(listeners, "AudioQueueStop"), callbacks[0][1])
 
     barrier = index("atomic_exchange(&ctx->shutdown_in_progress,1)")
-    stop = index("atomic_store(&ctx->stop_requested,1)")
     # There are other stop stores in early error branches: use the first stop
     # operation after the one-shot barrier.
     stop_after = [i for i in occurrence(implementation,
@@ -294,9 +293,9 @@ def audit(root):
     check("public_acoustic_entry_unconditionally_denied",
           words(public) == words(lex("(void)command; return -1;")),
           public[0][1] if public else 1)
-    check("em_source_contains_hard_denial",
-          "return -1;" in denied and
-          "fm_em_try_physical_emission" in denied, 1)
+    em_body = function(lex(denied), "fm_em_physical_output")
+    check("em_public_entry_unconditionally_denied",
+          words(em_body) == words(lex("(void)command; return -1;")), 1)
     # Read only the actual link command slice, not the isolated compile command.
     start = runner.find(' -o "$WORK/freqmed-gen"')
     finish = runner.find("-framework CoreAudio", start)
