@@ -1,34 +1,28 @@
-# FREQMED GEN-R6 — Fondations logicielles du générateur électromagnétique
+# FREQMED GEN-R7 — Découverte du matériel électromagnétique (sans émission)
 
-**Mission principale : produire, à terme, des fréquences physiques acoustiques et électromagnétiques à l'aide de matériels réels adaptés.** Le Bureau de la RoadMap définit et certifie les exigences scientifiques et de sécurité. Le design Windows 11 × macOS est conservé.
+**Mission principale : développer des générateurs physiques de fréquences acoustiques et électromagnétiques, sous certification du Bureau.** Pas de simulation, pas de lecteur CSV prioritaire. Direction graphique approuvée Windows 11 × macOS maintenue et dix langues prévues.
 
-**AUCUNE ÉMISSION PHYSIQUE dans GEN-R6.** Ni le nouveau module EM ni le programme livré n'ouvrent de matériel, ne produisent de champs, ne génèrent d'ondes ou ne pilotent de radio. Il n'y a aucune simulation scientifique.
+**AUCUNE ÉMISSION PHYSIQUE dans GEN-R7.** La source de sortie acoustique et le contrat de commande EM sont conservés. Il n'existe toujours aucun pilote EM d'émission autorisé. Le binaire exécutable ne contient pas de fonctions AudioQueue de démarrage ni de fonction d'écriture vers un appareil. Tous les modes d'émission restent refusés.
 
-## Vrai développement GEN-R6
+## Nouveau développement
 
-Le nouvel élément `src/em_device_contract.h/.c` définit un contrat de contrôle d'un générateur **physique identifié** : empreinte SHA-256 de son identité (forme seulement), transport série ou USBTMC, unité de sortie (tension efficace V RMS, courant efficace A RMS, ou puissance conduite dBm), limites minimales et maximales de fréquence et de commande, durée maximale autorisée par le profil, ainsi qu'un ensemble de refus stricts pour toute incohérence.
+- `src/em_hardware_discovery_macos.c` : **interroge réellement** le registre IOKit macOS, en lecture seule, pour recenser les périphériques `IOUSBHostDevice`, les interfaces `IOUSBHostInterface` et les services `IOSerialBSDClient` dotés de nœuds d'appel `/dev/cu.*`.
+- Il reconnaît uniquement les interfaces déclarant par des descripteurs USB la **classe FE / sous-classe 03, protocoles 00/01**, correspondant à USB Test and Measurement Class (USBTMC / USB488). Ce sont des descriptions de matériel, **pas** une preuve qu'un appareil est un générateur EM ni une qualification de sécurité.
+- La sortie fournit des nombres réels et, uniquement pour les interfaces USBTMC repérées, les identifiants fabricant/produit numériques et le protocole quand le registre les expose. Les ports série sont **comptés sans afficher les noms ni les identifiants uniques**. Aucun port n'est ouvert et aucun transfert USB, commande SCPI, émission RF ni son n'est exécuté.
+- Un recensement incomplet est signalé `UNAVAILABLE_OR_INCOMPLETE` avec nombres inconnus, et non maquillé en « zéro appareil ».
 
-Ces limites doivent provenir de la qualification **d'un équipement réel**, jamais d'une valeur dite « sûre » universelle. Aucune marque ou partenariat commercial n'est obligatoire. Le code ne considère **jamais** qu'un fichier de profil ou une empreinte saisis par l'utilisateur prouvent l'existence, la conformité ou la sécurité d'un dispositif.
+## Vérification Mac Intel
 
-`src/em_instrument_driver_abi.h` spécifie les responsabilités d'un futur pilote **spécifique au matériel** : identification par lecture seule, vérification de l'état matériel OFF et coupure matérielle. Aucune commande d'activation, aucun protocole SCPI inventé, et aucun pilote réel ne sont intégrés ici. Le programme public maintient le refus de toute sortie EM.
+- `bash RUN_GEN_R7_MAC_INTEL.command selftest` : contrôle SHA-256, compilation native stricte, tests des composants, 22 assertions C du contrat EM R6, 11 assertions sur les codes USBTMC, suite Python et audit `nm` ; ne produit aucune sortie.
+- `bash RUN_GEN_R7_MAC_INTEL.command em-discover` : **interroge le matériel réellement présent** par IOKit en lecture seule ; ne prétend pas qu'un port ou une interface correspond nécessairement à une machine de génération.
+- `bash RUN_GEN_R7_MAC_INTEL.command probe` : lecture seule de la sortie audio par défaut, déjà validée en R6 (2 canaux, 44 100 Hz nominaux sur le Mac du propriétaire).
 
-**Important :** le contrat est un module de validation de commandes, et non un simulateur de générateur ni un générateur EM déjà opérationnel. Le raccordement physique attend l'identification d'un appareil, son protocole documenté, des contrôles indépendants et une décision du Bureau.
+**GEN-R6 sur Mac Intel :** 111/111 tests Python PASS, 22/22 assertions C PASS, compilation stricte et audit natif PASS. Pas d'émission acoustique/EM. **GEN-R7 : qualification native sur Mac Intel encore à effectuer.**
 
-## État des deux générateurs
+## Bureau et suites
 
-- **Acoustique :** les sources CoreAudio R5, la fixation explicite du périphérique et la surveillance de route sont conservées, sans modification. Trois objets compilés mais **jamais liés** dans le programme exécutable. R5 a obtenu 90/90 tests PASS sur le Mac Intel du propriétaire.
-- **Électromagnétique :** nouveau contrat logiciel C compilé et testé, mais aucune source EM, aucun transducteur, appareil ou interface de sortie qualifiés. Le programme bloque toujours l'émission.
+B05/B06 : examiner les classes physiques réellement observées et distinguer ports série, USBTMC et générateur EM disponible ; n'inventer aucun instrument. B09 : vérifier IOKit et permissions lecture seule. B10 : ne jamais convertir ce recensement en autorisation d'émission. La prochaine étape de pilote EM dépend de la présence d'un appareil vérifiable et de son protocole documenté. Aucun fabricant ou abonnement payant obligatoire.
 
-## Mac Intel — contrôle sans sortie
+**`NEVER_SIMULATION=ENFORCED` · `ACOUSTIC_OUTPUT=BLOCKED` · `EM_OUTPUT=BLOCKED` · `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` · `PRODUCTION=NOT_AUTHORIZED`.**
 
-`bash RUN_GEN_R6_MAC_INTEL.command selftest`
-
-`bash RUN_GEN_R6_MAC_INTEL.command probe` (optionnel, lecture seule de la sortie audio du Mac ; ne produit aucune fréquence).
-
-Le lanceur vérifie toutes les empreintes SHA-256, compile les trois objets acoustiques et le module EM, exécute les assertions C et la suite Python, vérifie les symboles du binaire. Sans émetteur ni microphone.
-
-Code projet sous Apache-2.0, sans dépendance externe au C et à la bibliothèque standard Python. Le framework CoreAudio est une dépendance propriétaire native du système macOS et n'est pas présenté comme du FOSS.
-
-**Bureau demandé :** B05 pour la nature et le protocole de l'appareil EM, B09 pour la sûreté du pilote et les tests, B10 pour les interverrouillages matériels et la conformité applicable ; B04/B07 pour la chaîne acoustique.
-
-**NEVER_SIMULATION=ENFORCED · ACOUSTIC_OUTPUT=NOT_AUTHORIZED · EM_OUTPUT=NOT_AUTHORIZED · BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED · PRODUCTION=NOT_AUTHORIZED.**
+Licence projet Apache-2.0 ; CoreAudio et IOKit sont des API système Apple propriétaires de plateforme, sans coût logiciel additionnel.
