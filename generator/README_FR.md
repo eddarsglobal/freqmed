@@ -60,3 +60,13 @@ Commande Mac Intel source-only : `bash RUN_GEN_R11_MAC_INTEL.command selftest`.
 Résultats attendus : 215 tests Python (195 précédents + 20 nouveaux), 33 assertions C et cinq objets source isolés non liés. Les résultats restent **à confirmer sur le Mac du propriétaire**. Aucun appareil n'est installé ni émis.
 
 GEN-R11 est un **candidat de développement**, pas une certification du Bureau. P0.01 reste IN_PROGRESS ; PR #1 DRAFT, `main` inchangée. `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R12 — Audit de durée de vie des callbacks CoreAudio (candidat non émetteur)
+
+GEN-R11 FIX1 a été vérifié sur le Mac Intel du propriétaire, le 13 novembre 2026 : **215/215 tests Python PASS et 33/33 assertions C PASS** ; cinq objets de backend compilés mais non liés. La certification scientifique du Bureau demeure en attente.
+
+GEN-R12 ajoute des compteurs d'activité atomiques pour les callbacks et listeners, un verrou exclusif d'écriture PCM qui signale les chevauchements comme erreurs, ainsi qu'une confirmation de libération CoreAudio et un contrôle final des callbacks encore actifs. Aucun résultat des tests Mac GEN-R12 n'est encore attesté. Les compteurs ne prouvent pas l'absence de races ou d'accès après libération en cas d'erreur OS.
+
+Lancement source-only sur Mac Intel : `bash RUN_GEN_R12_MAC_INTEL.command selftest`. Cible : **235 tests Python** (215 historiques et 20 nouveaux), **33 assertions natives C**, cinq objets isolés non reliés, audit de symboles non émetteurs. Le générateur EM ne comporte aucun équipement qualifié ou commande matérielle autorisée.
+
+**AUCUNE ÉMISSION PHYSIQUE.** `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
