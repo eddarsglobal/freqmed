@@ -107,8 +107,16 @@ GEN-R15 renforce les chemins d'échec :
 - En cas d'échec de `AudioQueueDispose`, la référence `ctx->queue` est conservée avec le contexte en quarantaine ; aucun réarmement ou réessai automatique n'est proposé.
 - La libération complète exige la disposition confirmée, l'absence d'incertitude de listeners et zéro callback actif.
 
-Les **20 nouveaux tests GEN-R15** ciblent ces choix, plus le refus effectif des commandes `emit`, `arm`, `play` et `transmit`. Cible propriétaire Mac Intel : **295/295 tests Python et 33/33 assertions C**, validation encore **PENDING**. Voir `docs/GEN_R15_FAILURE_PATH_OWNERSHIP_AUDIT.md` et `docs/GEN_R15_BUREAU_REVIEW.md`.
+Les **20 nouveaux tests GEN-R15** ciblent ces choix, plus le refus effectif des commandes `emit`, `arm`, `play` et `transmit`. Premier témoin Mac Intel : **295 tests exécutés, 292 PASS et 3 FAIL hérités R9/R10/R11**, alors que compilation isolée, 33/33 assertions natives C, 82 fichiers intègres et audit de symboles PASS. **GEN-R15 initial NON VALIDÉ.** Voir `docs/GEN_R15_FAILURE_PATH_OWNERSHIP_AUDIT.md` et `docs/GEN_R15_BUREAU_REVIEW.md`.
 
 Le binaire exécutable reste hard-denied et ne relie jamais `acoustic_macos.c`. Ces travaux n'ont aucune valeur de preuve de sortie, de sécurité sous charge ou de coupure matérielle.
 
 `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R15 FIX1 — Assertions de disposition CoreAudio non fragiles (13 novembre 2026)
+
+Le premier journal Mac Intel R15 a montré trois échecs dans les seuls tests hérités R9, R10, R11 : leurs regex imposaient une juxtaposition de `err=1;` et `} else {`, mais un commentaire de rétention a été ajouté dans la branche d'erreur. Ce constat ne modifie pas les protections du backend.
+
+FIX1 modifie **uniquement les trois tests historiques**, le présent README, la RoadMap et le manifeste de fichiers. Les assertions inspectent désormais les branches de `AudioQueueDispose(ctx->queue,true)` : lors d'un échec, mémorisation de `FM_FAULT_DISPOSAL`, `err=1` et maintien de la référence de file ; uniquement lors du succès, `dispose_confirmed=1` et `ctx->queue=NULL`. Le test est sensible à une régression réelle mais indépendant des commentaires ou espaces. Nombre total inchangé : **295 tests**.
+
+**GEN-R15 FIX1 en attente de validation propriétaire** — ne pas annoncer `295/295 PASS` avant le vrai journal Mac Intel. Aucun backend physique, générateur EM, protocole matériel, autorisation, simulation ou production n'est modifié.
