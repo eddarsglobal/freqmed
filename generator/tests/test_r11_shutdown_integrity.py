@@ -20,7 +20,7 @@ class R11ShutdownIntegrity(unittest.TestCase):
 
     def test_first_fault_reason_is_atomic(self):
         self.assertIn("atomic_int first_fault_reason;", SRC)
-        self.assertIn("atomic_init(&ctx.first_fault_reason,FM_FAULT_NONE)", SRC)
+        self.assertIn("atomic_init(&ctx->first_fault_reason,FM_FAULT_NONE)", SRC)
 
     def test_first_fault_wins_cas(self):
         self.assertIn("atomic_compare_exchange_strong(&ctx->first_fault_reason,", SRC)
@@ -28,7 +28,7 @@ class R11ShutdownIntegrity(unittest.TestCase):
 
     def test_fault_latch_closes_success_path(self):
         self.assertIn("atomic_store(&ctx->failed,1);", SRC)
-        self.assertIn("if (atomic_load(&ctx.first_fault_reason)!=FM_FAULT_NONE) err=1;", SRC)
+        self.assertIn("if (atomic_load(&ctx->first_fault_reason)!=FM_FAULT_NONE) err=1;", SRC)
 
     def test_bad_pcm_buffer_latches_fault(self):
         self.assertIn("fm_latch_first_fault(ctx,FM_FAULT_BAD_BUFFER)", SRC)
@@ -46,20 +46,20 @@ class R11ShutdownIntegrity(unittest.TestCase):
         self.assertIn("AudioQueueGetProperty(queue,kAudioQueueProperty_IsRunning", SRC)
 
     def test_monotonic_clock_failure_latches_fault(self):
-        self.assertGreaterEqual(SRC.count("fm_latch_first_fault(&ctx,FM_FAULT_MONOTONIC_CLOCK)"),3)
+        self.assertGreaterEqual(SRC.count("fm_latch_first_fault(ctx,FM_FAULT_MONOTONIC_CLOCK)"),3)
         self.assertIn("clock_gettime(CLOCK_MONOTONIC,&stamp)", SRC)
 
     def test_route_drift_latches_fault(self):
-        self.assertIn("fm_latch_first_fault(&ctx,FM_FAULT_ROUTE_CHANGED)", SRC)
-        self.assertIn("atomic_store(&ctx.stop_requested,1)", SRC)
+        self.assertIn("fm_latch_first_fault(ctx,FM_FAULT_ROUTE_CHANGED)", SRC)
+        self.assertIn("atomic_store(&ctx->stop_requested,1)", SRC)
 
     def test_shutdown_uses_one_shot_atomic_barrier(self):
         self.assertIn("atomic_int shutdown_in_progress;", SRC)
-        self.assertIn("atomic_exchange(&ctx.shutdown_in_progress,1)!=0", SRC)
+        self.assertIn("atomic_exchange(&ctx->shutdown_in_progress,1)!=0", SRC)
 
     def test_shutdown_barrier_precedes_stop_gate(self):
-        i=SRC.index("if (atomic_exchange(&ctx.shutdown_in_progress,1)!=0)")
-        self.assertLess(i,SRC.index("atomic_store(&ctx.stop_requested,1);",i))
+        i=SRC.index("if (atomic_exchange(&ctx->shutdown_in_progress,1)!=0)")
+        self.assertLess(i,SRC.index("atomic_store(&ctx->stop_requested,1);",i))
 
     def test_callback_observes_shutdown_barrier(self):
         cb=SRC.split("static void output_callback(",1)[1].split("static __attribute__",1)[0]
@@ -77,13 +77,13 @@ class R11ShutdownIntegrity(unittest.TestCase):
         self.assertIn("atomic_load(&ctx->first_fault_reason)==FM_FAULT_NONE",listener)
 
     def test_cleanup_still_uses_synchronous_disposal(self):
-        self.assertLess(SRC.index("AudioQueueRemovePropertyListener("),SRC.rfind("AudioQueueDispose(ctx.queue,true)"))
+        self.assertLess(SRC.index("AudioQueueRemovePropertyListener("),SRC.rfind("AudioQueueDispose(ctx->queue,true)"))
         # R12 preserves synchronous disposal and adds explicit fault evidence.
-        self.assertRegex(SRC, r"if \(AudioQueueDispose\(ctx\.queue,true\)!=noErr\) \{\s*"
-                              r"fm_latch_first_fault\(&ctx,FM_FAULT_DISPOSAL\);\s*"
+        self.assertRegex(SRC, r"if \(AudioQueueDispose\(ctx->queue,true\)!=noErr\) \{\s*"
+                              r"fm_latch_first_fault\(ctx,FM_FAULT_DISPOSAL\);\s*"
                               r"err=1;\s*\} else \{\s*"
-                              r"atomic_store\(&ctx\.dispose_confirmed,1\);")
-        self.assertIn("if (!atomic_load(&ctx.dispose_confirmed)) err=1;", SRC)
+                              r"atomic_store\(&ctx->dispose_confirmed,1\);")
+        self.assertIn("if (!atomic_load(&ctx->dispose_confirmed)) err=1;", SRC)
 
     def test_r10_buffer_and_watchdog_safety_retained(self):
         self.assertIn("!ctx || !buf || !buf->mAudioData",SRC)
