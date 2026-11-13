@@ -32,14 +32,14 @@ class DeviceBindingContract(unittest.TestCase):
         for bad in ('printf(', 'fprintf(', 'NSLog(', 'syslog(', 'kAudioDevicePropertyDeviceName'):
             self.assertNotIn(bad, BIND)
     def test_binds_before_buffer_enqueuing(self):
-        bind_idx = EMIT.index('fm_acoustic_bind_queue_to_route((void *)ctx.queue,&route)')
+        bind_idx = EMIT.index('fm_acoustic_bind_queue_to_route((void *)ctx->queue,&route)')
         enqueue_idx = EMIT.index('AudioQueueAllocateBuffer(', bind_idx)
         start_idx = EMIT.index('AudioQueueStart(', bind_idx)
         self.assertLess(bind_idx, enqueue_idx)
         self.assertLess(bind_idx, start_idx)
     def test_binding_failure_disposes_without_start(self):
         after = EMIT.split('if (fm_acoustic_bind_queue_to_route', 1)[1]
-        self.assertIn('AudioQueueDispose(ctx.queue,true);', after)
+        self.assertIn('AudioQueueDispose(ctx->queue,true);', after)
         self.assertLess(after.index('return -1;'), after.index('AudioQueueAllocateBuffer('))
     def test_checks_nominal_rate_tolerance_and_channels(self):
         self.assertIn('kAudioQueueDeviceProperty_SampleRate', BIND)
