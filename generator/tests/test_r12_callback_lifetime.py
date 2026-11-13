@@ -26,8 +26,8 @@ class R12CallbackLifetimeAudit(unittest.TestCase):
         self.assertIn("atomic_uint active_property_listeners;", SRC)
 
     def test_counters_initialized_to_zero(self):
-        self.assertIn("atomic_init(&ctx.active_output_callbacks,0U);", SRC)
-        self.assertIn("atomic_init(&ctx.active_property_listeners,0U);", SRC)
+        self.assertIn("atomic_init(&ctx->active_output_callbacks,0U);", SRC)
+        self.assertIn("atomic_init(&ctx->active_property_listeners,0U);", SRC)
 
     def test_output_callback_counts_entry(self):
         self.assertIn("atomic_fetch_add_explicit(&ctx->active_output_callbacks,1U,", OUTPUT_CALLBACK)
@@ -49,7 +49,7 @@ class R12CallbackLifetimeAudit(unittest.TestCase):
         self.assertIn("atomic_flag_test_and_set_explicit(&ctx->pcm_writer_gate,", OUTPUT_CALLBACK)
         self.assertIn("atomic_flag_clear_explicit(&ctx->pcm_writer_gate,", OUTPUT_CALLBACK)
         self.assertIn("fm_latch_first_fault(ctx,FM_FAULT_OVERLAPPING_PCM_CALLBACK)", OUTPUT_CALLBACK)
-        self.assertIn("atomic_flag_clear(&ctx.pcm_writer_gate);", SRC)
+        self.assertIn("atomic_flag_clear(&ctx->pcm_writer_gate);", SRC)
 
     def test_property_listener_counts_entry_exit(self):
         self.assertIn("atomic_fetch_add_explicit(&ctx->active_property_listeners,1U,", PROPERTY_LISTENER)
@@ -69,38 +69,38 @@ class R12CallbackLifetimeAudit(unittest.TestCase):
 
     def test_dispose_confirmation_is_atomic(self):
         self.assertIn("atomic_int dispose_confirmed;", SRC)
-        self.assertIn("atomic_init(&ctx.dispose_confirmed,0);", SRC)
-        self.assertIn("atomic_store(&ctx.dispose_confirmed,1);", SRC)
+        self.assertIn("atomic_init(&ctx->dispose_confirmed,0);", SRC)
+        self.assertIn("atomic_store(&ctx->dispose_confirmed,1);", SRC)
 
     def test_dispose_error_is_a_first_fault(self):
-        self.assertIn("fm_latch_first_fault(&ctx,FM_FAULT_DISPOSAL);", SRC)
-        self.assertIn("if (AudioQueueDispose(ctx.queue,true)!=noErr)", SRC)
+        self.assertIn("fm_latch_first_fault(ctx,FM_FAULT_DISPOSAL);", SRC)
+        self.assertIn("if (AudioQueueDispose(ctx->queue,true)!=noErr)", SRC)
 
     def test_accounting_checked_after_sync_dispose(self):
-        dispose = SRC.rfind("if (AudioQueueDispose(ctx.queue,true)!=noErr)")
-        outputs = SRC.index("atomic_load_explicit(&ctx.active_output_callbacks,", dispose)
-        listener = SRC.index("atomic_load_explicit(&ctx.active_property_listeners,", dispose)
+        dispose = SRC.rfind("if (AudioQueueDispose(ctx->queue,true)!=noErr)")
+        outputs = SRC.index("atomic_load_explicit(&ctx->active_output_callbacks,", dispose)
+        listener = SRC.index("atomic_load_explicit(&ctx->active_property_listeners,", dispose)
         self.assertLess(dispose, outputs)
         self.assertLess(outputs, listener)
 
     def test_inflight_output_is_never_success(self):
-        self.assertIn("fm_latch_first_fault(&ctx,FM_FAULT_OUTPUT_CALLBACK_INFLIGHT)", SRC)
+        self.assertIn("fm_latch_first_fault(ctx,FM_FAULT_OUTPUT_CALLBACK_INFLIGHT)", SRC)
         self.assertIn("memory_order_acquire)!=0U", SRC)
 
     def test_inflight_listener_is_never_success(self):
-        self.assertIn("fm_latch_first_fault(&ctx,FM_FAULT_PROPERTY_LISTENER_INFLIGHT)", SRC)
-        self.assertIn("if (!atomic_load(&ctx.dispose_confirmed)) err=1;", SRC)
+        self.assertIn("fm_latch_first_fault(ctx,FM_FAULT_PROPERTY_LISTENER_INFLIGHT)", SRC)
+        self.assertIn("if (!atomic_load(&ctx->dispose_confirmed)) err=1;", SRC)
 
     def test_shutdown_precedes_listener_removal_dispose(self):
-        barrier = SRC.index("if (atomic_exchange(&ctx.shutdown_in_progress,1)!=0)")
-        stop = SRC.index("atomic_store(&ctx.stop_requested,1);", barrier)
+        barrier = SRC.index("if (atomic_exchange(&ctx->shutdown_in_progress,1)!=0)")
+        stop = SRC.index("atomic_store(&ctx->stop_requested,1);", barrier)
         remove = SRC.index("AudioQueueRemovePropertyListener(", stop)
-        dispose = SRC.rfind("AudioQueueDispose(ctx.queue,true)")
+        dispose = SRC.rfind("AudioQueueDispose(ctx->queue,true)")
         self.assertTrue(barrier < stop < remove < dispose)
 
     def test_r10_watchdog_and_r11_fault_latch_remain(self):
         self.assertIn("clock_gettime(CLOCK_MONOTONIC,&stamp)", SRC)
-        self.assertIn("fm_latch_first_fault(&ctx,FM_FAULT_MONOTONIC_CLOCK)", SRC)
+        self.assertIn("fm_latch_first_fault(ctx,FM_FAULT_MONOTONIC_CLOCK)", SRC)
         self.assertIn("atomic_compare_exchange_strong(&ctx->first_fault_reason,", SRC)
 
     def test_em_document_screen_never_qualifies_hardware(self):
