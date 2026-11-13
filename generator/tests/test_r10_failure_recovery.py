@@ -20,7 +20,7 @@ class R10FailureRecoveryContracts(unittest.TestCase):
         self.assertIn("UINT64_MAX-(uint64_t)stamp.tv_nsec", SRC)
     def test_monotonic_clock_failure_is_fatal(self):
         self.assertIn("if (fm_read_monotonic_ns(&started_ns)!=0)", SRC)
-        self.assertIn("atomic_store(&ctx.failed,1);", SRC)
+        self.assertIn("atomic_store(&ctx->failed,1);", SRC)
     def test_deadline_bound_is_from_requested_duration(self):
         self.assertIn("((uint64_t)request->duration_ms+3000ULL)*1000000ULL", SRC)
     def test_deadline_enforced_during_wait(self):
@@ -51,16 +51,16 @@ class R10FailureRecoveryContracts(unittest.TestCase):
         self.assertNotIn("AudioQueueStop(", cb)
         self.assertNotIn("request_graceful_queue_drain(", cb)
     def test_cleanup_removes_listener_then_disposes(self):
-        self.assertLess(SRC.index("AudioQueueRemovePropertyListener("), SRC.rfind("AudioQueueDispose(ctx.queue,true)"))
+        self.assertLess(SRC.index("AudioQueueRemovePropertyListener("), SRC.rfind("AudioQueueDispose(ctx->queue,true)"))
         # R12 preserves synchronous disposal and adds explicit fault evidence.
-        self.assertRegex(SRC, r"if \(AudioQueueDispose\(ctx\.queue,true\)!=noErr\) \{\s*"
-                              r"fm_latch_first_fault\(&ctx,FM_FAULT_DISPOSAL\);\s*"
+        self.assertRegex(SRC, r"if \(AudioQueueDispose\(ctx->queue,true\)!=noErr\) \{\s*"
+                              r"fm_latch_first_fault\(ctx,FM_FAULT_DISPOSAL\);\s*"
                               r"err=1;\s*\} else \{\s*"
-                              r"atomic_store\(&ctx\.dispose_confirmed,1\);")
-        self.assertIn("if (!atomic_load(&ctx.dispose_confirmed)) err=1;", SRC)
+                              r"atomic_store\(&ctx->dispose_confirmed,1\);")
+        self.assertIn("if (!atomic_load(&ctx->dispose_confirmed)) err=1;", SRC)
     def test_fault_immediate_stop_retained(self):
-        self.assertIn("if (err && atomic_load(&ctx.queue_started))", SRC)
-        self.assertIn("AudioQueueStop(ctx.queue,true)", SRC)
+        self.assertIn("if (err && atomic_load(&ctx->queue_started))", SRC)
+        self.assertIn("AudioQueueStop(ctx->queue,true)", SRC)
     def test_executable_hard_denial_unmodified(self):
         entry=SRC.split("int fm_acoustic_physical_output(",1)[1]
         self.assertIn("return -1;", entry)
