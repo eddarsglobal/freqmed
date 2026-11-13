@@ -263,14 +263,9 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   fmt.mBytesPerFrame=2;
   fmt.mBytesPerPacket=2;
   if (AudioQueueNewOutput(&fmt,output_callback,&ctx,NULL,NULL,0,&ctx.queue)!=noErr) {
-    /* A non-null queue on OS error means the callback's ownership might
-     * already have escaped: retain the heap storage and seal admission. */
-    if (ctx.queue) {
-      atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);
-    } else {
-      free(owner_ctx);
-      atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
-    }
+    /* Even on a null queue ref, an API error is not an audited callback
+     * lifetime guarantee. Retain one heap context; seal the session. */
+    atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);
     return -1;
   }
   /* Pin by CoreAudio device UID and read it back, before any sample is
