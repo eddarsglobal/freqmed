@@ -34,7 +34,8 @@ class AudioQueueLifecycleCode(unittest.TestCase):
         self.assertNotIn('while (!atomic_load(&ctx.last_frame_enqueued)', SRC)
 
     def test_no_normal_immediate_stop(self):
-        self.assertIn('if (err) (void)AudioQueueStop(ctx.queue,true)', SRC)
+        self.assertIn('if (err && atomic_load(&ctx.queue_started))', SRC)
+        self.assertIn('if (AudioQueueStop(ctx.queue,true)!=noErr) err=1;', SRC)
         self.assertNotIn('  (void)AudioQueueStop(ctx.queue,true);\n    (void)AudioQueueDispose', SRC)
 
     def test_normal_drain_latched_once(self):
@@ -64,7 +65,8 @@ class AudioQueueLifecycleCode(unittest.TestCase):
     def test_drift_failure_can_force_immediate_stop(self):
         self.assertIn('!fm_route_unchanged(&route)', SRC)
         self.assertIn('atomic_store(&ctx.stop_requested,1)', SRC)
-        self.assertIn('if (err) (void)AudioQueueStop(ctx.queue,true)', SRC)
+        self.assertIn('if (err && atomic_load(&ctx.queue_started))', SRC)
+        self.assertIn('if (AudioQueueStop(ctx.queue,true)!=noErr) err=1;', SRC)
 
     def test_watchdog_remains_bounded(self):
         self.assertIn('const unsigned max_cycles=request->duration_ms/10U+300U', SRC)
