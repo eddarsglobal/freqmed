@@ -17,7 +17,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-/* GEN-R8 compiles this file to a SEPARATE OBJECT for review, never links it
+/* GEN-R9 keeps this file as a SEPARATE OBJECT for review, never links it
  * into the executable, never loads it and never executes it. Full safety,
  * output-device pinning, and independent hardware interlocks are pending. */
 typedef struct {
@@ -95,7 +95,7 @@ static void output_callback(void *ptr, AudioQueueRef queue, AudioQueueBufferRef 
   (void)queue;
   if (!atomic_load(&ctx->stop_requested) && !atomic_load(&ctx->failed)) {
     if (!atomic_load(&ctx->last_frame_enqueued)) fill_audio(ctx,buf);
-    request_graceful_queue_drain(ctx);
+    /* Callback never requests stop: the control loop owns the drain. */
   }
 }
 static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request) {
@@ -146,10 +146,12 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
     return -1;
   }
   int err=0;
+  int listener_installed=0;
   /* Subscribe to running -> stopped transition; queued frames are not
    * considered played merely because they have been enqueued. */
   if (AudioQueueAddPropertyListener(ctx.queue,kAudioQueueProperty_IsRunning,
                                     queue_running_listener,&ctx)!=noErr) err=1;
+  else listener_installed=1;
   for (int k=0;!err && k<3;k++) {
     AudioQueueBufferRef b=NULL;
     if (AudioQueueAllocateBuffer(ctx.queue,1024U,&b)!=noErr || !b) {err=1;break;}
@@ -183,12 +185,21 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
     if (atomic_load(&ctx.failed) || atomic_load(&ctx.stop_requested) ||
         wait_cycles>=max_cycles || !atomic_load(&ctx.queue_stopped)) err=1;
   }
-  if (err) atomic_store(&ctx.stop_requested,1);
+  /* GEN-R9: teardown has one control-thread owner. The output callback
+   * only enqueues buffers and writes atomic state. Listener removal precedes
+   * synchronous disposal. Neither is an independent hardware cutoff. */
+  atomic_store(&ctx.stop_requested,1);
   if (ctx.queue) {
-    /* A FAULT stops immediately; normal completion is observed via the
-     * IsRunning listener after AudioQueueStop(...,false) has drained. */
-    if (err) (void)AudioQueueStop(ctx.queue,true);
-    (void)AudioQueueDispose(ctx.queue,true);
+    if (err && atomic_load(&ctx.queue_started)) {
+      if (AudioQueueStop(ctx.queue,true)!=noErr) err=1;
+    }
+    if (listener_installed) {
+      if (AudioQueueRemovePropertyListener(ctx.queue,
+            kAudioQueueProperty_IsRunning,queue_running_listener,&ctx)!=noErr)
+        err=1;
+    }
+    if (AudioQueueDispose(ctx.queue,true)!=noErr) err=1;
+    ctx.queue=NULL;
   }
   return err?-1:0;
 }
