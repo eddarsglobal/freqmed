@@ -119,4 +119,16 @@ Le premier journal Mac Intel R15 a montré trois échecs dans les seuls tests h�
 
 FIX1 modifie **uniquement les trois tests historiques**, le présent README, la RoadMap et le manifeste de fichiers. Les assertions inspectent désormais les branches de `AudioQueueDispose(ctx->queue,true)` : lors d'un échec, mémorisation de `FM_FAULT_DISPOSAL`, `err=1` et maintien de la référence de file ; uniquement lors du succès, `dispose_confirmed=1` et `ctx->queue=NULL`. Le test est sensible à une régression réelle mais indépendant des commentaires ou espaces. Nombre total inchangé : **295 tests**.
 
-**GEN-R15 FIX1 en attente de validation propriétaire** — ne pas annoncer `295/295 PASS` avant le vrai journal Mac Intel. Aucun backend physique, générateur EM, protocole matériel, autorisation, simulation ou production n'est modifié.
+**GEN-R15 FIX1 validé le 13 novembre 2026 sur Mac Intel : 295/295 tests Python PASS, 33/33 assertions natives C PASS, 82/82 fichiers intègres, backend isolé non lié et aucune émission.** La certification du Bureau reste PENDING. Aucun backend physique, générateur EM, protocole matériel, autorisation, simulation ou production n'est modifié.
+
+## GEN-R16 — CoreAudio Ownership Evidence & Static Concurrency Audit (candidat)
+
+GEN-R15 FIX1 a été validé logiciellement sur Mac Intel : **295/295 tests Python, 33/33 assertions C PASS**. GEN-R16 ajoute un auditeur autonome FOSS avec Python standard uniquement : `audits/r16_ownership_static_audit.py`. Il lit **uniquement les vraies sources C**, tokenise les branches en ignorant les commentaires, classe les quatre sites de libération de `owner_ctx`, vérifie le contrôle de la quarantaine et les transitions d'arrêt, puis écrit un **rapport JSON auditable** hors de la source officielle, dans le dossier temporaire du runner.
+
+Les **20 nouveaux tests GEN-R16** valident les résultats et les limites du rapport. Le runner `RUN_GEN_R16_MAC_INTEL.command` exécute l'audit statique avant compilation des objets natifs isolés et échoue sans poursuivre si le verdict est défavorable. **Cible : 315 tests Python + 33 assertions natives C ; GEN-R16 Mac Intel encore PENDING.**
+
+Ce n'est **pas** une preuve formelle de concurrence C11, de sûreté du callback CoreAudio actif, de coupure matérielle ou de performance médicale. Le rapport annonce explicitement les incertitudes. Le backend acoustique et les pilotes EM restent non liés à l'exécutable et aucune simulation ni émission n'est autorisée.
+
+Documentation : `docs/GEN_R16_STATIC_OWNERSHIP_EVIDENCE.md` et `docs/GEN_R16_BUREAU_REVIEW.md`.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
