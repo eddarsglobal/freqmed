@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R5.
+/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R8.
  * Caution: a PCM command does NOT establish emitted sound pressure, safety,
  * acoustic level or calibration. This backend cannot be enabled by changing
  * runtime flags. A separate certified source revision is required.
@@ -17,7 +17,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-/* GEN-R3 compiles this file to a SEPARATE OBJECT for review, never links it
+/* GEN-R8 compiles this file to a SEPARATE OBJECT for review, never links it
  * into the executable, never loads it and never executes it. Full safety,
  * output-device pinning, and independent hardware interlocks are pending. */
 typedef struct {
@@ -27,6 +27,9 @@ typedef struct {
   atomic_int last_frame_enqueued;
   atomic_int failed;
   atomic_int stop_requested;
+  atomic_int queue_started;
+  atomic_int queue_stopped;
+  atomic_int graceful_drain_requested;
 } AcousticContext;
 
 static void fill_audio(AcousticContext *ctx, AudioQueueBufferRef buf) {
@@ -57,12 +60,43 @@ static void fill_audio(AcousticContext *ctx, AudioQueueBufferRef buf) {
   if (ctx->frames_written >= ctx->total_frames)
     atomic_store(&ctx->last_frame_enqueued,1);
 }
+/* Apple AudioQueueStop(false) drains queued buffers asynchronously.
+ * The previous R7 code stopped immediately on the *enqueue* of the last
+ * frame, potentially cutting short actual playback. This callback-based
+ * stop path is a SOURCE-ONLY candidate: no R8 runnable links this code.
+ */
+static void request_graceful_queue_drain(AcousticContext *ctx) {
+  if (!atomic_load(&ctx->queue_started) ||
+      !atomic_load(&ctx->last_frame_enqueued) ||
+      atomic_load(&ctx->stop_requested) || atomic_load(&ctx->failed)) return;
+  int pending=0;
+  if (atomic_compare_exchange_strong(&ctx->graceful_drain_requested,&pending,1)) {
+    if (AudioQueueStop(ctx->queue,false)!=noErr)
+      atomic_store(&ctx->failed,1);
+  }
+}
+
+static void queue_running_listener(void *data, AudioQueueRef queue,
+                                   AudioQueuePropertyID property) {
+  AcousticContext *ctx=(AcousticContext*)data;
+  if (property!=kAudioQueueProperty_IsRunning) return;
+  UInt32 running=1U, n=(UInt32)sizeof(running);
+  if (AudioQueueGetProperty(queue,kAudioQueueProperty_IsRunning,
+                            &running,&n)!=noErr || n!=sizeof(running)) {
+    atomic_store(&ctx->failed,1);
+    return;
+  }
+  if (running==0U && atomic_load(&ctx->graceful_drain_requested))
+    atomic_store(&ctx->queue_stopped,1);
+}
+
 static void output_callback(void *ptr, AudioQueueRef queue, AudioQueueBufferRef buf) {
   AcousticContext *ctx=(AcousticContext*)ptr;
   (void)queue;
-  if (!atomic_load(&ctx->stop_requested) &&
-      !atomic_load(&ctx->failed) && !atomic_load(&ctx->last_frame_enqueued))
-    fill_audio(ctx,buf);
+  if (!atomic_load(&ctx->stop_requested) && !atomic_load(&ctx->failed)) {
+    if (!atomic_load(&ctx->last_frame_enqueued)) fill_audio(ctx,buf);
+    request_graceful_queue_drain(ctx);
+  }
 }
 static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request) {
   if (!request || request->channel!=FM_ACOUSTIC) return -1;
@@ -85,6 +119,9 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   atomic_init(&ctx.last_frame_enqueued,0);
   atomic_init(&ctx.failed,0);
   atomic_init(&ctx.stop_requested,0);
+  atomic_init(&ctx.queue_started,0);
+  atomic_init(&ctx.queue_stopped,0);
+  atomic_init(&ctx.graceful_drain_requested,0);
   ctx.phase_step=6.28318530717958647693*request->frequency_hz/sr;
   ctx.normalized_level=request->normalized_level;
   ctx.total_frames=(uint64_t)((sr*(double)request->duration_ms)/1000.0);
@@ -109,7 +146,11 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
     return -1;
   }
   int err=0;
-  for (int k=0;k<3;k++) {
+  /* Subscribe to running -> stopped transition; queued frames are not
+   * considered played merely because they have been enqueued. */
+  if (AudioQueueAddPropertyListener(ctx.queue,kAudioQueueProperty_IsRunning,
+                                    queue_running_listener,&ctx)!=noErr) err=1;
+  for (int k=0;!err && k<3;k++) {
     AudioQueueBufferRef b=NULL;
     if (AudioQueueAllocateBuffer(ctx.queue,1024U,&b)!=noErr || !b) {err=1;break;}
     fill_audio(&ctx,b);
@@ -119,28 +160,34 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   if (!err && !fm_route_unchanged(&route)) err=1;
   if (!err && AudioQueueStart(ctx.queue,NULL)!=noErr) err=1;
   if (!err) {
-    /* A bounded watchdog; AudioQueueStop(..., false) drains the queue. */
+    atomic_store(&ctx.queue_started,1);
+    /* Short runs can enqueue every frame BEFORE AudioQueueStart.
+     * Draining is requested only after the queue successfully starts. */
+    request_graceful_queue_drain(&ctx);
     unsigned wait_cycles=0;
     const unsigned max_cycles=request->duration_ms/10U+300U;
-    while (!atomic_load(&ctx.last_frame_enqueued) &&
+    while (!atomic_load(&ctx.queue_stopped) &&
            !atomic_load(&ctx.failed) &&
            !atomic_load(&ctx.stop_requested) && wait_cycles<max_cycles) {
       (void)CFRunLoopRunInMode(kCFRunLoopDefaultMode,0.01,false);
       ++wait_cycles;
-      /* Read-only drift check at intervals; never a safety certification. */
       if ((wait_cycles%10U)==0U && !fm_route_unchanged(&route)) {
         atomic_store(&ctx.stop_requested,1);
         err=1;
         break;
       }
+      /* The listener signals normal completion; the producer must also
+       * request draining after its final frame has been queued. */
+      request_graceful_queue_drain(&ctx);
     }
     if (atomic_load(&ctx.failed) || atomic_load(&ctx.stop_requested) ||
-        wait_cycles>=max_cycles) err=1;
+        wait_cycles>=max_cycles || !atomic_load(&ctx.queue_stopped)) err=1;
   }
-  /* Immediate stop: never drain queued output after route drift/fault. */
-  atomic_store(&ctx.stop_requested,1);
+  if (err) atomic_store(&ctx.stop_requested,1);
   if (ctx.queue) {
-    (void)AudioQueueStop(ctx.queue,true);
+    /* A FAULT stops immediately; normal completion is observed via the
+     * IsRunning listener after AudioQueueStop(...,false) has drained. */
+    if (err) (void)AudioQueueStop(ctx.queue,true);
     (void)AudioQueueDispose(ctx.queue,true);
   }
   return err?-1:0;

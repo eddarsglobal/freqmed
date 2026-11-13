@@ -1,28 +1,37 @@
-# FREQMED GEN-R7 — Découverte du matériel électromagnétique (sans émission)
+# FREQMED GEN-R8 — Correction du cycle de lecture du générateur acoustique
 
-**Mission principale : développer des générateurs physiques de fréquences acoustiques et électromagnétiques, sous certification du Bureau.** Pas de simulation, pas de lecteur CSV prioritaire. Direction graphique approuvée Windows 11 × macOS maintenue et dix langues prévues.
+**Mission : développer un système qui GÉNÈRE réellement des fréquences acoustiques et électromagnétiques à travers le matériel approprié.** Le Bureau est responsable des recherches scientifiques, de la sûreté et de la certification ; le développement code porte sur les générateurs. Design Windows 11 × macOS conservé.
 
-**AUCUNE ÉMISSION PHYSIQUE dans GEN-R7.** La source de sortie acoustique et le contrat de commande EM sont conservés. Il n'existe toujours aucun pilote EM d'émission autorisé. Le binaire exécutable ne contient pas de fonctions AudioQueue de démarrage ni de fonction d'écriture vers un appareil. Tous les modes d'émission restent refusés.
+## GEN-R7 : preuve Mac Intel reçue le 13 novembre 2026
 
-## Nouveau développement
+**134/134 tests PASS**, compilation Mac Intel, 33/33 assertions C, audit `nm` PASS, sans aucune émission. L’inventaire IOKit sur ce Mac a observé 10 entrées USB, 23 interfaces USB, 4 nœuds série d’appel, **0 interface USBTMC**. Il ne prouve la présence d'aucun générateur EM qualifié.
 
-- `src/em_hardware_discovery_macos.c` : **interroge réellement** le registre IOKit macOS, en lecture seule, pour recenser les périphériques `IOUSBHostDevice`, les interfaces `IOUSBHostInterface` et les services `IOSerialBSDClient` dotés de nœuds d'appel `/dev/cu.*`.
-- Il reconnaît uniquement les interfaces déclarant par des descripteurs USB la **classe FE / sous-classe 03, protocoles 00/01**, correspondant à USB Test and Measurement Class (USBTMC / USB488). Ce sont des descriptions de matériel, **pas** une preuve qu'un appareil est un générateur EM ni une qualification de sécurité.
-- La sortie fournit des nombres réels et, uniquement pour les interfaces USBTMC repérées, les identifiants fabricant/produit numériques et le protocole quand le registre les expose. Les ports série sont **comptés sans afficher les noms ni les identifiants uniques**. Aucun port n'est ouvert et aucun transfert USB, commande SCPI, émission RF ni son n'est exécuté.
-- Un recensement incomplet est signalé `UNAVAILABLE_OR_INCOMPLETE` avec nombres inconnus, et non maquillé en « zéro appareil ».
+## GEN-R8 : défaut logiciel du moteur de sortie acoustique corrigé dans le source
 
-## Vérification Mac Intel
+Le module CoreAudio source `src/acoustic_macos.c` pouvait auparavant arrêter immédiatement la file audio après **mise en file du dernier échantillon**, sans confirmer que la file avait terminé sa lecture. Le code est désormais préparé pour :
 
-- `bash RUN_GEN_R7_MAC_INTEL.command selftest` : contrôle SHA-256, compilation native stricte, tests des composants, 22 assertions C du contrat EM R6, 11 assertions sur les codes USBTMC, suite Python et audit `nm` ; ne produit aucune sortie.
-- `bash RUN_GEN_R7_MAC_INTEL.command em-discover` : **interroge le matériel réellement présent** par IOKit en lecture seule ; ne prétend pas qu'un port ou une interface correspond nécessairement à une machine de génération.
-- `bash RUN_GEN_R7_MAC_INTEL.command probe` : lecture seule de la sortie audio par défaut, déjà validée en R6 (2 canaux, 44 100 Hz nominaux sur le Mac du propriétaire).
+1. Mémoriser atomiquement l’état de démarrage, de fin d’envoi, de demande de vidange et d’arrêt réel de la file.
+2. Employer `AudioQueueStop(queue, false)` **uniquement après la mise en file du dernier échantillon et le démarrage effectif**, pour laisser jouer les tampons déjà en file.
+3. Observer la fin de lecture réelle du point de vue de CoreAudio via `AudioQueueAddPropertyListener(..., kAudioQueueProperty_IsRunning, ...)` et `AudioQueueGetProperty`.
+4. **Réserver `AudioQueueStop(queue, true)` à une erreur, une dérive du routage ou l’expiration du watchdog** ; cette coupure logicielle ne remplace pas un coupe-circuit matériel.
+5. Protéger les états partagés de callback avec des variables atomiques, et conserver l’UID du périphérique strictement en mémoire.
 
-**GEN-R6 sur Mac Intel :** 111/111 tests Python PASS, 22/22 assertions C PASS, compilation stricte et audit natif PASS. Pas d'émission acoustique/EM. **GEN-R7 : qualification native sur Mac Intel encore à effectuer.**
+**AUCUNE ÉMISSION PHYSIQUE dans GEN-R8.** Le backend capable de générer des échantillons PCM pour une sortie CoreAudio est toujours un fichier source **compilé mais NON LIÉ** au programme. La commande `selftest` compile des objets isolés, analyse les symboles de l’exécutable, exécute les tests logiciels, et ne lance ni son, ni RF, ni champ EM. Aucune simulation de phénomènes physiques ni faux relevé ne sont utilisés.
 
-## Bureau et suites
+### Mac Intel
 
-B05/B06 : examiner les classes physiques réellement observées et distinguer ports série, USBTMC et générateur EM disponible ; n'inventer aucun instrument. B09 : vérifier IOKit et permissions lecture seule. B10 : ne jamais convertir ce recensement en autorisation d'émission. La prochaine étape de pilote EM dépend de la présence d'un appareil vérifiable et de son protocole documenté. Aucun fabricant ou abonnement payant obligatoire.
+`bash RUN_GEN_R8_MAC_INTEL.command selftest`
 
-**`NEVER_SIMULATION=ENFORCED` · `ACOUSTIC_OUTPUT=BLOCKED` · `EM_OUTPUT=BLOCKED` · `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` · `PRODUCTION=NOT_AUTHORIZED`.**
+`bash RUN_GEN_R8_MAC_INTEL.command probe` — lecture seule de la sortie audio macOS.
 
-Licence projet Apache-2.0 ; CoreAudio et IOKit sont des API système Apple propriétaires de plateforme, sans coût logiciel additionnel.
+`bash RUN_GEN_R8_MAC_INTEL.command em-discover` — lecture seule de l’inventaire IOKit réel.
+
+Le lanceur écrit uniquement ses objets temporaires sous `~/Downloads`, **n’installe aucune application, notamment pas dans `~/Applications`**. Aucune modification d’autres dépôts, aucune dépendance payante. Code Apache-2.0 ; CoreAudio/IOKit sont des dépendances du système Apple et non du code FOSS.
+
+### Limites du stade R8
+
+La fin indiquée par AudioQueue n’est pas une preuve indépendante de pression acoustique, de fréquence produite physiquement ou d’absence de danger. Le callback, les périphériques et les latences restent à qualifier par le Bureau avec de vrais bancs non biologiques. Le générateur EM ne peut avancer vers son pilote sans un **équipement réel identifié**, un protocole exact, un contrôle d'arrêt indépendant et les autorisations applicables.
+
+**GEN-R8 = CANDIDATE_CODE_READY_FOR_MAC_REVIEW**, pas une certification du Bureau.
+
+`NEVER_SIMULATION=ENFORCED` · `REAL_OUTPUT=NOT_AUTHORIZED` · `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` · `PRODUCTION=NOT_AUTHORIZED`.
