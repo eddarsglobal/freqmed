@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R11.
+/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R12.
  * Caution: a PCM command does NOT establish emitted sound pressure, safety,
  * acoustic level or calibration. This backend cannot be enabled by changing
  * runtime flags. A separate certified source revision is required.
@@ -18,7 +18,7 @@
 #include <string.h>
 #include <time.h>
 
-/* GEN-R11 keeps this file as a SEPARATE OBJECT for review, never links it
+/* GEN-R12 keeps this file as a SEPARATE OBJECT for review, never links it
  * into the executable, never loads it and never executes it. Full safety,
  * output-device pinning, and independent hardware interlocks are pending. */
 /* Internal diagnostic causes; not measurements, device states or permissions.
@@ -31,7 +31,10 @@ typedef enum {
   FM_FAULT_PROPERTY_LISTENER=4,
   FM_FAULT_MONOTONIC_CLOCK=5,
   FM_FAULT_ROUTE_CHANGED=6,
-  FM_FAULT_SHUTDOWN=7
+  FM_FAULT_SHUTDOWN=7,
+  FM_FAULT_DISPOSAL=8,
+  FM_FAULT_OUTPUT_CALLBACK_INFLIGHT=9,
+  FM_FAULT_PROPERTY_LISTENER_INFLIGHT=10
 } FMInternalAcousticFault;
 
 typedef struct {
@@ -46,6 +49,10 @@ typedef struct {
   atomic_int graceful_drain_requested;
   atomic_int shutdown_in_progress;
   atomic_int first_fault_reason;
+  /* Diagnostic counters, not sufficient by themselves to prove lifetime safety. */
+  atomic_uint active_output_callbacks;
+  atomic_uint active_property_listeners;
+  atomic_int dispose_confirmed;
 } AcousticContext;
 
 /* Single-assignment fault evidence, bounded to this invocation only.
@@ -132,13 +139,16 @@ static void request_graceful_queue_drain(AcousticContext *ctx) {
 static void queue_running_listener(void *data, AudioQueueRef queue,
                                    AudioQueuePropertyID property) {
   AcousticContext *ctx=(AcousticContext*)data;
-  if (property!=kAudioQueueProperty_IsRunning) return;
+  if (!ctx) return;
+  (void)atomic_fetch_add_explicit(&ctx->active_property_listeners,1U,
+                                  memory_order_acq_rel);
+  if (property!=kAudioQueueProperty_IsRunning) goto listener_exit;
   UInt32 running=1U, n=(UInt32)sizeof(running);
   if (AudioQueueGetProperty(queue,kAudioQueueProperty_IsRunning,
                             &running,&n)!=noErr || n!=sizeof(running)) {
     fm_latch_first_fault(ctx,FM_FAULT_PROPERTY_LISTENER);
     atomic_store(&ctx->failed,1);
-    return;
+    goto listener_exit;
   }
   if (running==0U && atomic_load(&ctx->graceful_drain_requested) &&
       atomic_load(&ctx->queue_started) && !atomic_load(&ctx->failed) &&
@@ -146,16 +156,24 @@ static void queue_running_listener(void *data, AudioQueueRef queue,
       !atomic_load(&ctx->shutdown_in_progress) &&
       atomic_load(&ctx->first_fault_reason)==FM_FAULT_NONE)
     atomic_store(&ctx->queue_stopped,1);
+listener_exit:
+  (void)atomic_fetch_sub_explicit(&ctx->active_property_listeners,1U,
+                                  memory_order_acq_rel);
 }
 
 static void output_callback(void *ptr, AudioQueueRef queue, AudioQueueBufferRef buf) {
   AcousticContext *ctx=(AcousticContext*)ptr;
   (void)queue;
+  if (!ctx) return;
+  (void)atomic_fetch_add_explicit(&ctx->active_output_callbacks,1U,
+                                  memory_order_acq_rel);
   if (!atomic_load(&ctx->stop_requested) && !atomic_load(&ctx->failed) &&
       !atomic_load(&ctx->shutdown_in_progress)) {
     if (!atomic_load(&ctx->last_frame_enqueued)) fill_audio(ctx,buf);
     /* Callback never requests stop: the control loop owns the drain. */
   }
+  (void)atomic_fetch_sub_explicit(&ctx->active_output_callbacks,1U,
+                                  memory_order_acq_rel);
 }
 static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request) {
   if (!request || request->channel!=FM_ACOUSTIC) return -1;
@@ -183,6 +201,9 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   atomic_init(&ctx.graceful_drain_requested,0);
   atomic_init(&ctx.shutdown_in_progress,0);
   atomic_init(&ctx.first_fault_reason,FM_FAULT_NONE);
+  atomic_init(&ctx.active_output_callbacks,0U);
+  atomic_init(&ctx.active_property_listeners,0U);
+  atomic_init(&ctx.dispose_confirmed,0);
   ctx.phase_step=6.28318530717958647693*request->frequency_hz/sr;
   ctx.normalized_level=request->normalized_level;
   ctx.total_frames=(uint64_t)((sr*(double)request->duration_ms)/1000.0);
@@ -286,9 +307,29 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
             kAudioQueueProperty_IsRunning,queue_running_listener,&ctx)!=noErr)
         err=1;
     }
-    if (AudioQueueDispose(ctx.queue,true)!=noErr) err=1;
+    if (AudioQueueDispose(ctx.queue,true)!=noErr) {
+      fm_latch_first_fault(&ctx,FM_FAULT_DISPOSAL);
+      err=1;
+    } else {
+      atomic_store(&ctx.dispose_confirmed,1);
+    }
     ctx.queue=NULL;
   }
+  /* The *successful* synchronous disposal is an OS API contract. Counters
+   * are additional diagnostics, NOT a substitute for that contract. A
+   * nonzero count means the stack-allocated context cannot be certified
+   * as quiescent by this code. No physical output is permitted here. */
+  if (atomic_load_explicit(&ctx.active_output_callbacks,
+                           memory_order_acquire)!=0U) {
+    fm_latch_first_fault(&ctx,FM_FAULT_OUTPUT_CALLBACK_INFLIGHT);
+    err=1;
+  }
+  if (atomic_load_explicit(&ctx.active_property_listeners,
+                           memory_order_acquire)!=0U) {
+    fm_latch_first_fault(&ctx,FM_FAULT_PROPERTY_LISTENER_INFLIGHT);
+    err=1;
+  }
+  if (!atomic_load(&ctx.dispose_confirmed)) err=1;
   /* No successful return after a latched first fault or cleanup failure. */
   if (err) fm_latch_first_fault(&ctx,FM_FAULT_SHUTDOWN);
   if (atomic_load(&ctx.first_fault_reason)!=FM_FAULT_NONE) err=1;
