@@ -118,6 +118,9 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 
 ## G. Historique et non-régression
 
+- 2026-11-13 : preuve propriétaire GEN-R10 Mac Intel 195/195 tests Python + 33/33 assertions natives C PASS, backend source non lié et sortie bloquée ; **ne vaut pas certification du Bureau**.
+- 2026-11-13 : GEN-R11 préparation source-only : premier défaut conservé, barrière de fermeture, examen documentaire EM **sans qualification matérielle** ; tests Mac Intel attendus. P0.01 reste IN_PROGRESS, aucun gate d'émission modifié.
+
 - 2026-11-09 : P0.00-R4 gouvernance initiale certifiée ; **l'ancien P0.01 est un audit documentaire, pas une certification du nouveau générateur**.
 - 2026-11-10/12 : séries documentaires R2–R28 ; UI V4/V5 ; moteurs candidats R29–R32 en dehors de la branche officielle.
 - 2026-11-12 : correction impérative de mission par le propriétaire : **FREQMED = générateurs physiques acoustique ET EM**, recherche scientifique sous Bureau. La présente refonte ne crée aucune autorisation d'émission.
