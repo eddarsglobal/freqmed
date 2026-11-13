@@ -17,11 +17,11 @@ class R9SafetyContracts(unittest.TestCase):
 
     def test_controller_owns_drain(self):
         self.assertIn("static void request_graceful_queue_drain(", SRC)
-        self.assertGreaterEqual(SRC.count("request_graceful_queue_drain(&ctx)"), 2)
+        self.assertGreaterEqual(SRC.count("request_graceful_queue_drain(ctx)"), 2)
 
     def test_drain_only_after_start(self):
         self.assertIn("!atomic_load(&ctx->queue_started)", SRC)
-        self.assertLess(SRC.index("atomic_store(&ctx.queue_started,1)"), SRC.index("request_graceful_queue_drain(&ctx)"))
+        self.assertLess(SRC.index("atomic_store(&ctx->queue_started,1)"), SRC.index("request_graceful_queue_drain(ctx)"))
 
     def test_no_drain_on_failure_or_stop(self):
         self.assertIn("atomic_load(&ctx->stop_requested) || atomic_load(&ctx->failed)", SRC)
@@ -30,8 +30,8 @@ class R9SafetyContracts(unittest.TestCase):
         self.assertIn("atomic_compare_exchange_strong(&ctx->graceful_drain_requested,&pending,1)", SRC)
 
     def test_fault_stop_only_after_start(self):
-        self.assertIn("if (err && atomic_load(&ctx.queue_started))", SRC)
-        self.assertIn("if (AudioQueueStop(ctx.queue,true)!=noErr) err=1;", SRC)
+        self.assertIn("if (err && atomic_load(&ctx->queue_started))", SRC)
+        self.assertIn("if (AudioQueueStop(ctx->queue,true)!=noErr) err=1;", SRC)
 
     def test_callback_stop_gate(self):
         self.assertIn("!atomic_load(&ctx->stop_requested) && !atomic_load(&ctx->failed)", SRC)
@@ -41,30 +41,30 @@ class R9SafetyContracts(unittest.TestCase):
         self.assertIn("else listener_installed=1;", SRC)
 
     def test_listener_removed_before_final_dispose(self):
-        self.assertLess(SRC.index("AudioQueueRemovePropertyListener("), SRC.rfind("AudioQueueDispose(ctx.queue,true)"))
+        self.assertLess(SRC.index("AudioQueueRemovePropertyListener("), SRC.rfind("AudioQueueDispose(ctx->queue,true)"))
 
     def test_shutdown_gate_before_final_dispose(self):
         # GEN-R11 renamed the commentary. Assert executable C ordering,
         # not a version-specific source comment.
-        begin = SRC.index("if (atomic_exchange(&ctx.shutdown_in_progress,1)!=0)")
-        stop = SRC.index("atomic_store(&ctx.stop_requested,1);", begin)
+        begin = SRC.index("if (atomic_exchange(&ctx->shutdown_in_progress,1)!=0)")
+        stop = SRC.index("atomic_store(&ctx->stop_requested,1);", begin)
         listener = SRC.index("AudioQueueRemovePropertyListener(", stop)
-        dispose = SRC.rfind("AudioQueueDispose(ctx.queue,true)")
+        dispose = SRC.rfind("AudioQueueDispose(ctx->queue,true)")
         self.assertLess(begin, stop)
         self.assertLess(stop, listener)
         self.assertLess(listener, dispose)
 
     def test_dispose_is_synchronous(self):
         # R12 preserves synchronous disposal and adds explicit fault evidence.
-        self.assertRegex(SRC, r"if \(AudioQueueDispose\(ctx\.queue,true\)!=noErr\) \{\s*"
-                              r"fm_latch_first_fault\(&ctx,FM_FAULT_DISPOSAL\);\s*"
+        self.assertRegex(SRC, r"if \(AudioQueueDispose\(ctx->queue,true\)!=noErr\) \{\s*"
+                              r"fm_latch_first_fault\(ctx,FM_FAULT_DISPOSAL\);\s*"
                               r"err=1;\s*\} else \{\s*"
-                              r"atomic_store\(&ctx\.dispose_confirmed,1\);")
-        self.assertIn("if (!atomic_load(&ctx.dispose_confirmed)) err=1;", SRC)
-        self.assertNotIn("AudioQueueDispose(ctx.queue,false)", SRC)
+                              r"atomic_store\(&ctx->dispose_confirmed,1\);")
+        self.assertIn("if (!atomic_load(&ctx->dispose_confirmed)) err=1;", SRC)
+        self.assertNotIn("AudioQueueDispose(ctx->queue,false)", SRC)
 
     def test_remove_failure_propagates(self):
-        self.assertIn("kAudioQueueProperty_IsRunning,queue_running_listener,&ctx)!=noErr)", SRC)
+        self.assertIn("kAudioQueueProperty_IsRunning,queue_running_listener,ctx)!=noErr)", SRC)
         self.assertIn("return err?-1:0;", SRC)
 
     def test_listener_observes_running_property(self):
