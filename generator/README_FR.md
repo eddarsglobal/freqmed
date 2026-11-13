@@ -77,4 +77,12 @@ Le premier lancement réel Mac Intel de GEN-R12 (`c2c5dd39778ae40d1c44d93faddeda
 
 **FIX1** conserve le backend sans modification : les trois assertions historiques vérifient désormais le contrat renforcé — `AudioQueueDispose(...,true)`, mémorisation de `FM_FAULT_DISPOSAL` lors d'une erreur, `err=1`, confirmation `dispose_confirmed=1` uniquement lors d'un retour réussi, puis refus de succès sans confirmation. L'ordre de retrait du listener avant libération reste testé.
 
-La correction fait l'objet d'un nouveau commit épinglé et doit être exécutée sur le Mac Intel : **235/235 tests attendus, non encore confirmés**. Les compteurs de callbacks ne prouvent pas l'absence de races mémoire ni la sécurité en cas de libération CoreAudio échouée. **Sorties physiques toujours interdites**, `NEVER_SIMULATION=ENFORCED`, `PRODUCTION=NOT_AUTHORIZED`.
+La correction GEN-R12 FIX1 a été exécutée sur le Mac Intel : **235/235 tests Python PASS et 33/33 assertions natives C PASS**, cinq objets isolés, aucune émission. Cet état ne vaut pas certification du Bureau. Les compteurs de callbacks ne prouvent pas l'absence de races mémoire ni la sécurité en cas de libération CoreAudio échouée. **Sorties physiques toujours interdites**, `NEVER_SIMULATION=ENFORCED`, `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R13 — CoreAudio Context Lifetime & Failed-Disposal Containment (candidat)
+
+Le contexte de callback n'utilise plus la pile : le stockage alloué avec `calloc` reste valide après le retour de fonction si la durée de vie du contexte CoreAudio est incertaine. Un verrou atomique de processus interdit toute seconde session concurrente ; en cas d'échec de construction ou de disposition de la file, la mémoire est délibérément conservée en quarantaine et les nouvelles sessions refusées. Un contexte n'est libéré que si la disposition synchrone a réussi **et** les deux compteurs de callbacks/listeners sont nuls. L'alias source temporaire `#define ctx (*owner_ctx)` est documenté comme une dette de lisibilité à auditer ; aucune fonction d'émission n'est activée.
+
+Sur Mac Intel : `bash RUN_GEN_R13_MAC_INTEL.command selftest` (code source compilé uniquement en objets isolés, binaire utilisateur non émetteur). **Cible : 255 tests Python (235+20) et 33 assertions C**. GEN-R13 n'a pas encore été exécuté sur le Mac du propriétaire. Les garanties de comportement CoreAudio actif, de coupure matérielle et de certification du Bureau restent absentes.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
