@@ -35,3 +35,11 @@ La fin indiquée par AudioQueue n’est pas une preuve indépendante de pression
 **GEN-R8 = CANDIDATE_CODE_READY_FOR_MAC_REVIEW**, pas une certification du Bureau.
 
 `NEVER_SIMULATION=ENFORCED` · `REAL_OUTPUT=NOT_AUTHORIZED` · `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` · `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R9 — Propriété des callbacks et arrêt (candidat non émetteur)
+
+Le callback CoreAudio ne demande plus lui-même la vidange de la file. La boucle de commande détient cette responsabilité et le nettoyage supprime le listener avant la libération synchrone, en remontant les erreurs. Le backend reste compilé comme objet isolé sans liaison à l'exécutable.
+
+Commande Mac Intel prévue : `bash RUN_GEN_R9_MAC_INTEL.command selftest` (preuve du Mac encore à recueillir).
+
+Le Bureau n'a pas certifié R9. Émission acoustique/EM, simulation, exposition biologique et production : interdites.
