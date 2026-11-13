@@ -46,6 +46,10 @@ class R12CallbackLifetimeAudit(unittest.TestCase):
     def test_output_callback_never_owns_stop(self):
         self.assertNotIn("AudioQueueStop(", OUTPUT_CALLBACK)
         self.assertNotIn("request_graceful_queue_drain(", OUTPUT_CALLBACK)
+        self.assertIn("atomic_flag_test_and_set_explicit(&ctx->pcm_writer_gate,", OUTPUT_CALLBACK)
+        self.assertIn("atomic_flag_clear_explicit(&ctx->pcm_writer_gate,", OUTPUT_CALLBACK)
+        self.assertIn("fm_latch_first_fault(ctx,FM_FAULT_OVERLAPPING_PCM_CALLBACK)", OUTPUT_CALLBACK)
+        self.assertIn("atomic_flag_clear(&ctx.pcm_writer_gate);", SRC)
 
     def test_property_listener_counts_entry_exit(self):
         self.assertIn("atomic_fetch_add_explicit(&ctx->active_property_listeners,1U,", PROPERTY_LISTENER)
