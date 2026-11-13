@@ -91,6 +91,24 @@ Sur Mac Intel : `bash RUN_GEN_R13_MAC_INTEL.command selftest` (code source compi
 
 La révision GEN-R13 a été vérifiée sur Mac Intel : **255/255 tests Python**, **33/33 assertions C**, cinq objets compilés séparément et sortie interdite. GEN-R14 supprime le macro-alias temporaire `#define ctx (*owner_ctx)` / `#undef ctx` au profit du pointeur explicite `AcousticContext *ctx=owner_ctx` et de tous les accès `ctx->membre`. Le contexte continue d'être alloué sur tas, quarantainé et conservé lors d'une disposition CoreAudio incertaine. Les refus de session concurrente, barrières d'arrêt, compteurs de callbacks et permissions physiques restent inchangés.
 
-Neuf fichiers de tests historiques R3–R13 ont été actualisés pour vérifier les nouvelles expressions au lieu de l'ancien alias. Vingt nouveaux tests R14 vérifient les chemins de propriété et de libération. **Cible Mac Intel : 275 tests Python et 33 assertions C, toujours en attente de preuve**. Le runner `RUN_GEN_R14_MAC_INTEL.command` ne relie aucun backend acoustique ou EM à l'exécutable et n'autorise aucune émission, simulation ou exposition biologique.
+Neuf fichiers de tests historiques R3–R13 ont été actualisés pour vérifier les nouvelles expressions au lieu de l'ancien alias. Vingt nouveaux tests R14 vérifient les chemins de propriété et de libération. **Validation propriétaire Mac Intel du 13 novembre 2026 : 275/275 tests Python et 33/33 assertions C PASS**, sans émission ; certification du Bureau toujours en attente. Le runner `RUN_GEN_R14_MAC_INTEL.command` ne relie aucun backend acoustique ou EM à l'exécutable et n'autorise aucune émission, simulation ou exposition biologique.
 
 `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R15 — Audit exhaustif des chemins d'échec CoreAudio et propriété des ressources
+
+La révision GEN-R14 a passé sur Mac Intel 275/275 tests Python et 33/33 assertions natives C ; les objets des moteurs restent séparés du programme non émetteur.
+
+GEN-R15 renforce les chemins d'échec :
+- Seconde lecture atomique de `fm_context_quarantined` **après** la réservation de session, avec restitution de la réservation si elle est empoisonnée.
+- Quand le binding de route est refusé, un retour de disposition réussi ne suffit plus pour libérer la mémoire : les compteurs des deux types de callbacks doivent être nuls.
+- Un échec d'inscription de listener est traité comme **état incertain**, avec cause de défaut `FM_FAULT_LISTENER_REGISTRATION`.
+- Un échec de retrait de listener déclenche `FM_FAULT_LISTENER_REMOVAL` ; même une disposition synchrone annoncée comme réussie n'autorise plus à libérer ce contexte.
+- En cas d'échec de `AudioQueueDispose`, la référence `ctx->queue` est conservée avec le contexte en quarantaine ; aucun réarmement ou réessai automatique n'est proposé.
+- La libération complète exige la disposition confirmée, l'absence d'incertitude de listeners et zéro callback actif.
+
+Les **20 nouveaux tests GEN-R15** ciblent ces choix, plus le refus effectif des commandes `emit`, `arm`, `play` et `transmit`. Cible propriétaire Mac Intel : **295/295 tests Python et 33/33 assertions C**, validation encore **PENDING**. Voir `docs/GEN_R15_FAILURE_PATH_OWNERSHIP_AUDIT.md` et `docs/GEN_R15_BUREAU_REVIEW.md`.
+
+Le binaire exécutable reste hard-denied et ne relie jamais `acoustic_macos.c`. Ces travaux n'ont aucune valeur de preuve de sortie, de sécurité sous charge ou de coupure matérielle.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
