@@ -34,7 +34,8 @@ typedef enum {
   FM_FAULT_SHUTDOWN=7,
   FM_FAULT_DISPOSAL=8,
   FM_FAULT_OUTPUT_CALLBACK_INFLIGHT=9,
-  FM_FAULT_PROPERTY_LISTENER_INFLIGHT=10
+  FM_FAULT_PROPERTY_LISTENER_INFLIGHT=10,
+  FM_FAULT_OVERLAPPING_PCM_CALLBACK=11
 } FMInternalAcousticFault;
 
 typedef struct {
@@ -53,6 +54,8 @@ typedef struct {
   atomic_uint active_output_callbacks;
   atomic_uint active_property_listeners;
   atomic_int dispose_confirmed;
+  /* Fail closed if two output callbacks attempt to change PCM state at once. */
+  atomic_flag pcm_writer_gate;
 } AcousticContext;
 
 /* Single-assignment fault evidence, bounded to this invocation only.
@@ -169,7 +172,16 @@ static void output_callback(void *ptr, AudioQueueRef queue, AudioQueueBufferRef 
                                   memory_order_acq_rel);
   if (!atomic_load(&ctx->stop_requested) && !atomic_load(&ctx->failed) &&
       !atomic_load(&ctx->shutdown_in_progress)) {
-    if (!atomic_load(&ctx->last_frame_enqueued)) fill_audio(ctx,buf);
+    if (atomic_flag_test_and_set_explicit(&ctx->pcm_writer_gate,
+                                           memory_order_acquire)) {
+      fm_latch_first_fault(ctx,FM_FAULT_OVERLAPPING_PCM_CALLBACK);
+    } else {
+      if (!atomic_load(&ctx->last_frame_enqueued) &&
+          !atomic_load(&ctx->stop_requested) && !atomic_load(&ctx->failed) &&
+          !atomic_load(&ctx->shutdown_in_progress)) fill_audio(ctx,buf);
+      atomic_flag_clear_explicit(&ctx->pcm_writer_gate,
+                                 memory_order_release);
+    }
     /* Callback never requests stop: the control loop owns the drain. */
   }
   (void)atomic_fetch_sub_explicit(&ctx->active_output_callbacks,1U,
@@ -204,6 +216,7 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   atomic_init(&ctx.active_output_callbacks,0U);
   atomic_init(&ctx.active_property_listeners,0U);
   atomic_init(&ctx.dispose_confirmed,0);
+  atomic_flag_clear(&ctx.pcm_writer_gate);
   ctx.phase_step=6.28318530717958647693*request->frequency_hz/sr;
   ctx.normalized_level=request->normalized_level;
   ctx.total_frames=(uint64_t)((sr*(double)request->duration_ms)/1000.0);
