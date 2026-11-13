@@ -44,8 +44,15 @@ class R9SafetyContracts(unittest.TestCase):
         self.assertLess(SRC.index("AudioQueueRemovePropertyListener("), SRC.rfind("AudioQueueDispose(ctx.queue,true)"))
 
     def test_shutdown_gate_before_final_dispose(self):
-        i = SRC.index("/* GEN-R9: teardown")
-        self.assertLess(SRC.index("atomic_store(&ctx.stop_requested,1)", i), SRC.rfind("AudioQueueDispose(ctx.queue,true)"))
+        # GEN-R11 renamed the commentary. Assert executable C ordering,
+        # not a version-specific source comment.
+        begin = SRC.index("if (atomic_exchange(&ctx.shutdown_in_progress,1)!=0)")
+        stop = SRC.index("atomic_store(&ctx.stop_requested,1);", begin)
+        listener = SRC.index("AudioQueueRemovePropertyListener(", stop)
+        dispose = SRC.rfind("AudioQueueDispose(ctx.queue,true)")
+        self.assertLess(begin, stop)
+        self.assertLess(stop, listener)
+        self.assertLess(listener, dispose)
 
     def test_dispose_is_synchronous(self):
         self.assertIn("if (AudioQueueDispose(ctx.queue,true)!=noErr) err=1;", SRC)
