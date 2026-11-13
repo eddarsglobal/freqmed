@@ -33,7 +33,7 @@ class AcousticBackendR3Guards(unittest.TestCase):
         self.assertNotIn('const double sr=48000.0',AUD)
         self.assertNotIn('48000.0',AUD)
     def test_dynamic_10ms_digital_ramp(self):
-        self.assertIn('ctx.fade_frames=(uint64_t)(sr/100.0)',AUD)
+        self.assertIn('ctx->fade_frames=(uint64_t)(sr/100.0)',AUD)
         self.assertIn('ctx->fade_frames',AUD)
         self.assertNotIn('if (at<480U)',AUD)
     def test_numerical_boundaries_in_source(self):
