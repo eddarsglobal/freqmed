@@ -91,12 +91,23 @@ class R11ShutdownIntegrity(unittest.TestCase):
         self.assertNotIn("(*emit)",EM_ABI)
         self.assertNotIn("(*arm)",EM_ABI)
         self.assertIn("return -1;",(ROOT/"src/em_backend.c").read_text())
+        gate=(ROOT/"src/em_qualification_gate.c").read_text()
+        boundary=(ROOT/"src/em_qualification_gate.h").read_text()
+        self.assertIn("FM_EM_DOCUMENTS_PRESENT_UNVERIFIED",gate)
+        self.assertIn("int fm_em_hardware_qualified_in_r11(",gate)
+        self.assertIn("(void)evidence;\n  return 0;",gate)
+        self.assertIn("char manufacturer[129];",boundary)
+        self.assertIn("char protocol_document_sha256[65];",boundary)
+        self.assertNotIn("IOServiceOpen(",gate)
+        self.assertNotIn("AudioQueueStart(",gate)
 
     def test_runner_links_only_no_output_implementation(self):
         segment=RUN.split(' -o "$WORK/freqmed-gen"',1)[1].split("-framework CoreAudio",1)[0]
         self.assertIn("output_hard_denied.c",segment)
         self.assertNotIn("acoustic_macos.c",segment)
         self.assertIn("R11_NONEMITTING_EXECUTABLE_SYMBOL_AUDIT=PASS",RUN)
+        self.assertIn("em_qualification_gate.c",RUN)
+        self.assertIn("FIVE_BACKEND_OBJECTS=COMPILED_NOT_LINKED",RUN)
         for ver in ("R9","R10","R11"):
             self.assertIn("FREQMED_GEN_"+ver+"_BINARY",RUN)
 
