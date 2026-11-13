@@ -23,11 +23,12 @@ class R13ContextContainment(unittest.TestCase):
         self.assertIn("AcousticContext *owner_ctx=(AcousticContext*)calloc(1,sizeof(*owner_ctx));", ENTRY)
         self.assertNotIn("AcousticContext ctx;", ENTRY)
 
-    def test_heap_alias_bounded_to_function(self):
-        self.assertIn("#define ctx (*owner_ctx)", ENTRY)
-        self.assertIn("#undef ctx", ENTRY)
-        self.assertLess(ENTRY.index("#define ctx (*owner_ctx)"),
-                        ENTRY.index("#undef ctx"))
+    def test_explicit_pointer_replaces_macro_alias(self):
+        self.assertNotIn("#define ctx", ENTRY)
+        self.assertNotIn("#undef ctx", ENTRY)
+        self.assertIn("AcousticContext *ctx=owner_ctx;", ENTRY)
+        self.assertLess(ENTRY.index("AcousticContext *ctx=owner_ctx;"),
+                        ENTRY.index("memset(ctx,0,sizeof(*ctx));"))
 
     def test_process_quarantine_gate_is_atomic(self):
         self.assertIn("static atomic_int fm_context_quarantined = ATOMIC_VAR_INIT(0);", SRC)
@@ -45,63 +46,63 @@ class R13ContextContainment(unittest.TestCase):
 
     def test_allocation_failure_releases_unexposed_claim(self):
         p=ENTRY.index("if (!owner_ctx) {")
-        chunk=ENTRY[p:ENTRY.index("#define ctx",p)]
+        chunk=ENTRY[p:ENTRY.index("AcousticContext *ctx=owner_ctx;",p)]
         self.assertIn("atomic_flag_clear_explicit(&fm_session_claim,memory_order_release)", chunk)
         self.assertIn("return -1;", chunk)
 
     def test_invalid_frame_count_cleans_up_before_any_queue(self):
-        p=ENTRY.index("if (!ctx.total_frames) {")
-        chunk=ENTRY[p:ENTRY.index("ctx.fade_frames=",p)]
+        p=ENTRY.index("if (!ctx->total_frames) {")
+        chunk=ENTRY[p:ENTRY.index("ctx->fade_frames=",p)]
         self.assertIn("free(owner_ctx);", chunk)
         self.assertIn("atomic_flag_clear_explicit(&fm_session_claim,memory_order_release)", chunk)
 
     def test_invalid_fade_count_cleans_up_before_any_queue(self):
-        p=ENTRY.index("if (ctx.fade_frames==0U) {")
+        p=ENTRY.index("if (ctx->fade_frames==0U) {")
         chunk=ENTRY[p:ENTRY.index("AudioStreamBasicDescription fmt;",p)]
         self.assertIn("free(owner_ctx);", chunk)
         self.assertIn("atomic_flag_clear_explicit(&fm_session_claim,memory_order_release)", chunk)
 
     def test_queue_creation_failure_quarantines_even_null_ref(self):
-        p=ENTRY.index("if (AudioQueueNewOutput(&fmt,output_callback,&ctx,NULL,NULL,0,&ctx.queue)!=noErr) {")
+        p=ENTRY.index("if (AudioQueueNewOutput(&fmt,output_callback,ctx,NULL,NULL,0,&ctx->queue)!=noErr) {")
         chunk=ENTRY[p:ENTRY.index("/* Pin by CoreAudio device UID",p)]
         self.assertIn("atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);",chunk)
         self.assertNotIn("free(owner_ctx);", chunk)
 
     def test_bind_failure_checks_dispose_result(self):
-        p=ENTRY.index("if (fm_acoustic_bind_queue_to_route((void *)ctx.queue,&route)!=0) {")
+        p=ENTRY.index("if (fm_acoustic_bind_queue_to_route((void *)ctx->queue,&route)!=0) {")
         chunk=ENTRY[p:ENTRY.index("int err=0;",p)]
-        self.assertIn("const OSStatus bind_dispose_status=AudioQueueDispose(ctx.queue,true);",chunk)
+        self.assertIn("const OSStatus bind_dispose_status=AudioQueueDispose(ctx->queue,true);",chunk)
         self.assertIn("if (bind_dispose_status==noErr) {",chunk)
 
     def test_bind_disposal_failure_keeps_context(self):
-        p=ENTRY.index("if (fm_acoustic_bind_queue_to_route((void *)ctx.queue,&route)!=0) {")
+        p=ENTRY.index("if (fm_acoustic_bind_queue_to_route((void *)ctx->queue,&route)!=0) {")
         chunk=ENTRY[p:ENTRY.index("int err=0;",p)]
         self.assertIn("atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);",chunk)
         self.assertLess(chunk.index("if (bind_dispose_status==noErr)"),
                         chunk.index("atomic_store_explicit(&fm_context_quarantined"))
 
     def test_bind_disposal_success_releases_context(self):
-        p=ENTRY.index("if (fm_acoustic_bind_queue_to_route((void *)ctx.queue,&route)!=0) {")
+        p=ENTRY.index("if (fm_acoustic_bind_queue_to_route((void *)ctx->queue,&route)!=0) {")
         chunk=ENTRY[p:ENTRY.index("int err=0;",p)]
         self.assertIn("free(owner_ctx);",chunk)
         self.assertIn("atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);",chunk)
 
     def test_coreaudio_callback_pointer_is_heap_alias(self):
-        self.assertIn("AudioQueueNewOutput(&fmt,output_callback,&ctx,NULL,NULL,0,&ctx.queue)", ENTRY)
-        self.assertIn("#define ctx (*owner_ctx)", ENTRY)
+        self.assertIn("AudioQueueNewOutput(&fmt,output_callback,ctx,NULL,NULL,0,&ctx->queue)", ENTRY)
+        self.assertIn("AcousticContext *ctx=owner_ctx;", ENTRY)
 
     def test_final_dispose_failure_latches_fault(self):
-        self.assertIn("if (AudioQueueDispose(ctx.queue,true)!=noErr) {", ENTRY)
-        self.assertIn("fm_latch_first_fault(&ctx,FM_FAULT_DISPOSAL);", ENTRY)
+        self.assertIn("if (AudioQueueDispose(ctx->queue,true)!=noErr) {", ENTRY)
+        self.assertIn("fm_latch_first_fault(ctx,FM_FAULT_DISPOSAL);", ENTRY)
 
     def test_final_dispose_success_confirmation_retained(self):
-        self.assertIn("atomic_store(&ctx.dispose_confirmed,1);", ENTRY)
-        self.assertIn("if (!atomic_load(&ctx.dispose_confirmed)) err=1;", ENTRY)
+        self.assertIn("atomic_store(&ctx->dispose_confirmed,1);", ENTRY)
+        self.assertIn("if (!atomic_load(&ctx->dispose_confirmed)) err=1;", ENTRY)
 
     def test_quiescence_checks_two_callback_types(self):
         self.assertIn("const int context_quiescent=", ENTRY)
-        self.assertIn("atomic_load_explicit(&ctx.active_output_callbacks,", ENTRY)
-        self.assertIn("atomic_load_explicit(&ctx.active_property_listeners,", ENTRY)
+        self.assertIn("atomic_load_explicit(&ctx->active_output_callbacks,", ENTRY)
+        self.assertIn("atomic_load_explicit(&ctx->active_property_listeners,", ENTRY)
         self.assertIn("memory_order_acquire)==0U", ENTRY)
 
     def test_final_free_requires_quiescence(self):
