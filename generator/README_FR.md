@@ -125,10 +125,22 @@ FIX1 modifie **uniquement les trois tests historiques**, le présent README, la 
 
 GEN-R15 FIX1 a été validé logiciellement sur Mac Intel : **295/295 tests Python, 33/33 assertions C PASS**. GEN-R16 ajoute un auditeur autonome FOSS avec Python standard uniquement : `audits/r16_ownership_static_audit.py`. Il lit **uniquement les vraies sources C**, tokenise les branches en ignorant les commentaires, classe les quatre sites de libération de `owner_ctx`, vérifie le contrôle de la quarantaine et les transitions d'arrêt, puis écrit un **rapport JSON auditable** hors de la source officielle, dans le dossier temporaire du runner.
 
-Les **20 nouveaux tests GEN-R16** valident les résultats et les limites du rapport. Le runner `RUN_GEN_R16_MAC_INTEL.command` exécute l'audit statique avant compilation des objets natifs isolés et échoue sans poursuivre si le verdict est défavorable. **Cible : 315 tests Python + 33 assertions natives C ; GEN-R16 Mac Intel encore PENDING.**
+Les **20 nouveaux tests GEN-R16** valident les résultats et les limites du rapport. Le runner `RUN_GEN_R16_MAC_INTEL.command` exécute l'audit statique avant compilation des objets natifs isolés et échoue sans poursuivre si le verdict est défavorable. **Validation réelle propriétaire GEN-R16 Mac Intel (13 novembre 2026) : 315/315 tests Python PASS, 33/33 assertions natives C PASS et audit statique 25/25 PASS.** L'objet acoustique reste compilé mais non lié ; Bureau PENDING.
 
 Ce n'est **pas** une preuve formelle de concurrence C11, de sûreté du callback CoreAudio actif, de coupure matérielle ou de performance médicale. Le rapport annonce explicitement les incertitudes. Le backend acoustique et les pilotes EM restent non liés à l'exécutable et aucune simulation ni émission n'est autorisée.
 
 Documentation : `docs/GEN_R16_STATIC_OWNERSHIP_EVIDENCE.md` et `docs/GEN_R16_BUREAU_REVIEW.md`.
 
 `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R17 — Robustesse et vérification indépendante des preuves (candidat source-only)
+
+GEN-R16 a été validé sur le Mac Intel du propriétaire : **315/315 tests Python PASS**, **33/33 assertions C PASS**, **25/25 contrôles de propriété mémoire PASS**, avec les cinq objets natifs isolés non liés et aucune émission acoustique ou EM. GEN-R17 renforce la confiance dans les preuves, sans changer les moteurs de sortie.
+
+L'outil `audits/r17_evidence_verifier.py` est **indépendant de l'auditeur R16** : il recalcule les SHA-256 de tous les fichiers du générateur, refuse les chemins et champs JSON inattendus, contrôle les 25 identifiants obligatoires et les risques non résolus, puis revérifie les deux API publiques de sortie et la liste explicite des fichiers C liés à l'exécutable non émetteur. Il écrit un second JSON, avec SHA-256 des sources, auditeurs, runner et rapport R16. **Ce n'est pas une signature externe ni une certification de sûreté.**
+
+Les **20 nouveaux tests R17** vérifient également la détection des preuves falsifiées et des régressions source dans des copies isolées temporaires : aucune mutation de la source officielle, aucun code émetteur exécuté et aucune simulation scientifique. La compilation et les tests natifs demeurent inchangés dans leur domaine de sûreté.
+
+**Cible propriétaire : 335 tests Python + 33 assertions natives C**, examen des deux preuves JSON, validation R17 sur Mac Intel **PENDING**. Voir `docs/GEN_R17_EVIDENCE_INDEPENDENT_VERIFICATION.md` et `docs/GEN_R17_BUREAU_REVIEW.md`.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
