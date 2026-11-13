@@ -265,14 +265,18 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   if (AudioQueueNewOutput(&fmt,output_callback,&ctx,NULL,NULL,0,&ctx.queue)!=noErr) {
     /* Even on a null queue ref, an API error is not an audited callback
      * lifetime guarantee. Retain one heap context; seal the session. */
+    atomic_store(&ctx.shutdown_in_progress,1);
+    atomic_store(&ctx.stop_requested,1);
     atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);
     return -1;
   }
   /* Pin by CoreAudio device UID and read it back, before any sample is
    * queued. On rejection: dispose queue immediately with no playback. */
   if (fm_acoustic_bind_queue_to_route((void *)ctx.queue,&route)!=0) {
-    /* No start: dispose synchronously, but never free a context after an
-     * uncertain OS disposal result. This edge also requires quarantine. */
+    /* No start: seal callbacks first, dispose synchronously, and never free
+     * the context when OS disposal reports an uncertain result. */
+    atomic_store(&ctx.shutdown_in_progress,1);
+    atomic_store(&ctx.stop_requested,1);
     const OSStatus bind_dispose_status=AudioQueueDispose(ctx.queue,true);
     if (bind_dispose_status==noErr) {
       free(owner_ctx);
