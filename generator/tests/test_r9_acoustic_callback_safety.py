@@ -55,7 +55,12 @@ class R9SafetyContracts(unittest.TestCase):
         self.assertLess(listener, dispose)
 
     def test_dispose_is_synchronous(self):
-        self.assertIn("if (AudioQueueDispose(ctx.queue,true)!=noErr) err=1;", SRC)
+        # R12 preserves synchronous disposal and adds explicit fault evidence.
+        self.assertRegex(SRC, r"if \(AudioQueueDispose\(ctx\.queue,true\)!=noErr\) \{\s*"
+                              r"fm_latch_first_fault\(&ctx,FM_FAULT_DISPOSAL\);\s*"
+                              r"err=1;\s*\} else \{\s*"
+                              r"atomic_store\(&ctx\.dispose_confirmed,1\);")
+        self.assertIn("if (!atomic_load(&ctx.dispose_confirmed)) err=1;", SRC)
         self.assertNotIn("AudioQueueDispose(ctx.queue,false)", SRC)
 
     def test_remove_failure_propagates(self):
