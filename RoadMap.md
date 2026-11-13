@@ -120,7 +120,8 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 
 - 2026-11-13 : preuve propriétaire GEN-R10 Mac Intel 195/195 tests Python + 33/33 assertions natives C PASS, backend source non lié et sortie bloquée ; **ne vaut pas certification du Bureau**.
 - 2026-11-13 : GEN-R11 FIX1 Mac Intel validé logiciellement : **215/215 tests Python + 33/33 assertions C PASS**, cinq objets natifs non liés, aucune émission. Certification du Bureau toujours PENDING.
-- 2026-11-13 : GEN-R12 préparation source-only : compteurs d'activité callbacks/listeners, verrou atomique PCM et diagnostic de fin de vie de file. Tests Mac Intel encore à effectuer ; aucun gate ni autorisation d'émission modifié. P0.01 reste IN_PROGRESS.
+- 2026-11-13 : GEN-R12 Mac Intel première exécution : 70/70 fichiers intègres, 5 objets isolés compilés, 33/33 assertions C, contrôle de symboles PASS; 235 tests Python exécutés, **3 FAIL** hérités R9/R10/R11, donc R12 non validé.
+- 2026-11-13 : GEN-R12 FIX1 candidat : assertions de libération CoreAudio corrigées pour contrôler la remontée de défaut et la confirmation de disposition, backend inchangé ; preuve Mac Intel 235/235 **en attente** ; aucun gate ou autorisation d'émission modifié. P0.01 demeure IN_PROGRESS.
 
 - 2026-11-09 : P0.00-R4 gouvernance initiale certifiée ; **l'ancien P0.01 est un audit documentaire, pas une certification du nouveau générateur**.
 - 2026-11-10/12 : séries documentaires R2–R28 ; UI V4/V5 ; moteurs candidats R29–R32 en dehors de la branche officielle.
