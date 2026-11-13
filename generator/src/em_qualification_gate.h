@@ -5,11 +5,12 @@
 /* Source-only documentary evidence screen, NOT a hardware driver.
  * No instrument, port, emission, certificate or measurement is implied. */
 typedef struct {
-  const char *manufacturer;
-  const char *model;
-  const char *protocol_document_sha256;
-  const char *independent_cutoff_document_sha256;
-  const char *metrology_plan_sha256;
+  /* Fixed-size arrays keep source-only structural checks bounded. */
+  char manufacturer[129];
+  char model[129];
+  char protocol_document_sha256[65];
+  char independent_cutoff_document_sha256[65];
+  char metrology_plan_sha256[65];
 } FMEmDocumentaryEvidence;
 
 typedef enum {
