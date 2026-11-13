@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R12.
+/* Physical CoreAudio path — isolated source candidate, NOT LINKED in GEN-R13.
  * Caution: a PCM command does NOT establish emitted sound pressure, safety,
  * acoustic level or calibration. This backend cannot be enabled by changing
  * runtime flags. A separate certified source revision is required.
@@ -12,13 +12,14 @@
 #include <AudioToolbox/AudioToolbox.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <math.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <string.h>
 #include <time.h>
 
-/* GEN-R12 keeps this file as a SEPARATE OBJECT for review, never links it
+/* GEN-R13 keeps this file as a SEPARATE OBJECT for review, never links it
  * into the executable, never loads it and never executes it. Full safety,
  * output-device pinning, and independent hardware interlocks are pending. */
 /* Internal diagnostic causes; not measurements, device states or permissions.
@@ -57,6 +58,12 @@ typedef struct {
   /* Fail closed if two output callbacks attempt to change PCM state at once. */
   atomic_flag pcm_writer_gate;
 } AcousticContext;
+
+/* Only one source-only CoreAudio session may exist per process. If disposal
+ * cannot establish quiescence, poison this process gate permanently.
+ * This is a lifetime precaution, NOT proof of a physical cutoff. */
+static atomic_flag fm_session_claim = ATOMIC_FLAG_INIT;
+static atomic_int fm_context_quarantined = ATOMIC_VAR_INIT(0);
 
 /* Single-assignment fault evidence, bounded to this invocation only.
  * No identity, hardware readings, or measurements are written to logs. */
@@ -203,7 +210,21 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   if (!isfinite(request->frequency_hz) || request->frequency_hz<=0.0 || request->frequency_hz>=sr/2.0 ||
       !isfinite(request->normalized_level) || request->normalized_level<=0.0 || request->normalized_level>1.0 ||
       request->duration_ms==0U || request->duration_ms>60000U) return -1;
-  AcousticContext ctx;
+  /* R13: CoreAudio receives a pointer into heap-owned storage, never a
+   * pointer to a frame-local AcousticContext. The local alias keeps the
+   * audited R9-R12 member expressions unchanged while the storage lifetime
+   * is explicitly managed below. Do not move #undef before the function end.
+   * This candidate remains isolated and can NEVER enable real output. */
+  if (atomic_load_explicit(&fm_context_quarantined,memory_order_acquire))
+    return -1;
+  if (atomic_flag_test_and_set_explicit(&fm_session_claim,memory_order_acquire))
+    return -1;
+  AcousticContext *owner_ctx=(AcousticContext*)calloc(1,sizeof(*owner_ctx));
+  if (!owner_ctx) {
+    atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
+    return -1;
+  }
+#define ctx (*owner_ctx)
   memset(&ctx,0,sizeof(ctx));
   atomic_init(&ctx.last_frame_enqueued,0);
   atomic_init(&ctx.failed,0);
@@ -220,9 +241,17 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   ctx.phase_step=6.28318530717958647693*request->frequency_hz/sr;
   ctx.normalized_level=request->normalized_level;
   ctx.total_frames=(uint64_t)((sr*(double)request->duration_ms)/1000.0);
-  if (!ctx.total_frames) return -1;
+  if (!ctx.total_frames) {
+    free(owner_ctx);
+    atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
+    return -1;
+  }
   ctx.fade_frames=(uint64_t)(sr/100.0); /* nominal 10 ms digital ramp */
-  if (ctx.fade_frames==0U) return -1;
+  if (ctx.fade_frames==0U) {
+    free(owner_ctx);
+    atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
+    return -1;
+  }
   AudioStreamBasicDescription fmt;
   memset(&fmt,0,sizeof(fmt));
   fmt.mSampleRate=sr;
@@ -233,11 +262,29 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   fmt.mBitsPerChannel=16;
   fmt.mBytesPerFrame=2;
   fmt.mBytesPerPacket=2;
-  if (AudioQueueNewOutput(&fmt,output_callback,&ctx,NULL,NULL,0,&ctx.queue)!=noErr) return -1;
+  if (AudioQueueNewOutput(&fmt,output_callback,&ctx,NULL,NULL,0,&ctx.queue)!=noErr) {
+    /* A non-null queue on OS error means the callback's ownership might
+     * already have escaped: retain the heap storage and seal admission. */
+    if (ctx.queue) {
+      atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);
+    } else {
+      free(owner_ctx);
+      atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
+    }
+    return -1;
+  }
   /* Pin by CoreAudio device UID and read it back, before any sample is
    * queued. On rejection: dispose queue immediately with no playback. */
   if (fm_acoustic_bind_queue_to_route((void *)ctx.queue,&route)!=0) {
-    (void)AudioQueueDispose(ctx.queue,true);
+    /* No start: dispose synchronously, but never free a context after an
+     * uncertain OS disposal result. This edge also requires quarantine. */
+    const OSStatus bind_dispose_status=AudioQueueDispose(ctx.queue,true);
+    if (bind_dispose_status==noErr) {
+      free(owner_ctx);
+      atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
+    } else {
+      atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);
+    }
     return -1;
   }
   int err=0;
@@ -346,7 +393,27 @@ static __attribute__((unused)) int acoustic_output_impl(const FMCommand *request
   /* No successful return after a latched first fault or cleanup failure. */
   if (err) fm_latch_first_fault(&ctx,FM_FAULT_SHUTDOWN);
   if (atomic_load(&ctx.first_fault_reason)!=FM_FAULT_NONE) err=1;
+
+  /* Free only after verified synchronous disposal AND zero in-flight
+   * callbacks/listeners. On any ambiguity retain heap memory until process
+   * termination; this intentionally sacrifices one allocation to avoid
+   * returning a dangling callback context. The gate stays irreversibly
+   * closed and no retry is permitted. */
+  const int context_quiescent=
+      atomic_load(&ctx.dispose_confirmed) &&
+      atomic_load_explicit(&ctx.active_output_callbacks,
+                           memory_order_acquire)==0U &&
+      atomic_load_explicit(&ctx.active_property_listeners,
+                           memory_order_acquire)==0U;
+  if (context_quiescent) {
+    free(owner_ctx);
+    atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);
+  } else {
+    atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);
+    err=1;
+  }
   return err?-1:0;
+#undef ctx
 }
 int fm_acoustic_native_backend_available(void) { return 1; }
 #else
