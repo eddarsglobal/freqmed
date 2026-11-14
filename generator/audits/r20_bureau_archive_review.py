@@ -248,8 +248,8 @@ def markdown_report(data):
     gates = "\n".join("| "+g["name"]+" | "+g["status"]+" |"
                       for g in data["bureau_gates"])
     return ("# FREQMED GEN-R20 — Dossier de revue du Bureau (NON CERTIFIÉ)\n\n"
-            "Archive R19 examinée en lecture seule ; commit exact : \`"+
-            data["r19_verified"]["original_commit"]+"\`.\n\n"
+            "Archive R19 examinée en lecture seule ; commit exact : `"+
+            data["r19_verified"]["original_commit"]+"`.\n\n"
             "Preuves R16–R19 vérifiées : **4/4**, sources historiques : **"+
             str(data["r19_verified"]["original_generator_files"])+
             "**. Fichiers du générateur R20 : **"+
