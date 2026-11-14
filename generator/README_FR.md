@@ -141,6 +141,20 @@ L'outil `audits/r17_evidence_verifier.py` est **indépendant de l'auditeur R16**
 
 Les **20 nouveaux tests R17** vérifient également la détection des preuves falsifiées et des régressions source dans des copies isolées temporaires : aucune mutation de la source officielle, aucun code émetteur exécuté et aucune simulation scientifique. La compilation et les tests natifs demeurent inchangés dans leur domaine de sûreté.
 
-**Cible propriétaire : 335 tests Python + 33 assertions natives C**, examen des deux preuves JSON, validation R17 sur Mac Intel **PENDING**. Voir `docs/GEN_R17_EVIDENCE_INDEPENDENT_VERIFICATION.md` et `docs/GEN_R17_BUREAU_REVIEW.md`.
+**GEN-R17 validé logiciellement le 14 novembre 2026 sur Mac Intel : 335/335 tests Python PASS, 33/33 assertions natives C PASS, 25/25 contrôles statiques PASS, deux JSON vérifiés et 92/92 fichiers intègres.** Bureau PENDING. Voir `docs/GEN_R17_EVIDENCE_INDEPENDENT_VERIFICATION.md` et `docs/GEN_R17_BUREAU_REVIEW.md`.
 
 `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R18 — Renforcement de la chaîne de preuves & couverture des chemins de sortie
+
+Le journal du propriétaire du **14 novembre 2026** atteste GEN-R17 logiciel sur Mac Intel : **335/335 tests Python, 33/33 assertions C, 25/25 contrôles R16, vérificateur R17 PASS**, 92 sources intègres, backend CoreAudio/EM compilé isolément et non lié, aucune émission.
+
+GEN-R18 ajoute `audits/r18_control_flow_envelope.py`, un analyseur lexical borné des vraies sources C : il classe **13 retours**, **4 libérations `free(owner_ctx)`**, **6 restitutions atomiques du verrou de session**, le nombre et l'ordre des API CoreAudio et l'absence de réouverture de la quarantaine. Il confirme que chaque retour anticipé reste un refus, qu'aucune nouvelle libération de contexte n'apparaisse et que toutes les sorties après publication OS restent entourées de leurs protections de source.
+
+Le runner `RUN_GEN_R18_MAC_INTEL.command` produit trois rapports JSON séparés : R16 source, R17 vérification de l'intégrité et R18 graphe lexical des exits. GEN-R18 relie cryptographiquement les SHA-256 des trois documents et du manifeste et vérifie l'allowlist des six sources C du **runner R18 courant**. Les **20 tests Python supplémentaires** incluent des régressions détectées sur des modifications **en mémoire** des sources ; aucun exécutable modifié n'est lancé. L'analyse lexicale ne prouve ni l'intégralité du contrôle-flow C ni l'absence de race CoreAudio.
+
+**Cible Mac Intel GEN-R18 : 355 tests Python (335+20) + 33 assertions natives C**, encore **EN ATTENTE DU VRAI JOURNAL**. Aucun changement des modules `src/`, aucune simulation scientifique, aucune activation de sortie ou nouvel instrument.
+
+Voir `docs/GEN_R18_CONTROL_FLOW_EVIDENCE.md` et `docs/GEN_R18_BUREAU_REVIEW.md`.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
