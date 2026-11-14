@@ -332,6 +332,16 @@ def verify_chain(root, r16_path, r17_path, evidence):
             and b.get("manifest_files_verified") ==
                 len(manifest.decode("utf-8").splitlines()),
             "R17 verification counters incorrect")
+    # R18 has a new executable runner. R17 only audits the R17 link line;
+    # independently verify the current one too before trusting its evidence.
+    from r17_evidence_verifier import link_sources, LINK_C_ALLOWLIST
+    runner = (root / "RUN_GEN_R18_MAC_INTEL.command").read_text(encoding="utf-8")
+    sources = link_sources(runner)
+    require(len(sources) == len(LINK_C_ALLOWLIST)
+            and set(sources) == LINK_C_ALLOWLIST
+            and "R18_NONEMITTING_EXECUTABLE_SYMBOL_AUDIT=PASS" in runner
+            and "FREQMED_GEN_R18_BINARY" in runner,
+            "current executable is not pinned to denied source allowlist")
     return {
         "r16_evidence_sha256": digest(Path(r16_path).read_bytes()),
         "r17_evidence_sha256": digest(Path(r17_path).read_bytes()),
