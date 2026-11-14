@@ -81,6 +81,35 @@ class R20BureauReview(unittest.TestCase):
             checksum[name]+"  "+name+"\n" for name in sorted(checksum)),
             encoding="ascii")
 
+    def test_fix1_bureau_reviewer_compiles_with_warnings_as_errors(self):
+        """Reject invalid escapes even on Python versions warning differently."""
+        import warnings
+        path = ROOT / "audits/r20_bureau_archive_review.py"
+        source = path.read_text(encoding="utf-8")
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", SyntaxWarning)
+            warnings.simplefilter("error", DeprecationWarning)
+            compile(source, str(path), "exec", dont_inherit=True)
+
+    def test_fix1_markdown_commit_is_not_backslash_escaped(self):
+        """Ensure R20 Bureau report retains clean Markdown code formatting."""
+        data = {
+            "r19_verified": {
+                "original_commit": review.R19_COMMIT,
+                "original_generator_files": review.R19_SOURCE_COUNT,
+            },
+            "r20_source_files": self.count,
+            "bureau_gates": [
+                {"name": name, "status": status}
+                for name, status in review.UNRESOLVED
+            ],
+        }
+        report = review.markdown_report(data)
+        tick = chr(96)
+        self.assertIn("commit exact : " + tick + review.R19_COMMIT + tick + ".", report)
+        self.assertNotIn(chr(92) + tick, report)
+        self.assertIn("REVIEWABLE_NOT_CERTIFIED", report)
+
     def test_source_only_reviewer_has_fixed_original_r19_commit(self):
         self.assertEqual(
             "e77b1ff47a0748d4e91118a865e2681680fd9c31",
