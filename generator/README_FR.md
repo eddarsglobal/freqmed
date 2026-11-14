@@ -153,8 +153,22 @@ GEN-R18 ajoute `audits/r18_control_flow_envelope.py`, un analyseur lexical born�
 
 Le runner `RUN_GEN_R18_MAC_INTEL.command` produit trois rapports JSON séparés : R16 source, R17 vérification de l'intégrité et R18 graphe lexical des exits. GEN-R18 relie cryptographiquement les SHA-256 des trois documents et du manifeste et vérifie l'allowlist des six sources C du **runner R18 courant**. Les **20 tests Python supplémentaires** incluent des régressions détectées sur des modifications **en mémoire** des sources ; aucun exécutable modifié n'est lancé. L'analyse lexicale ne prouve ni l'intégralité du contrôle-flow C ni l'absence de race CoreAudio.
 
-**Cible Mac Intel GEN-R18 : 355 tests Python (335+20) + 33 assertions natives C**, encore **EN ATTENTE DU VRAI JOURNAL**. Aucun changement des modules `src/`, aucune simulation scientifique, aucune activation de sortie ou nouvel instrument.
+**Validation réelle GEN-R18 sur Mac Intel, 14 novembre 2026 : 355/355 tests Python PASS, 33/33 assertions C PASS, audit R16/R17/R18 PASS et 97/97 sources intègres, objets CoreAudio/EM non liés.** La certification du Bureau reste PENDING. Aucun changement des modules `src/`, aucune simulation scientifique, aucune activation de sortie ou nouvel instrument.
 
 Voir `docs/GEN_R18_CONTROL_FLOW_EVIDENCE.md` et `docs/GEN_R18_BUREAU_REVIEW.md`.
 
 `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R19 — Adversarial Static Audit & Evidence Preservation
+
+Le témoin réel GEN-R18 a passé sur Mac Intel : **355/355 tests Python**, **33/33 assertions C**, **25/25 contrôles R16**, vérificateur R17 et audit R18 PASS, **97/97 fichiers intègres**, sans sortie physique. Le moteur CoreAudio reste **compilé en objet isolé, non lié, jamais exécuté**.
+
+GEN-R19 renforce les preuves sans modifier les modules `src/`. `audits/r19_adversarial_source_audit.py` ajoute **13 contrats adversariaux** sur les vraies sources C : empreintes strictes des deux backends, refus des préprocesseurs et chargements dynamiques non classés, cinq conditions exactes de quiescence, accounting des callbacks et écouteurs, verrou PCM, état atomique de quarantaine et maintien des 13 retours / 4 `free` / 6 releases R18. Le runner exécute R16 → R17 → R18 → R19 **avant toute compilation native de tests**, avec échec fermé si une preuve échoue. La liste des six fichiers C du binaire est vérifiée, et aucune sortie acoustique/EM n'est liée.
+
+`audits/r19_evidence_archive.py` **recalcule les quatre preuves JSON réelles** après le selftest complet du Mac, revalide les octets du manifeste source, puis les copie dans `~/Downloads/FREQMED_GEN_R19_EVIDENCE_*` avec permissions `0700/0600`. Une archive contient les quatre rapports, `KIT_SHA256SUMS.txt`, `EVIDENCE_INDEX.json`, `EVIDENCE_SHA256SUMS.txt`, le commit exact apporté par le bootstrap épinglé et des empreintes vérifiables. Une altération ultérieure par rapport à ces hashes est détectée ; **l'archive n'est ni immuable, ni signée par un tiers, ni horodatée par une autorité externe**.
+
+Les **20 nouveaux tests GEN-R19** utilisent des modifications de texte ou JSON seulement sur des copies logicielles temporaires : aucune mesure scientifique simulée, aucune sortie physique activée. Cible propriétaire **375 tests Python (355+20) + 33 assertions natives C**, quatre audits et archive vérifiable ; **GEN-R19 Mac Intel PENDING** jusqu'au véritable journal.
+
+Voir `docs/GEN_R19_ADVERSARIAL_STATIC_AUDIT.md` et `docs/GEN_R19_BUREAU_REVIEW.md`. Bureau certification PENDING, RoadMap P0.01 IN_PROGRESS, PR #1 DRAFT sans fusion dans main.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
