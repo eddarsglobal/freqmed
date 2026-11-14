@@ -72,9 +72,9 @@ class R19AdversarialEvidence(unittest.TestCase):
                          self.audit["source_sha256"])
         self.assertGreaterEqual(self.audit["files_verified"], 103)
 
-    def test_twelve_semantic_checks_present(self):
-        self.assertEqual(12, self.audit["checks_passed"])
-        self.assertEqual(12, len(set(self.audit["checks"])))
+    def test_thirteen_semantic_checks_present(self):
+        self.assertEqual(13, self.audit["checks_passed"])
+        self.assertEqual(13, len(set(self.audit["checks"])))
 
     def test_baseline_quarantine_and_ownership_sites(self):
         self.assertEqual(13, self.audit["exit_count"])
