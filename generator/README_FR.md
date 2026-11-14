@@ -192,3 +192,13 @@ Le journal propriétaire GEN-R20 sur Mac Intel montre quatre répétitions de `S
 Deux tests sont ajoutés à `tests/test_r20_bureau_readiness.py` : compilation de l'auditeur sous `SyntaxWarning` et `DeprecationWarning` configurés comme erreurs, et vérification du Markdown du commit sans antislash. Cible **397 tests Python (395+2) + 33 assertions C natives** sur Mac Intel. `RUN_GEN_R20_MAC_INTEL.command` reste inchangé ; le bootstrap FIX1 épingle le nouveau commit et le manifeste des 108 sources, vérifie l'archive historique R19 en lecture seule, puis lance tous les tests non émetteurs. FIX1 est **PENDING** jusqu'au journal Mac Intel.
 
 Aucune modification de `generator/src/` ni de l'archive R19 conservée. `NEVER_SIMULATION=ENFORCED` · `ZERO_COST_FOSS=ENFORCED` · `REAL_OUTPUT=NOT_AUTHORIZED` · `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` · `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R21 — Bureau Evidence Gap Review (candidat)
+
+Le propriétaire a exécuté GEN-R20 FIX1 sur Mac Intel au commit `0812ac4a3756e795ba411ffe61a52f7f6f32e130` : **397/397 Python PASS**, **33/33 assertions natives C PASS**, **108/108 sources intègres**, `R20_ORIGINAL_R19_ARCHIVE_REVERIFICATION=PASS` (103 sources historiques, quatre rapports), warnings Python précédents non reproduits. Les backends de sortie sont restés non liés et la sortie physique bloquée.
+
+GEN-R21 introduit `audits/r21_bureau_evidence_gaps.py`, `tests/test_r21_evidence_gaps.py`, le runner `RUN_GEN_R21_MAC_INTEL.command` et deux documents spécialisés. **Onze portes documentées, zéro levée** : chaque ligne relie la lacune R20 à un B01–B10 responsable, à une ligne de code/document réellement épinglée et à la preuve indépendante manquante. Les cinq rapports courants R16–R20 sont recomparés aux sources et à l'archive R19 d'origine en lecture seule. La documentation ne prétend pas disposer de preuves matérielles, de mesures ou de signatures indépendantes.
+
+Cible de validation **417 tests Python (397+20) et 33 assertions C**, **113 fichiers générateur épinglés**. Le dossier privé du Bureau sera produit **après succès natif seulement**, avec quatre rapports JSON/Markdown R20/R21 et leurs empreintes SHA-256. **Mac Intel GEN-R21 PENDING** ; `EVIDENCE_GAPS_MAPPED_NOT_CERTIFIED`, `RoadMap P0.01=IN_PROGRESS`, `BUREAU_CERTIFICATION=PENDING`.
+
+Voir `docs/GEN_R21_EVIDENCE_GAPS.md` et `docs/GEN_R21_BUREAU_REVIEW.md`. `NEVER_SIMULATION=ENFORCED`, `ZERO_COST_FOSS=ENFORCED`, `ACOUSTIC_OUTPUT=LOCKED`, `EM_OUTPUT=LOCKED`, `REAL_OUTPUT=NOT_AUTHORIZED`, `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`, `PRODUCTION=NOT_AUTHORIZED`.
