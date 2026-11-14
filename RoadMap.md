@@ -118,6 +118,19 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 
 ## G. Historique et non-régression
 
+- 2026-11-13 : preuve propriétaire GEN-R10 Mac Intel 195/195 tests Python + 33/33 assertions natives C PASS, backend source non lié et sortie bloquée ; **ne vaut pas certification du Bureau**.
+- 2026-11-13 : GEN-R11 FIX1 Mac Intel validé logiciellement : **215/215 tests Python + 33/33 assertions C PASS**, cinq objets natifs non liés, aucune émission. Certification du Bureau toujours PENDING.
+- 2026-11-13 : GEN-R12 Mac Intel première exécution : 70/70 fichiers intègres, 5 objets isolés compilés, 33/33 assertions C, contrôle de symboles PASS; 235 tests Python exécutés, **3 FAIL** hérités R9/R10/R11, donc R12 non validé.
+- 2026-11-13 : GEN-R12 FIX1 validé logiciellement sur Mac Intel : **235/235 tests Python + 33/33 assertions natives C PASS**, cinq objets isolés, aucune émission, Bureau PENDING.
+- 2026-11-13 : GEN-R13 validé logiciellement sur Mac Intel : **255/255 Python PASS + 33/33 assertions C PASS**, 74 fichiers intègres, 5 objets compilés non liés et aucune émission ; certification Bureau PENDING.
+- 2026-11-13 : GEN-R14 validé logiciellement sur Mac Intel : **275/275 tests Python + 33/33 assertions natives C PASS**, 78 fichiers intègres, cinq objets compilés non liés, aucun son ou champ émis, Bureau PENDING.
+- 2026-11-13 : GEN-R15 témoin Mac Intel initial : 82/82 sources intègres, 5 objets compilés **non liés**, 33/33 assertions C et audit de symboles PASS ; **295 tests Python exécutés, 3 FAIL** hérités R9/R10/R11, donc GEN-R15 non validé.
+- 2026-11-13 : GEN-R15 FIX1 **validé logiciellement sur Mac Intel** : **295/295 Python PASS, 33/33 assertions C PASS**, 82/82 sources intègres, cinq objets natifs non liés, aucune émission ; Bureau PENDING, P0.01 IN_PROGRESS.
+- 2026-11-13 : GEN-R16 validé logiciellement sur Mac Intel : **315/315 tests Python PASS, 33/33 assertions C PASS, 25/25 contrôles statiques PASS**, 87 fichiers intègres, cinq objets natifs compilés non liés, aucune émission ; certif. Bureau PENDING, P0.01 IN_PROGRESS.
+- 2026-11-14 : GEN-R17 validé logiciellement sur Mac Intel : **335/335 tests Python PASS, 33/33 assertions C PASS, 25/25 contrôles R16 PASS**, vérificateur indépendant R17 PASS, 92/92 fichiers intègres, cinq objets natifs non liés, aucune émission ; Bureau PENDING, P0.01 IN_PROGRESS.
+- 2026-11-14 : GEN-R18 validé logiciellement sur Mac Intel : **355/355 Python PASS, 33/33 C PASS**, R16/R17/R18 preuves PASS, 13 retours / 4 libérations / 6 relâchements contrôlés, 97/97 sources intègres, cinq objets natifs isolés/non liés, aucune émission. Bureau PENDING, P0.01 IN_PROGRESS.
+- 2026-11-14 : GEN-R19 candidat **Adversarial Static Audit & Evidence Preservation** : 13 nouveaux contrôles adversariaux, empreintes strictes des modules source acoustiques/EM, 20 tests logiciels de détection d'altération, quatre preuves JSON R16–R19 recalculées et conservées en archive privée avec empreintes et manifeste. **375 tests Python + 33 assertions natives C attendus**, validation propriétaire R19 PENDING. L'archive n'est ni immuable ni signée ; aucune émission ni simulation scientifique ; P0.01 IN_PROGRESS, Bureau PENDING.
+
 - 2026-11-09 : P0.00-R4 gouvernance initiale certifiée ; **l'ancien P0.01 est un audit documentaire, pas une certification du nouveau générateur**.
 - 2026-11-10/12 : séries documentaires R2–R28 ; UI V4/V5 ; moteurs candidats R29–R32 en dehors de la branche officielle.
 - 2026-11-12 : correction impérative de mission par le propriétaire : **FREQMED = générateurs physiques acoustique ET EM**, recherche scientifique sous Bureau. La présente refonte ne crée aucune autorisation d'émission.
