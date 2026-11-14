@@ -199,6 +199,18 @@ Le propriétaire a exécuté GEN-R20 FIX1 sur Mac Intel au commit `0812ac4a3756e
 
 GEN-R21 introduit `audits/r21_bureau_evidence_gaps.py`, `tests/test_r21_evidence_gaps.py`, le runner `RUN_GEN_R21_MAC_INTEL.command` et deux documents spécialisés. **Onze portes documentées, zéro levée** : chaque ligne relie la lacune R20 à un B01–B10 responsable, à une ligne de code/document réellement épinglée et à la preuve indépendante manquante. Les cinq rapports courants R16–R20 sont recomparés aux sources et à l'archive R19 d'origine en lecture seule. La documentation ne prétend pas disposer de preuves matérielles, de mesures ou de signatures indépendantes.
 
-Cible de validation **417 tests Python (397+20) et 33 assertions C**, **113 fichiers générateur épinglés**. Le dossier privé du Bureau sera produit **après succès natif seulement**, avec quatre rapports JSON/Markdown R20/R21 et leurs empreintes SHA-256. **Mac Intel GEN-R21 PENDING** ; `EVIDENCE_GAPS_MAPPED_NOT_CERTIFIED`, `RoadMap P0.01=IN_PROGRESS`, `BUREAU_CERTIFICATION=PENDING`.
+Cible de validation **417 tests Python (397+20) et 33 assertions C**, **113 fichiers générateur épinglés**. Le dossier privé du Bureau sera produit **après succès natif seulement**, avec quatre rapports JSON/Markdown R20/R21 et leurs empreintes SHA-256. **Mac Intel GEN-R21 PASS (417/417 Python, 33/33 C, 113/113 sources, 11 portes OPEN)** ; `EVIDENCE_GAPS_MAPPED_NOT_CERTIFIED`, `RoadMap P0.01=IN_PROGRESS`, `BUREAU_CERTIFICATION=PENDING`.
 
 Voir `docs/GEN_R21_EVIDENCE_GAPS.md` et `docs/GEN_R21_BUREAU_REVIEW.md`. `NEVER_SIMULATION=ENFORCED`, `ZERO_COST_FOSS=ENFORCED`, `ACOUSTIC_OUTPUT=LOCKED`, `EM_OUTPUT=LOCKED`, `REAL_OUTPUT=NOT_AUTHORIZED`, `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`, `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R22 — Independent C11 & CoreAudio Lifetime Review
+
+**Base attestée sur Mac Intel : GEN-R21 PASS**, source `01db479705fc39b5b8d72c60845c3a6d29c5c0d8`. Les **417 tests Python et 33 assertions C** ont réussi ; 113 fichiers SHA-256 PASS ; les onze portes du Bureau sont encore ouvertes et le dossier R21 a été conservé avec empreintes.
+
+GEN-R22 approfondit trois lacunes : `C11_CALLBACK_RACE_FREEDOM`, `ACTIVE_COREAUDIO_LIFETIME`, `FAILED_OS_DISPOSAL_BEHAVIOR`. L'auditeur `audits/r22_coreaudio_lifetime_review.py` réalise **17 observations statiques bornées** sur la véritable source CoreAudio épinglée, puis émet **trois constats de risque explicitement non résolus**. Sont considérés : accès non atomiques au PCM, ordre acquire/release et chemin contrôleur, callbacks éventuellement tardifs après lecture de compteurs à zéro, statut de dispose synchrone et échec réel non observé. Le cas de succès d'`AudioQueueDispose(..., true)` est documenté par Apple comme synchrone et n'appelant plus de callbacks pour la queue libérée ; cela ne vaut pas qualification des erreurs ou preuve C11.
+
+Le nouveau runner `RUN_GEN_R22_MAC_INTEL.command` garde les sorties acoustiques et EM non liées, le Guardian fermé et **l'archive historique R19 en lecture seule**. Il recalcule les preuves R16–R21 avant R22, puis les 33 assertions C et la suite Python complète. **20 tests Python** d'analyse des sources sont ajoutés, aucun appel actif à CoreAudio ni simulation physique. Le dossier privé R22 inclura les six fichiers R20/R21/R22 JSON/Markdown et leur manifeste SHA-256 uniquement après PASS.
+
+**Cible Mac Intel : 437 Python (417+20), 33 C, 118 sources**, 17 observations statiques, trois risques non prouvés, onze portes ouvertes. **GEN-R22 MAC PENDING**, `REVIEW_REQUIRED_NO_EMISSION`, Bureau PENDING, RoadMap P0.01 IN_PROGRESS.
+
+Voir `docs/GEN_R22_C11_COREAUDIO_REVIEW.md` et `docs/GEN_R22_BUREAU_REVIEW.md`. `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
