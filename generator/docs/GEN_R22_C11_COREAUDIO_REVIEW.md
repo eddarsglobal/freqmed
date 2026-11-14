@@ -14,6 +14,12 @@ Il consigne **17 contrats statiques bornés**, chaque contrôle associé à une 
 - Échec de liaisons de sortie, erreurs de `AudioQueueDispose`, conservation du contexte en cas d'incertitude, compteurs à zéro et `dispose_confirmed` avant certaines libérations.
 - Entrée publique acoustique refusant la sortie, exécutable lié uniquement aux sources no-output.
 
+### Contrats de référence externes (information, pas certification)
+
+- **Apple — [AudioQueueDispose](https://developer.apple.com/documentation/audiotoolbox/audioqueuedispose%28_%3A_%3A%29?language=objc)** : l'argument `inImmediate=true` demande une disposition synchrone ; le guide indique qu'après la disposition, l'AudioQueue n'invoque plus de callbacks. Cette formulation est une **garantie d'API documentée pour l'issue de succès**, à distinguer d'une qualification de notre implémentation, des états d'erreur et de la quiescence de tous les objets.
+- **[C11 memory_order — cppreference](https://en.cppreference.com/c/atomic/memory_order)** : les acquire/release imposent des contraintes d'ordre liées aux opérations atomiques et aux chaînes de synchronisation ; leur seule présence n'établit pas toutes les relations happens-before entre données non atomiques du thread de contrôle et callbacks.
+- Ces sources sont des références de spécification ; les contrôles R22 restent des observations limitées aux sources, sans preuve formelle ni appel réel au backend CoreAudio.
+
 **Ces 17 observations ne sont pas un résultat de vérification formelle du modèle mémoire C11.** L'auditeur utilise un extracteur borné d'accolades et des ancrages textuels, non un parseur C complet, un analyseur d'interleavings concurrentiels, un thread sanitizer ou un outil de qualification OS.
 
 ### Trois questions formellement non résolues
