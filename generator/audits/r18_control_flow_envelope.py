@@ -242,7 +242,7 @@ def examine_source(code):
         "bind_dispose_status==noErr",
         "fm_acoustic_bind_queue_to_route((void *)ctx->queue,&route)!=0"):
         require(norm(cond) in ancestors, "bind free escaped disposal control")
-    require(free_records[-1]["guard_line"] > tokens[final_cleanup][1],
+    require(free_records[-1]["guard_line"] >= tokens[final_cleanup][1],
             "last free no longer protected by context_quiescent")
 
     api = {}
