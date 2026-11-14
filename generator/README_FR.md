@@ -167,8 +167,20 @@ GEN-R19 renforce les preuves sans modifier les modules `src/`. `audits/r19_adver
 
 `audits/r19_evidence_archive.py` **recalcule les quatre preuves JSON réelles** après le selftest complet du Mac, revalide les octets du manifeste source, puis les copie dans `~/Downloads/FREQMED_GEN_R19_EVIDENCE_*` avec permissions `0700/0600`. Une archive contient les quatre rapports, `KIT_SHA256SUMS.txt`, `EVIDENCE_INDEX.json`, `EVIDENCE_SHA256SUMS.txt`, le commit exact apporté par le bootstrap épinglé et des empreintes vérifiables. Une altération ultérieure par rapport à ces hashes est détectée ; **l'archive n'est ni immuable, ni signée par un tiers, ni horodatée par une autorité externe**.
 
-Les **20 nouveaux tests GEN-R19** utilisent des modifications de texte ou JSON seulement sur des copies logicielles temporaires : aucune mesure scientifique simulée, aucune sortie physique activée. Cible propriétaire **375 tests Python (355+20) + 33 assertions natives C**, quatre audits et archive vérifiable ; **GEN-R19 Mac Intel PENDING** jusqu'au véritable journal.
+Les **20 nouveaux tests GEN-R19** utilisent des modifications de texte ou JSON seulement sur des copies logicielles temporaires : aucune mesure scientifique simulée, aucune sortie physique activée. **GEN-R19 validé logiciellement le 14 novembre 2026 sur Mac Intel : 375/375 tests Python PASS, 33/33 assertions natives C PASS, quatre audits R16–R19 PASS, 103/103 fichiers intègres et archive R19 créée puis vérifiée.** Bureau PENDING.
 
 Voir `docs/GEN_R19_ADVERSARIAL_STATIC_AUDIT.md` et `docs/GEN_R19_BUREAU_REVIEW.md`. Bureau certification PENDING, RoadMap P0.01 IN_PROGRESS, PR #1 DRAFT sans fusion dans main.
 
 `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R20 — Independent Evidence Reverification & Bureau Readiness
+
+Le témoin GEN-R19 du 14 novembre 2026 confirme **375/375 tests Python**, **33/33 assertions C**, **13 contrôles adversariaux R19**, **103/103 sources intègres**, archive locale des quatre JSON créée et vérifiée. Aucun backend d'émission n'était lié ou exécuté.
+
+GEN-R20 fournit `audits/r20_bureau_archive_review.py` et **20 nouveaux tests**, pour revérifier **l'archive R19 réelle sans jamais la modifier**. Le vérificateur exige le SHA-256 de l'ancien manifeste `c80091fd6d22e8e8bef076b4565f5640be70c53268c4238aa8d264b1207dfb28` et le commit R19 exact `e77b1ff47a0748d4e91118a865e2681680fd9c31`, pas ceux de R20. Il recalcule et croise les liens de SHA, schémas, limites, comptages et invariants de quatre preuves R16–R19 et l'état du backend.
+
+Le runner `RUN_GEN_R20_MAC_INTEL.command` exige `FREQMED_GEN_R19_ARCHIVE_DIR` avec le dossier privé R19 existant. Après vérification, il compile seulement les objets natifs isolés et exécute la suite logicielle. Un **nouveau dossier privé R20** n'est créé qu'après le succès intégral, contenant le JSON de revérification, la grille de revue du Bureau et leurs SHA-256. Aucune modification de l'archive R19.
+
+**Cible Mac Intel GEN-R20 : 395 tests Python (375+20) et 33 assertions natives C**, validation propriétaire PENDING. Les décisions restent `REVIEWABLE_NOT_CERTIFIED`, `BUREAU_CERTIFICATION=PENDING` et `RoadMap P0.01=IN_PROGRESS`. L'archive R19 reste modifiable par son propriétaire ; aucun certificat tiers ou contrôle matériel réel n'a été produit.
+
+Voir `docs/GEN_R20_EVIDENCE_REVERIFICATION.md` et `docs/GEN_R20_BUREAU_READINESS.md`. `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
