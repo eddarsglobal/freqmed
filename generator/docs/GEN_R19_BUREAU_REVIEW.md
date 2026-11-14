@@ -1,6 +1,6 @@
 # FREQMED GEN-R19 — Bureau indépendant : revue adversariale et archivage (PENDING)
 
-**B09 : intégrité du code, mémoire et concurrence.** Reproduire les 12 contrôles adversariaux à partir du code C épinglé, distinguer les détections sémantiques de la barrière SHA-256 globale et démontrer, à l'aide des tests textuels seulement, quelles mutations restent hors périmètre. Revoir les 13 sorties, 4 `free`, 6 releases et transitions en cas d'erreur OS. L'audit lexical n'est pas une preuve complète du contrôle-flow C ni de l'absence de races mémoire C11.
+**B09 : intégrité du code, mémoire et concurrence.** Reproduire les 13 contrôles adversariaux à partir du code C épinglé, distinguer les détections sémantiques de la barrière SHA-256 globale et démontrer, à l'aide des tests textuels seulement, quelles mutations restent hors périmètre. Revoir les 13 sorties, 4 `free`, 6 releases et transitions en cas d'erreur OS. L'audit lexical n'est pas une preuve complète du contrôle-flow C ni de l'absence de races mémoire C11.
 
 **B09 : authenticité des preuves.** Inspecter les quatre JSON R16–R19 après recalcul indépendant des sources et du manifeste ; vérifier `EVIDENCE_SHA256SUMS.txt`, `EVIDENCE_INDEX.json`, le lien au commit du bootstrap et les permissions 0700/0600. Confirmer la limite explicite : **pas de signature externe, pas de magasin WORM, pas d'horodatage tiers** ; toute personne pouvant réécrire les preuves et leurs propres hashes peut fabriquer une nouvelle archive cohérente.
 
