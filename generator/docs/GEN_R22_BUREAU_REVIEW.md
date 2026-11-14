@@ -10,7 +10,7 @@
 
 ## Devoirs du Bureau
 
-B09 doit conduire la revue C11 et du code natif et identifier les relations inter-thread non démontrées. B07 doit confronter les usages de l'API AudioQueue au contrat macOS exact, sans considérer l'incrément des compteurs comme une preuve de durée de vie. B10 supervise l'analyse de risques et maintient le verrou d'émission. Les noms des rôles ne désignent pas des personnes mandatées ; aucun expert réel n'a encore certifié ces fonctions.
+B09 doit conduire la revue C11 et du code natif et identifier les relations inter-thread non démontrées. B07 doit confronter les usages de l'API AudioQueue au contrat macOS exact, sans considérer l'incrément des compteurs comme une preuve de durée de vie. Apple documente le cas de succès de `AudioQueueDispose(queue,true)` comme synchrone, puis sans nouveaux callbacks pour la file libérée ; les retours d'erreur, les éventuels accès en cours et la conformité effective au contrat doivent toujours être examinés distinctement (https://developer.apple.com/documentation/audiotoolbox/audioqueuedispose%28_%3A_%3A%29?language=objc). B10 supervise l'analyse de risques et maintient le verrou d'émission. Les noms des rôles ne désignent pas des personnes mandatées ; aucun expert réel n'a encore certifié ces fonctions.
 
 La source `src/acoustic_macos.c` est épinglée et n'est jamais liée dans l'exécutable pour GEN-R22. Les API CoreAudio de création, démarrage, enqueue, stop, listener et dispose ne sont pas exécutées dans ce jalon. Même un PASS de 437 tests ne validerait ni le contrat réel d'AudioQueue après échec, ni la sûreté des émissions, ni une métrologie acoustique/EM.
 
