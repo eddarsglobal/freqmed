@@ -19,7 +19,7 @@ import r18_control_flow_envelope as r18
 import r19_adversarial_source_audit as r19
 
 SCHEMA = "FREQMED_GEN_R19_LOCAL_EVIDENCE_ARCHIVE"
-PINNED_COMMIT = "REPLACE_PINNED_COMMIT_AT_DELIVERY"
+# The exact GitHub commit is supplied externally by the verified bootstrap.
 ARTIFACTS = (
     "GEN_R16_OWNERSHIP_EVIDENCE.json",
     "GEN_R17_VERIFIED_EVIDENCE.json",
@@ -99,13 +99,14 @@ def pack_inputs(root, reports):
     blobs["KIT_SHA256SUMS.txt"] = manifest
     return blobs, table
 
-def create_archive(root, reports, parent):
+def create_archive(root, reports, parent, commit):
     root = Path(root).resolve()
     parent = Path(parent).resolve()
     require(parent.is_dir() and not parent.is_symlink(),
             "destination parent must be a real existing directory")
-    require(PINNED_COMMIT != "REPLACE_PINNED_COMMIT_AT_DELIVERY",
-            "pinned GitHub commit was not finalized")
+    require(isinstance(commit, str) and len(commit) == 40 and
+            all(c in "0123456789abcdef" for c in commit),
+            "missing/invalid exact GitHub commit pin")
     blobs, table = pack_inputs(root, reports)
     folder = Path(tempfile.mkdtemp(
         prefix="FREQMED_GEN_R19_EVIDENCE_", dir=str(parent)))
@@ -124,7 +125,7 @@ def create_archive(root, reports, parent):
                 raise
         index = {
             "schema": SCHEMA,
-            "commit": PINNED_COMMIT,
+            "commit": commit,
             "files": {name: digest(blobs[name]) for name in sorted(blobs)},
             "source_files_verified": len(table),
             "source_sha256": table["src/acoustic_macos.c"],
@@ -154,7 +155,7 @@ def create_archive(root, reports, parent):
                             for name, h in sorted(checks.items()))).encode("ascii")
         (folder / CHECKSUMS).write_bytes(checksum_bytes)
         os.chmod(folder / CHECKSUMS, 0o600)
-        summary = verify_archive(folder)
+        summary = verify_archive(folder, expected_commit=commit)
         require(summary["files_verified"] == 6,
                 "unexpected archive check count")
         return folder, summary
@@ -162,7 +163,7 @@ def create_archive(root, reports, parent):
         shutil.rmtree(folder)
         raise
 
-def verify_archive(folder):
+def verify_archive(folder, expected_commit=None):
     folder = Path(folder)
     require(folder.is_dir() and not folder.is_symlink(),
             "archive root missing or symlinked")
@@ -189,7 +190,10 @@ def verify_archive(folder):
         require(digest(safe_read(folder / name)) == expected,
                 "altered archived evidence: " + name)
     index = parse_json(safe_read(folder / INDEX))
-    require(index.get("schema") == SCHEMA and index.get("commit") == PINNED_COMMIT,
+    commit = index.get("commit")
+    require(index.get("schema") == SCHEMA and isinstance(commit, str)
+            and len(commit) == 40 and all(c in "0123456789abcdef" for c in commit)
+            and (expected_commit is None or commit == expected_commit),
             "archive commit or schema incorrect")
     require(index.get("files") == {
         name: entries[name] for name in ARTIFACTS
@@ -205,7 +209,7 @@ def verify_archive(folder):
     return {"schema": SCHEMA, "verification": "PASS",
             "files_verified": len(entries),
             "evidence_reports": 4,
-            "commit": PINNED_COMMIT,
+            "commit": commit,
             "manifest_sha256": entries["KIT_SHA256SUMS.txt"],
             "local_archive_is_immutable": False}
 
@@ -218,10 +222,11 @@ def main():
     p.add_argument("--r19", type=Path)
     p.add_argument("--destination-parent", type=Path)
     p.add_argument("--verify", type=Path)
+    p.add_argument("--commit")
     args = p.parse_args()
     try:
         if args.verify is not None:
-            result = verify_archive(args.verify)
+            result = verify_archive(args.verify, expected_commit=args.commit)
             folder = args.verify
         else:
             require(all([args.root, args.r16, args.r17, args.r18,
@@ -230,7 +235,8 @@ def main():
             reports = dict(zip(ARTIFACTS[:-1],
                                (args.r16, args.r17, args.r18, args.r19)))
             folder, result = create_archive(args.root, reports,
-                                            args.destination_parent)
+                                            args.destination_parent,
+                                            args.commit)
     except (ArchiveError, OSError, ValueError, TypeError, KeyError) as exc:
         print("R19_EVIDENCE_PRESERVATION=FAIL_CLOSED", str(exc))
         return 2
