@@ -181,6 +181,14 @@ GEN-R20 fournit `audits/r20_bureau_archive_review.py` et **20 nouveaux tests**, 
 
 Le runner `RUN_GEN_R20_MAC_INTEL.command` exige `FREQMED_GEN_R19_ARCHIVE_DIR` avec le dossier privé R19 existant. Après vérification, il compile seulement les objets natifs isolés et exécute la suite logicielle. Un **nouveau dossier privé R20** n'est créé qu'après le succès intégral, contenant le JSON de revérification, la grille de revue du Bureau et leurs SHA-256. Aucune modification de l'archive R19.
 
-**Cible Mac Intel GEN-R20 : 395 tests Python (375+20) et 33 assertions natives C**, validation propriétaire PENDING. Les décisions restent `REVIEWABLE_NOT_CERTIFIED`, `BUREAU_CERTIFICATION=PENDING` et `RoadMap P0.01=IN_PROGRESS`. L'archive R19 reste modifiable par son propriétaire ; aucun certificat tiers ou contrôle matériel réel n'a été produit.
+**GEN-R20 validé logiciellement le 14 novembre 2026 sur Mac Intel : 395/395 tests Python PASS, 33/33 assertions natives C PASS, archive R19 (103 fichiers et 4 JSON) revérifiée et 108/108 fichiers du générateur intègres.** La certification du Bureau reste PENDING. Les décisions restent `REVIEWABLE_NOT_CERTIFIED`, `BUREAU_CERTIFICATION=PENDING` et `RoadMap P0.01=IN_PROGRESS`. L'archive R19 reste modifiable par son propriétaire ; aucun certificat tiers ou contrôle matériel réel n'a été produit.
 
 Voir `docs/GEN_R20_EVIDENCE_REVERIFICATION.md` et `docs/GEN_R20_BUREAU_READINESS.md`. `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R20 FIX1 — Python SyntaxWarning cleanup (candidat, aucune sortie)
+
+Le journal propriétaire GEN-R20 sur Mac Intel montre quatre répétitions de `SyntaxWarning: invalid escape sequence` dans `audits/r20_bureau_archive_review.py`, sur deux chaînes de présentation Markdown autour du SHA de commit R19. Les contrôles logiciels GEN-R20 ont réussi malgré ces avertissements. FIX1 retire exactement les deux échappements antislash devant l'accent grave Markdown, sans changement de logique, d'archive ou de code natif de sortie.
+
+Deux tests sont ajoutés à `tests/test_r20_bureau_readiness.py` : compilation de l'auditeur sous `SyntaxWarning` et `DeprecationWarning` configurés comme erreurs, et vérification du Markdown du commit sans antislash. Cible **397 tests Python (395+2) + 33 assertions C natives** sur Mac Intel. `RUN_GEN_R20_MAC_INTEL.command` reste inchangé ; le bootstrap FIX1 épingle le nouveau commit et le manifeste des 108 sources, vérifie l'archive historique R19 en lecture seule, puis lance tous les tests non émetteurs. FIX1 est **PENDING** jusqu'au journal Mac Intel.
+
+Aucune modification de `generator/src/` ni de l'archive R19 conservée. `NEVER_SIMULATION=ENFORCED` · `ZERO_COST_FOSS=ENFORCED` · `REAL_OUTPUT=NOT_AUTHORIZED` · `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` · `PRODUCTION=NOT_AUTHORIZED`.
