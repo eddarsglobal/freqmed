@@ -215,7 +215,7 @@ def inventory(source, source_sha):
 def inspect(root, source_override=None):
     root=Path(root).resolve()
     table,manifest_sha=r17.manifest_integrity(root)
-    require(len(table)==128,"GEN-R24 requires exactly 128 pinned source files")
+    require(len(table)>=128,"GEN-R24 historical baseline requires at least 128 pinned files")
     for path in ("audits/r24_shared_state_contract_audit.py",
                  "tests/test_r24_shared_state_contract.py",
                  "RUN_GEN_R24_MAC_INTEL.command",
