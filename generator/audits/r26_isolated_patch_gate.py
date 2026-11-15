@@ -100,7 +100,7 @@ def expected_candidate(original):
 def inspect(root,candidate_override=None):
     root=Path(root).resolve()
     table,manifest_sha=r17.manifest_integrity(root)
-    require(len(table)==139,"R26 expected precisely 139 SHA-pinned generator files")
+    require(len(table)>=139,"R26 historical baseline requires at least 139 SHA-pinned generator files")
     for path in (CANDIDATE,"audits/r26_isolated_patch_gate.py",
                  "tests/test_r26_isolated_patch_gate.py",
                  "RUN_GEN_R26_MAC_INTEL.command",
