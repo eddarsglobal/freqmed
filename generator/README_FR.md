@@ -276,3 +276,11 @@ Le lanceur `RUN_GEN_R27_MAC_INTEL.command` recalcule la chaîne R16–R26 à par
 **Cible GEN-R27 Mac Intel : 537 tests Python (517+20), 33 assertions C, 144 sources intègres. GEN-R27 MAC PENDING.** Neuf nouvelles lacunes OPEN_NOT_PROVEN, 15 obligations R23 OPEN, 7 constats R24 OPEN, 11 portes Bureau OPEN, 0 acquittée. `RoadMap P0.01=IN_PROGRESS`, Bureau PENDING, absence de certificat CoreAudio/C11, aucune émission.
 
 Documentation : `docs/GEN_R27_ADVERSARIAL_FINDINGS.md`, `docs/GEN_R27_BUREAU_REVIEW.md`. `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R28 — C11 Queue Lifetime & Callback Admission Remediation Design (source-only)
+
+Le témoin propriétaire GEN-R27 sur Mac Intel rapporte **537/537 Python, 33/33 C, 144/144 sources et 16 rapports SHA-256 PASS**. R28 ajoute un **contrat d'admission C11 séparé**, `candidates/r28_callback_admission_gate.c`, compilé isolément mais jamais lié/chargé, ainsi qu'un audit source-only, **20 tests de contrôle statique**, un lanceur Mac Intel non émetteur et deux revues du Bureau. Le code original et le candidat R26 restent strictement inchangés. Le registre conserve cinq nouveaux contrôles de conception OPEN_NOT_PROVEN, neuf constats adversariaux R27 OPEN, quinze obligations R23 OPEN, sept constats R24 OPEN, onze portes Bureau OPEN/0 résolue. Ce contrat n'est ni intégré aux callbacks CoreAudio ni une preuve C11 ou OS.
+
+**Cibles Mac Intel GEN-R28 (PENDING)** : **557 Python, 33 C, 150 fichiers source SHA-256, 18 rapports R20–R28 SHA-256**, une unité C11 de conception non liée et le binaire public non émetteur toujours verrouillé. Voir `docs/GEN_R28_QUEUE_LIFETIME_DESIGN.md` et `docs/GEN_R28_BUREAU_REVIEW.md`.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
