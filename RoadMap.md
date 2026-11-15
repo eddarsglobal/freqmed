@@ -153,3 +153,14 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - Nouveau dossier B07/B09/B10 : **5 obligations de conception OPEN_NOT_PROVEN**, outre les **9 constats R27, 15 obligations R23, 7 constats R24 et 11 portes du Bureau OPEN**. C historique et candidat R26 inchangés ; la PR #1 reste DRAFT.
 - **Validation attendue, non présumée :** 557 tests Python, 33 assertions C, 150 fichiers SHA-256, 18 rapports vérifiés, cinq objets existants et deux candidats compilés en objets séparés non liés, audit `nm` non émetteur.
 - Limites permanentes : `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R29 — Independent C11 Admission Integration & Queue Ownership Proof Review
+
+- **État :** CANDIDATE_SOURCE_ONLY ; MAC_INTEL_PENDING ; BUREAU_CERTIFICATION=PENDING ; RoadMap P0.01 toujours IN_PROGRESS. Pas de progression ni de certification implicite.
+- **Référence :** GEN-R28 réellement exécuté sur Mac Intel, 557 Python + 33 C + 150 source SHA-256 + 18 rapports de Bureau PASS, mais tous les risques C11 et CoreAudio encore ouverts.
+- **Livrable C :** un nouveau candidat `generator/candidates/acoustic_macos_r29.c` issu du candidat R26, intégrant localement le protocole de bail R28 dans l'admission des callbacks/listeners et la fermeture avant disposition, **uniquement compilé en objet isolé**. Aucun changement au backend original, au C R26 ou au C11 R28. Aucune API d'émission n'est liée au binaire non émetteur.
+- **Bureau B07/B09/B10 :** sept nouveaux constats I29 ouverts. La validité de userdata avant l'admission reste une obligation OS; closed-and-empty ne démontre ni qu'aucun callback futur ne se présentera ni la qualification des retours `AudioQueueDispose`. La fermeture avec un bail actif provoque une quarantaine sans disposition et peut conserver des ressources OS. Le risque de réentrance `AudioQueueEnqueueBuffer` sous le verrou PCM reste ouvert.
+- **Blocages hérités :** 5 contrôles R28 OPEN ; 9 constats R27 OPEN ; 15 obligations R23 OPEN ; 7 constats R24 OPEN ; 11 portes du Bureau OPEN / zéro résolue. Les tests textuels ne prouvent aucune race.
+- **Cible de test Mac Intel non attestée :** 577 Python, 33 assertions natives C, 156 sources SHA-256, 20 rapports SHA-256, compilation R29 uniquement non liée, audit `nm` de l'exécutable non émetteur.
+- **Gouvernance :** `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
