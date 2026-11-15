@@ -211,6 +211,18 @@ GEN-R22 approfondit trois lacunes : `C11_CALLBACK_RACE_FREEDOM`, `ACTIVE_COREAUD
 
 Le nouveau runner `RUN_GEN_R22_MAC_INTEL.command` garde les sorties acoustiques et EM non liées, le Guardian fermé et **l'archive historique R19 en lecture seule**. Il recalcule les preuves R16–R21 avant R22, puis les 33 assertions C et la suite Python complète. **20 tests Python** d'analyse des sources sont ajoutés, aucun appel actif à CoreAudio ni simulation physique. Le dossier privé R22 inclura les six fichiers R20/R21/R22 JSON/Markdown et leur manifeste SHA-256 uniquement après PASS.
 
-**Cible Mac Intel : 437 Python (417+20), 33 C, 118 sources**, 17 observations statiques, trois risques non prouvés, onze portes ouvertes. **GEN-R22 MAC PENDING**, `REVIEW_REQUIRED_NO_EMISSION`, Bureau PENDING, RoadMap P0.01 IN_PROGRESS.
+**Cible Mac Intel : 437 Python (417+20), 33 C, 118 sources**, 17 observations statiques, trois risques non prouvés, onze portes ouvertes. **GEN-R22 MAC INTEL PASS (437/437 Python, 33/33 C, 118/118 sources, 17 observations statiques, 3 risques OPEN)**, `REVIEW_REQUIRED_NO_EMISSION`, Bureau PENDING, RoadMap P0.01 IN_PROGRESS.
 
 Voir `docs/GEN_R22_C11_COREAUDIO_REVIEW.md` et `docs/GEN_R22_BUREAU_REVIEW.md`. `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R23 — C11 Happens-Before & Callback Quiescence Proof Obligations (candidat)
+
+**Témoin GEN-R22 réel sur Mac Intel, 15 novembre 2026 : 437/437 Python PASS, 33/33 C PASS, 118/118 sources SHA-256 PASS**, rapports R20–R22 (six fichiers) SHA-256 vérifiés, onze portes du Bureau ouvertes, zéro certifiée, aucune émission.
+
+GEN-R23 introduit un registre de **15 obligations de preuve non acquittées** : cinq pour les relations happens-before entre le contrôleur, les callbacks et les champs PCM non atomiques ; cinq pour la durée de vie de userdata et la quiescence des callbacks ; cinq pour les retours d'erreur de `AudioQueueDispose`, des listeners et la quarantaine du processus. Les **30 références de source** (deux par obligation) sont contrôlées sur le véritable C natif et le manifeste courant. `audits/r23_happens_before_obligations.py` recalcule le JSON R22 à partir des rapports R16–R21 et de l'archive R19 inchangée, et conserve les trois premières portes `NOT_PROVEN/NOT_TESTED/NOT_TESTED`.
+
+La maintenance de compatibilité R22 autorise désormais les manifests `>=118` fichiers, sans changer les 17 observations de GEN-R22 ni le témoin Mac historique. GEN-R23 ajoute **20 tests Python** de contrôle des obligations, mutations de source et fail-closed ; le lanceur `RUN_GEN_R23_MAC_INTEL.command` garde les cinq objets CoreAudio/EM **non liés**, les **33 assertions natives C**, le binaire sans émission, puis produira huit rapports JSON/MD R20–R23 avec leur SHA-256 après succès. Le code natif dans `generator/src/` demeure inchangé.
+
+**Cible Mac Intel GEN-R23 : 457/457 Python (437+20), 33/33 C, 123 sources**, 15 obligations OPEN, aucune acquittée, 11 portes Bureau OPEN. `GEN_R23_MAC_INTEL=PENDING`, `PROOF_OBLIGATIONS_OPEN_NO_EMISSION`. P0.01 IN_PROGRESS ; Bureau PENDING ; zéro coût FOSS et aucune simulation scientifique ou émission.
+
+Documents : `docs/GEN_R23_HAPPENS_BEFORE_PROOF_OBLIGATIONS.md` et `docs/GEN_R23_BUREAU_REVIEW.md`.
