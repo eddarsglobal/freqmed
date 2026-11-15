@@ -96,21 +96,21 @@ class R26IsolatedNativePatchReview(unittest.TestCase):
             "atomic_flag_test_and_set_explicit(&ctx->pcm_writer_gate",
             "atomic_flag_test_and_set_explicit(&ctx->unreviewed_gate",1)
         with self.assertRaises(r26.R26Error):
-            self.assertEqual(mut,r26.expected_candidate(self.original))
+            r26.inspect(ROOT,candidate_override=mut)
 
     def test_unsafe_free_after_OS_publication_rejected(self):
         mut=self.candidate.replace(
             "  (void)context_quiescent;\n",
             "  free(owner_ctx);\n",1)
         with self.assertRaises(r26.R26Error):
-            self.assertEqual(mut,r26.expected_candidate(self.original))
+            r26.inspect(ROOT,candidate_override=mut)
 
     def test_reopening_session_after_quarantine_rejected(self):
         mut=self.candidate.replace(
             "  err=1;\n  return -1;",
             "  err=0;\n  return 0;",1)
         with self.assertRaises(r26.R26Error):
-            self.assertEqual(mut,r26.expected_candidate(self.original))
+            r26.inspect(ROOT,candidate_override=mut)
 
     def test_proposal_has_five_uncertified_risks(self):
         self.assertEqual(5,len(r26.RISKS))
