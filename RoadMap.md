@@ -144,3 +144,12 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - 2026-11-10/12 : séries documentaires R2–R28 ; UI V4/V5 ; moteurs candidats R29–R32 en dehors de la branche officielle.
 - 2026-11-12 : correction impérative de mission par le propriétaire : **FREQMED = générateurs physiques acoustique ET EM**, recherche scientifique sous Bureau. La présente refonte ne crée aucune autorisation d'émission.
 - `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R28 — Independent C11 Queue Lifetime & Callback Admission Remediation Design
+
+- **Statut :** CANDIDATE_SOURCE_ONLY, MAC_INTEL_PENDING, BUREAU_CERTIFICATION=PENDING. **P0.01 reste IN_PROGRESS ; aucune promotion ni signature indépendante.**
+- Référence témoin **GEN-R27 Mac Intel logiciel PASS** : 537 Python, 33 assertions natives C, 144 sources SHA-256, 16 rapports SHA-256 ; neuf risques adversariaux non démontrés ouverts.
+- Contrat C11 isolé `generator/candidates/r28_callback_admission_gate.c` (admission CAS bornée, fermeture atomique irréversible, comptage des leases) : **ne relie pas et n'active pas CoreAudio** ; son état fermé/vide n'établit ni fin des callbacks de l'OS ni validité d'`AudioQueueRef`.
+- Nouveau dossier B07/B09/B10 : **5 obligations de conception OPEN_NOT_PROVEN**, outre les **9 constats R27, 15 obligations R23, 7 constats R24 et 11 portes du Bureau OPEN**. C historique et candidat R26 inchangés ; la PR #1 reste DRAFT.
+- **Validation attendue, non présumée :** 557 tests Python, 33 assertions C, 150 fichiers SHA-256, 18 rapports vérifiés, cinq objets existants et deux candidats compilés en objets séparés non liés, audit `nm` non émetteur.
+- Limites permanentes : `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
