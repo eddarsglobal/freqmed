@@ -223,6 +223,18 @@ GEN-R23 introduit un registre de **15 obligations de preuve non acquittées** : 
 
 La maintenance de compatibilité R22 autorise désormais les manifests `>=118` fichiers, sans changer les 17 observations de GEN-R22 ni le témoin Mac historique. GEN-R23 ajoute **20 tests Python** de contrôle des obligations, mutations de source et fail-closed ; le lanceur `RUN_GEN_R23_MAC_INTEL.command` garde les cinq objets CoreAudio/EM **non liés**, les **33 assertions natives C**, le binaire sans émission, puis produira huit rapports JSON/MD R20–R23 avec leur SHA-256 après succès. Le code natif dans `generator/src/` demeure inchangé.
 
-**Cible Mac Intel GEN-R23 : 457/457 Python (437+20), 33/33 C, 123 sources**, 15 obligations OPEN, aucune acquittée, 11 portes Bureau OPEN. `GEN_R23_MAC_INTEL=PENDING`, `PROOF_OBLIGATIONS_OPEN_NO_EMISSION`. P0.01 IN_PROGRESS ; Bureau PENDING ; zéro coût FOSS et aucune simulation scientifique ou émission.
+**Cible Mac Intel GEN-R23 : 457/457 Python (437+20), 33/33 C, 123 sources**, 15 obligations OPEN, aucune acquittée, 11 portes Bureau OPEN. `GEN_R23_MAC_INTEL=PASS` (457/457 Python, 33/33 C, 123/123 sources; quinze obligations OPEN), `PROOF_OBLIGATIONS_OPEN_NO_EMISSION`. P0.01 IN_PROGRESS ; Bureau PENDING ; zéro coût FOSS et aucune simulation scientifique ou émission.
 
 Documents : `docs/GEN_R23_HAPPENS_BEFORE_PROOF_OBLIGATIONS.md` et `docs/GEN_R23_BUREAU_REVIEW.md`.
+
+## GEN-R24 — Independent C11 Shared-State & Callback Contract Audit
+
+**Témoin réel GEN-R23 Mac Intel du 15 novembre 2026 : 457/457 tests Python PASS, 33/33 assertions C PASS, 123/123 sources SHA-256 PASS**, quinze obligations de preuve ouvertes et aucune acquittée, dossier de huit rapports R20–R23 avec empreintes vérifiées, aucune émission acoustique/EM et aucune simulation.
+
+GEN-R24 dresse une matrice **source-only bornée** du `AcousticContext` existant : **19 champs (7 non atomiques, 12 atomiques)**, **112 références syntaxiques `ctx->champ`** associées à leur ligne et fonction C et **11 appels directs à AudioQueue**. Quatre contrats documentaires Apple/C11 sont associés à leur périmètre légitime et aux limites non prouvées ; **7 constats supplémentaires du Bureau restent OPEN**. Les 15 obligations GEN-R23 et les onze portes du Bureau demeurent ouvertes ; l'analyse statique n'est pas une preuve de happens-before, de quiescence réelle ou d'échec `AudioQueueDispose` qualifié.
+
+Le nouveau `audits/r24_shared_state_contract_audit.py` recalcule le rapport R23 et les rapports précédents depuis leurs sources épinglées et l'archive R19 en lecture seule. `tests/test_r24_shared_state_contract.py` comporte **20 nouveaux tests logiciels**, dont des régressions qui refusent les nouveaux champs ou appels CoreAudio non revus. Le runner `RUN_GEN_R24_MAC_INTEL.command` conserve cinq objets acoustiques/EM compilés uniquement et non liés au binaire, 33 assertions natives, `nm` fail-closed, et crée dix rapports JSON/Markdown R20–R24 avec SHA-256 **après succès natif**.
+
+L'auditeur et le test hérités R23 acceptent désormais un manifeste de **123 sources minimum** au lieu d'un total exactement égal, pour ne pas bloquer les nouvelles preuves ; aucune source `generator/src/*` n'est modifiée. **Cible : 477 tests Python (457+20), 33 C, 128 sources épinglées ; Mac GEN-R24 PENDING.**
+
+Documents : `docs/GEN_R24_SHARED_STATE_MATRIX.md`, `docs/GEN_R24_BUREAU_REVIEW.md`. `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
