@@ -1,6 +1,6 @@
 # FREQMED — Bureau GEN-R23 : relations happens-before, quiescence, échec OS
 
-**État : `PROOF_OBLIGATIONS_OPEN_NO_EMISSION`.** Seize slogans de sécurité ne sont pas une preuve : le registre de GEN-R23 doit montrer **quinze obligations de preuve explicitement ouvertes**, pas quinze contrôles de sûreté accomplis.
+**État : `PROOF_OBLIGATIONS_OPEN_NO_EMISSION`.** Des affirmations de sécurité ne sont pas une preuve : le registre de GEN-R23 doit montrer **quinze obligations de preuve explicitement ouvertes**, pas quinze contrôles de sûreté accomplis.
 
 ## Revue B07 / B09 / B10
 
