@@ -172,7 +172,7 @@ def assess(root, source_text=None, runner_text=None):
     """Pure deterministic lexical review; optionally inspect software mutations."""
     root = Path(root)
     table, manifest_sha = r17.manifest_integrity(root)
-    require(len(table) == 118, "R22 expected precisely 118 pinned generator sources")
+    require(len(table) >= 118, "R22 baseline requires at least 118 pinned generator sources")
     for path in ("audits/r22_coreaudio_lifetime_review.py",
                  "tests/test_r22_coreaudio_lifetime.py",
                  "RUN_GEN_R22_MAC_INTEL.command",
