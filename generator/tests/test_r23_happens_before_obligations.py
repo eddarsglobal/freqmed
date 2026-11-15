@@ -111,9 +111,9 @@ class R23HappensBeforeObligations(unittest.TestCase):
         self.mutation("if (AudioQueueDispose(ctx->queue,true)!=noErr) {",
                       "if (AudioQueueDispose(ctx->queue,true)==noErr) {")
 
-    def test_process_quarantine_release_mutation_rejected(self):
-        self.mutation("atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);",
-                      "atomic_store_explicit(&fm_context_quarantined,0,memory_order_release);")
+    def test_process_session_claim_acquire_mutation_rejected(self):
+        self.mutation("atomic_flag_test_and_set_explicit(&fm_session_claim,memory_order_acquire)",
+                      "atomic_flag_test_and_set_explicit(&fm_session_claim,memory_order_relaxed)")
 
     def test_markdown_does_not_claim_concurrency_proof(self):
         text=r23.markdown({"source_only_obligations":self.ledger})
