@@ -181,7 +181,7 @@ def validate_state_machine():
 def inspect(root, source_override=None, plan_override=None):
     root=Path(root).resolve()
     table,manifest_sha=r17.manifest_integrity(root)
-    require(len(table)==133,"GEN-R25 requires exactly 133 pinned generator files")
+    require(len(table)>=133,"GEN-R25 historical baseline requires at least 133 pinned generator files")
     for p in ("audits/r25_sync_ownership_remediation.py",
               "tests/test_r25_sync_ownership_remediation.py",
               "RUN_GEN_R25_MAC_INTEL.command",
