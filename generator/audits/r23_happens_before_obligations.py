@@ -49,9 +49,15 @@ def order(body, *needles):
 
 def obligations(source, runner, expected_sha):
     """15 fixed obligations, real code anchors, all proof_status=OPEN."""
-    # Retain all 17 R22 bounded observations. They do not prove C11 safety.
-    inherited = r22.checks(source, runner)
+    # Retain the exact 17 R22 observations with their ORIGINAL R22 runner.
+    # R22 checks its own R22-specific symbol-audit marker; R23 separately
+    # checks the new R23 runner allowlist/marker in assess(). Both are pinned.
+    legacy = (Path(__file__).resolve().parents[1] /
+              "RUN_GEN_R22_MAC_INTEL.command").read_text(encoding="utf-8")
+    inherited = r22.checks(source, legacy)
     require(len(inherited) == 17, "R22 source-contract baseline drift")
+    require("R23_NONEMITTING_EXECUTABLE_SYMBOL_AUDIT=PASS" in runner,
+            "R23 source review missing current non-emission marker")
     out = r22.function_body(source, "output_callback")
     listener = r22.function_body(source, "queue_running_listener")
     pcm = r22.function_body(source, "fill_audio")
