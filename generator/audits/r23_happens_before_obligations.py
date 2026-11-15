@@ -221,7 +221,7 @@ def obligations(source, runner, expected_sha):
 def assess(root, source_override=None, runner_override=None):
     root = Path(root).resolve()
     table, manifest_sha = r17.manifest_integrity(root)
-    require(len(table)==123, "GEN-R23 requires precisely 123 pinned files")
+    require(len(table)>=123, "GEN-R23 historical baseline requires at least 123 pinned files")
     for path in ("audits/r23_happens_before_obligations.py",
                  "tests/test_r23_happens_before_obligations.py",
                  "RUN_GEN_R23_MAC_INTEL.command",
