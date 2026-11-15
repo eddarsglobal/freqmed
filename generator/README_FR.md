@@ -235,6 +235,18 @@ GEN-R24 dresse une matrice **source-only bornée** du `AcousticContext` existant
 
 Le nouveau `audits/r24_shared_state_contract_audit.py` recalcule le rapport R23 et les rapports précédents depuis leurs sources épinglées et l'archive R19 en lecture seule. `tests/test_r24_shared_state_contract.py` comporte **20 nouveaux tests logiciels**, dont des régressions qui refusent les nouveaux champs ou appels CoreAudio non revus. Le runner `RUN_GEN_R24_MAC_INTEL.command` conserve cinq objets acoustiques/EM compilés uniquement et non liés au binaire, 33 assertions natives, `nm` fail-closed, et crée dix rapports JSON/Markdown R20–R24 avec SHA-256 **après succès natif**.
 
-L'auditeur et le test hérités R23 acceptent désormais un manifeste de **123 sources minimum** au lieu d'un total exactement égal, pour ne pas bloquer les nouvelles preuves ; aucune source `generator/src/*` n'est modifiée. **Cible : 477 tests Python (457+20), 33 C, 128 sources épinglées ; Mac GEN-R24 PENDING.**
+L'auditeur et le test hérités R23 acceptent désormais un manifeste de **123 sources minimum** au lieu d'un total exactement égal, pour ne pas bloquer les nouvelles preuves ; aucune source `generator/src/*` n'est modifiée. **Cible : 477 tests Python (457+20), 33 C, 128 sources épinglées ; Mac GEN-R24 PASS : 477/477 Python, 33/33 assertions C, 128/128 sources SHA-256, 10/10 rapports.**
 
 Documents : `docs/GEN_R24_SHARED_STATE_MATRIX.md`, `docs/GEN_R24_BUREAU_REVIEW.md`. `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R25 — Independent C11 Synchronization & Ownership Remediation Review
+
+**Témoin propriétaire GEN-R24 réellement exécuté sur Mac Intel (15 novembre 2026) : 477/477 Python PASS, 33/33 assertions C PASS, 128/128 sources SHA-256 PASS.** Les dix rapports R20–R24 ont passé la vérification des empreintes. Les 19 champs, 112 références, 11 appels AudioQueue et les 7 risques R24 ont été inventoriés, mais aucune preuve de concurrence C11 ou de quiescence OS n'a été certifiée.
+
+GEN-R25 passe de l'identification des lacunes à la **préparation de corrections concrètes** : neuf plans de remédiation liés chacun à deux lignes réelles de `src/acoustic_macos.c` et aux **7 risques R24** et **15 obligations R23**. Huit propositions P1 et une P2 couvrent le propriétaire unique du PCM, la publication et l'exclusion des callbacks, la portée du verrou, le listener et la conservation du tas pendant les erreurs `AudioQueueDispose`. Un diagramme de **7 états / 9 transitions proposé mais non implémenté** décrit les choix de propriété OS à confirmer.
+
+Les **20 nouveaux tests Python** détectent la suppression des références C, les divergences d'inventaire, les lacunes oubliées et les promotions de preuve interdites. Le nouveau runner `RUN_GEN_R25_MAC_INTEL.command` requalifie les rapports réels R16–R24 à partir des sources épinglées et de l'archive R19 originale en lecture seule, maintient cinq objets candidats natifs **compilés mais non liés**, les **33 assertions C** et le contrôle `nm` hard-denied. Après succès, il produira **12 rapports R20–R25 JSON/Markdown** avec SHA-256. Les vérifications de cardinalité R24 héritées sont limitées à un plancher de 128 sources afin de préserver leur validité lors des ajouts documentaires.
+
+**Cible GEN-R25 sur Mac Intel : 497 tests Python (477+20), 33 C, 133 fichiers intègres**. **9 plans PROPOSED_NOT_APPLIED / 0 correctif C appliqué / 0 preuve acquittée** ; 15 obligations OPEN, 7 constats OPEN, 11 portes OPEN. `GEN_R25_MAC_INTEL=PENDING`.
+
+Documents : `docs/GEN_R25_REMEDIATION_DESIGN.md`, `docs/GEN_R25_BUREAU_REVIEW.md`. `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
