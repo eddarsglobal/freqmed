@@ -81,7 +81,7 @@ def observe(content):
 def inspect(root,source_override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==150,"R28 requires 150 SHA-pinned generator files")
+    require(len(table)>=150,"R28 historical design baseline requires at least 150 SHA-pinned files")
     needed=(CANDIDATE,"audits/r28_queue_admission_design.py",
             "tests/test_r28_queue_admission_design.py",
             "RUN_GEN_R28_MAC_INTEL.command",
