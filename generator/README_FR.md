@@ -284,3 +284,16 @@ Le témoin propriétaire GEN-R27 sur Mac Intel rapporte **537/537 Python, 33/33 
 **Cibles Mac Intel GEN-R28 (PENDING)** : **557 Python, 33 C, 150 fichiers source SHA-256, 18 rapports R20–R28 SHA-256**, une unité C11 de conception non liée et le binaire public non émetteur toujours verrouillé. Voir `docs/GEN_R28_QUEUE_LIFETIME_DESIGN.md` et `docs/GEN_R28_BUREAU_REVIEW.md`.
 
 `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R29 — Independent C11 Admission Integration & Queue Ownership Proof Review
+
+**GEN-R28 a été attesté logiciellement sur Mac Intel : 557/557 Python, 33/33 C natifs, 150/150 sources épinglées, 18 rapports SHA-256.** GEN-R29 ajoute un candidat **`candidates/acoustic_macos_r29.c` entièrement isolé** dérivé de R26. Il inclut le protocole atomique de GEN-R28 dans sa propre unité C, place l'admission avant les accès du listener et du callback, puis tente de fermer les admissions avant disposition. **Aucune source historique `src/`, ni candidat R26, ni unité R28 n'est modifiée.**
+
+Le contrat n'est **pas une preuve** que les userdata sont encore valides lors de l'entrée OS, que `ctx->queue` est utilisable, ou que `AudioQueueDispose` traite sans risque tous les retours d'erreur. Sept nouvelles obligations R29 restent **OPEN_NOT_PROVEN**. Les cinq portes de conception R28, neuf constats R27, quinze obligations R23, sept constats R24 et onze portes du Bureau demeurent ouverts.
+
+`RUN_GEN_R29_MAC_INTEL.command` compile le candidat R29 en objet séparé **non lié**, revalide la chaîne réelle R16–R28 depuis l'archive historique R19 en lecture seule, puis exécute la suite native non émettrice. **Cibles Mac Intel — PENDING : 577 tests Python, 33 C natives, 156 sources intègres, 20 rapports privés SHA-256 R20–R29.**
+
+Documentation : `docs/GEN_R29_C11_ADMISSION_INTEGRATION.md` et `docs/GEN_R29_BUREAU_REVIEW.md`. PR #1 DRAFT ; aucune autorisation de production, d'exposition ou de sortie.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
