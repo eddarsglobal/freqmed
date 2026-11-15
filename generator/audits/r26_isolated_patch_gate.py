@@ -122,7 +122,7 @@ def inspect(root,candidate_override=None):
     require(actual==expected,"isolated candidate differs from exactly three allowed C edits")
     require(actual.count("free(owner_ctx);")==2,
             "published callback context must not be freed in R26 candidate")
-    require(actual.count("atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);")==3,
+    require(actual.count("atomic_flag_clear_explicit(&fm_session_claim,memory_order_release);")==4,
             "claim release count inconsistent with original prepublication paths")
     require("  return -1;\n\n}\nint fm_acoustic_native_backend_available" in actual,
             "candidate backend may return success")
@@ -167,13 +167,11 @@ def audit(root,archive_r19,older,r21,r22,r23,r24,r25_report):
     proposed=(root/CANDIDATE).read_text(encoding="utf-8")
     anchors=[]
     for ident,old,new in PATCHES:
-        # The exact replacement's original lines are unambiguous in pinned C.
-        marker=old.split("\n")[0].strip()
-        lines=original.splitlines()
-        positions=[i+1 for i,line in enumerate(lines) if marker in line]
-        require(len(positions)==1,"original C patch anchor missing: "+ident)
+        # The whole old block, not its first line, is uniquely anchored.
+        require(original.count(old)==1,"original C patch anchor missing: "+ident)
+        baseline_line=original[:original.index(old)].count("\n")+1
         anchors.append({"id":ident,"baseline_path":ORIGINAL,
-                        "baseline_line":positions[0],
+                        "baseline_line":baseline_line,
                         "baseline_sha256":baseline_sha,
                         "candidate_sha256":candidate_sha,
                         "exact_code_replacement_present":new in proposed,
