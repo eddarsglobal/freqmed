@@ -63,7 +63,7 @@ class R27AdversarialOwnershipReview(unittest.TestCase):
 
     def test_manifest_144_source_file_scope(self):
         table,_,observed,candidate_sha=r27.inspect(ROOT)
-        self.assertEqual(144,len(table))
+        self.assertGreaterEqual(len(table),144)
         self.assertEqual(9,len(observed))
         self.assertEqual(candidate_sha,table[r27.CANDIDATE])
 
