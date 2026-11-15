@@ -27,8 +27,10 @@ STATES = (
 # Proposed *design* transitions, NOT a claim that source C implements them.
 TRANSITIONS = (
     ("UNPUBLISHED", "QUEUE_PUBLISHED"),
+    ("UNPUBLISHED", "QUARANTINED"),
     ("QUEUE_PUBLISHED", "SHUTDOWN_REQUESTED"),
     ("SHUTDOWN_REQUESTED", "LISTENER_UNREGISTERED"),
+    ("SHUTDOWN_REQUESTED", "DISPOSAL_CONFIRMED"),
     ("SHUTDOWN_REQUESTED", "DISPOSAL_UNCERTAIN"),
     ("LISTENER_UNREGISTERED", "DISPOSAL_CONFIRMED"),
     ("LISTENER_UNREGISTERED", "DISPOSAL_UNCERTAIN"),
@@ -164,7 +166,7 @@ def review_plans(text, pinned_hash, context):
 def validate_state_machine():
     require(len(STATES)==7 and len(set(STATES))==7,
             "duplicate/missing proposed ownership state")
-    require(len(TRANSITIONS)==7 and len(set(TRANSITIONS))==7,
+    require(len(TRANSITIONS)==9 and len(set(TRANSITIONS))==9,
             "duplicate/missing proposed transitions")
     require(all(a in STATES and b in STATES for a,b in TRANSITIONS),
             "unknown proposed transition state")
@@ -244,8 +246,10 @@ def audit(root,archive_r19,reports,r21,r22,r23,r24_report):
                     for x in r23_evidence["source_only_obligations"]),
             "R23 original proof obligations are not all still OPEN")
     expected_r23={x["id"] for x in r23_evidence["source_only_obligations"]}
-    require(expected_r23==
-            {item["id"].split("_",1)[0] for item in r23_evidence["source_only_obligations"]},
+    require({item["id"].split("_",1)[0] for item in r23_evidence["source_only_obligations"]}
+            == {"HB01","HB02","HB03","HB04","HB05",
+                "Q01","Q02","Q03","Q04","Q05",
+                "D01","D02","D03","D04","D05"},
             "unexpected R23 obligation identifier format")
     return {
         "schema":SCHEMA,"verdict":VERDICT,
@@ -324,7 +328,7 @@ def main():
         return 2
     print("R25_C11_REMEDIATION_REVIEW=PASS")
     print("R25_REMEDIATION_PLANS=9; R25_APPLIED=0; R25_PROOFS_DISCHARGED=0")
-    print("R25_OWNERSHIP_STATES=7; R25_TRANSITIONS_PROPOSED=7")
+    print("R25_OWNERSHIP_STATES=7; R25_TRANSITIONS_PROPOSED=9")
     print("R25_R23_OBLIGATIONS=15_OPEN; R25_R24_FINDINGS=7_OPEN")
     print("R25_BUREAU_GATES=11_OPEN; R25_BUREAU_RESOLVED=0")
     print("R25_REVIEW_VERDICT="+VERDICT)
