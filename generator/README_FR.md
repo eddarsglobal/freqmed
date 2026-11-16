@@ -384,3 +384,18 @@ Livrables : `audits/r34_userdata_lifetime_review.py` (**14 obligations ouvertes,
 Obligations héritées toujours OPEN : R33 12 (3 CRITICAL), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7, Bureau **11 OPEN/0 résolue**. PR #1 DRAFT et non fusionnée.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R35 — Independent Pre-Admission Callback Lifetime & OS Contract Evidence Review
+
+**Base de preuve propriétaire Mac Intel attestée : GEN-R34**, 677/677 tests Python, 33/33 assertions natives C, 187/187 sources SHA-256 et 30/30 rapports SHA-256. Ce résultat concerne les audits logiciels **sans émission** et non la sûreté OS, C11 ou physique.
+
+GEN-R35 classe séparément **9 éléments des contrats publics Apple** (`AudioQueueStop`, `AudioQueueDispose`, `AudioQueuePropertyListenerProc`, `AudioQueueRemovePropertyListener`), **13 phases documentaires** de durée de vie, et **12 nouvelles obligations ouvertes dont 4 critiques**. Ces références publiques ont été consultées le 16/11/2026 mais ne sont pas des snapshots immuables. L'accès à `ctx->queue_admission` se produit avant l'admission atomique pour les deux callbacks ; un bail vide ne certifie donc pas l'absence d'entrée CoreAudio tardive. **Aucune race ou UAF reproduite.**
+
+Livrables : `audits/r35_pre_admission_os_contract_review.py`, `tests/test_r35_pre_admission_os_contract_review.py` (**20 nouveaux tests source-only**), `RUN_GEN_R35_MAC_INTEL.command`, `docs/GEN_R35_PRE_ADMISSION_REVIEW.md`, `docs/GEN_R35_BUREAU_REVIEW.md`, `docs/GEN_R35_APPLE_OS_CONTRACT_MATRIX.md`. Preuves R16–R34 recalculées, dossier privé **32 rapports R20–R35 SHA-256** seulement sur succès, `nm` des symboles émetteurs, compilation séparée et non liée du C31.
+
+**Cibles Mac Intel R35 encore PENDING : 697 tests Python, 33 C natifs, 193 sources SHA-256 et 32 rapports SHA-256.** Aucun fichier C original/candidat/portail modifié, aucun CoreAudio actif, aucune simulation ou émission.
+
+Toutes obligations restent OPEN : R34 14/4 critiques, R33 12/3, R32 10/2, R31 8/2, R30 12/2, R29 7, R28 5, R27 9, R23 15, R24 7, Bureau **11 OPEN / 0 résolue**. PR #1 DRAFT, non fusionnée.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
