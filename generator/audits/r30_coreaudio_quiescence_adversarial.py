@@ -61,7 +61,7 @@ ANCHORS=(
   ("callback","if (!fm_r28_gate_try_enter(&ctx->queue_admission)) return;")),
  ("Q30_02_LIVE_QUEUE_EARLY_EXIT",
   ("controller","if (!err && AudioQueueStart(ctx->queue,NULL)!=noErr) err=1;"),
-  ("controller","return -1;\\n  }\\n  if (ctx->queue) {")),
+  ("controller","return -1;\n  }\n  if (ctx->queue) {")),
  ("Q30_03_CONTROLLER_STOP_WITHOUT_LEASE",
   ("controller","request_graceful_queue_drain(ctx);"),
   ("controller","AudioQueueStop(ctx->queue,true)")),
