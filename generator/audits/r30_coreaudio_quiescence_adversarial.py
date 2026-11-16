@@ -171,7 +171,7 @@ def observe(source):
 def inspect(root,candidate_override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==162,"R30 requires exactly 162 SHA-pinned generator files")
+    require(len(table)>=162,"R30 historical review requires at least 162 SHA-pinned generator files")
     required=("audits/r30_coreaudio_quiescence_adversarial.py",
               "tests/test_r30_coreaudio_quiescence_adversarial.py",
               "RUN_GEN_R30_MAC_INTEL.command",
