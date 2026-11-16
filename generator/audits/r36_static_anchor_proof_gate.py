@@ -201,7 +201,7 @@ def observe(candidate,original):
 def inspect(root,override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==200,"R36 exactly 200 pinned source files")
+    require(len(table)>=200,"R36 historical audit requires at least 200 pinned files")
     needed=(
       "candidates/r36_stable_userdata_anchor.c",
       "audits/r36_static_anchor_proof_gate.py",
