@@ -268,3 +268,12 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Cibles Mac Intel R36, toujours PENDING :** 717 Python, 33 assertions C natives, 200 sources intègres et 34 rapports SHA-256 ; signe `R36_STABLE_ANCHOR_OBJECT=COMPILED_UNLINKED`.
 - **Verrous :** `GEN_R36_SOURCE_CANDIDATE=PUBLISHED`, `GEN_R36_MAC_INTEL=PENDING`, `R36_REAL_OS_INTEGRATION=NO`, `USERDATA_PRE_ADMISSION_LIFETIME_IN_PRODUCTION=NOT_PROVEN`, `C11_RACE_FREEDOM=NOT_PROVEN`, `PHYSICAL_CUTOFF=NOT_PROVEN`, `BUREAU_CERTIFICATION=PENDING`. PR #1 DRAFT et non fusionnée.
 - `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+### GEN-R36 FIX1 — incident réel Mac Intel et correction locale de l'auditeur
+
+- **Journal propriétaire du 16/11/2026 :** 200/200 fichiers source SHA-256 PASS ; ancre statique C36 SHA-256 PASS ; 33/33 assertions natives C PASS ; C36 et C31 `COMPILED_UNLINKED` ; `R36_STATIC_ANCHOR_REVIEW=PASS` ; résultat intégral **`Ran 717 tests in 31.965s` → `FAILED (errors=1)`**. **34 rapports SHA-256 finaux NON PRODUITS** par le lanceur en arrêt `set -euo pipefail`.
+- **Racine unique :** test mutation `test_mutation_owner_early_read_rejected` remplace `*owner_out=NULL;` ; l'auditeur `observe` tentait `enter.index(...)` sans contrôler l'ancrage, laissant un `ValueError` brut plutôt que le `R36Error` attendu.
+- **FIX1 :** vérifier explicitement cinq ancrages d'admission avant les appels `.index()` ; transformer cette mutation en rejet contrôlé `R36Error` ; conserver intégralement les tests existants et les 12 constats R36 (4 CRITICAL).
+- **Périmètre :** aucun changement C (ancre C36 comprise), aucune liaison ou émission ; Manifeste SHA-256 rescéllé pour le seul auditeur modifié, README et RoadMap.
+- **Gouvernance :** `GEN_R36_INITIAL_MAC_INTEL=FAIL_1_TEST_ERROR` ; `GEN_R36_FIX1_SOURCE=PUBLISHED` ; `GEN_R36_FIX1_MAC_INTEL=PENDING` ; `BUREAU_GATES=11_OPEN` ; `NEVER_SIMULATION=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`. PR #1 reste DRAFT, non fusionnée.
