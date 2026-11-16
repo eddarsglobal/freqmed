@@ -158,9 +158,12 @@ def observe(r31src,r36src,r37src):
     # exit shared by the source. These cannot certify external OS callback ends.
     for scope,name in ((output,"output"),(listener,"listener")):
         gate=scope.index("fm_r28_gate_try_enter(&ctx->queue_admission)")
+        gate_reject_end=scope.index(";",gate)+1
         end=scope.index("fm_r28_gate_leave(&ctx->queue_admission);")
-        require(not re.search(r"\breturn\b",scope[gate:end]),
-                "R38 unbalanced early return before "+name+" gate leave")
+        # The explicit rejection 'if (!try_enter(...)) return;' is permitted.
+        # Only a new return AFTER that denial and BEFORE leave is unsafe.
+        require(not re.search(r"\breturn\b",scope[gate_reject_end:end]),
+                "R38 admitted callback returns before "+name+" gate leave")
         require(scope.count("fm_r28_gate_leave(&ctx->queue_admission);")==1,
                 "R38 callback gate leave cardinality changed")
         require(scope.count("fm_r28_gate_try_enter(&ctx->queue_admission)")==1,
