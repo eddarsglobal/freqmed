@@ -152,6 +152,17 @@ def observe(candidate,original):
             and "&fm36_anchor.phase,&expected,FM36_EXPOSED" in expose,
             "R36 expose transition changed")
     enter=parts["fm36_try_enter"]
+    # Missing adversarial anchors must fail with the typed R36Error, not
+    # escape through Python str.index as an uncontrolled ValueError.
+    required_entry_anchors=(
+        "userdata!=(void *)&fm36_anchor",
+        "*owner_out=NULL;",
+        "atomic_fetch_add_explicit(&fm36_anchor.admitted",
+        "void *owner=atomic_load_explicit(&fm36_anchor.owner,",
+        "*owner_out=owner;",
+    )
+    require(all(token in enter for token in required_entry_anchors),
+            "R36 pre-admission entry anchor removed or mutated")
     require(enter.count("userdata!=(void *)&fm36_anchor")==1
             and enter.index("userdata!=(void *)&fm36_anchor") <
             enter.index("*owner_out=NULL;") <
