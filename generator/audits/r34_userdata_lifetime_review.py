@@ -227,7 +227,7 @@ def observe(source):
 def inspect(root,override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==187,"R34 requires 187 SHA-pinned generator files")
+    require(len(table)>=187,"R34 historical review needs at least 187 SHA-pinned generator files")
     files=(
      "audits/r34_userdata_lifetime_review.py",
      "tests/test_r34_userdata_lifetime_review.py",
