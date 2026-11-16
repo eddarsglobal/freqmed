@@ -174,3 +174,15 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Statut :** FIX1_SOURCE_CANDIDATE ; MAC_INTEL_FULL_REPLAY_PENDING ; 577 tests Python ciblés, 33 C, 156 sources, 20 rapports du Bureau. `GEN_R29_MAC_INTEL_SOFTWARE` n'est PAS PASS à ce stade.
 - Obligations inchangées : 7 constats R29 OPEN, 5 contrôles R28 OPEN, 9 constats R27 OPEN, 15 preuves R23 OPEN, 7 constats R24 OPEN, 11 portes Bureau OPEN/0 résolue. P0.01 IN_PROGRESS. PR #1 DRAFT, sans fusion.
 - `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R30 — Independent CoreAudio Callback Quiescence & Queue Ownership Adversarial Review
+
+- **Référence réellement exécutée :** GEN-R29 FIX1 Mac Intel = 577 Python PASS, 33 C natives PASS, 156 sources intègres PASS, 20 rapports SHA-256 PASS ; aucune certification OS/physique.
+- **Découverte prioritaire :** candidat C R29, après `AudioQueueStart`, branche `closed_and_empty == false` qui retourne avec quarantaine sans `AudioQueueStop` ni `AudioQueueDispose`. **CRITICAL — jamais activer**, la quarantaine n'est pas une coupure matérielle.
+- **R30 :** audit indépendant source-only de la quiescence, durée de vie `userdata`, `ctx->queue`, callbacks, listeners, `AudioQueueEnqueueBuffer`, dispose failures et garanties C11 ; **12 constats (2 critiques) OPEN_NOT_PROVEN**, 20 contrôles Python statiques.
+- **Aucune modification du code C** : backend original, C R26/R29 et portail R28 identiques ; objets compilés séparément, aucun backend de sortie lié au CLI. Aucun callback CoreAudio, simulation scientifique, émission physique ou test biologique.
+- **Bureau :** 7 constats R29 OPEN, 5 R28 OPEN, 9 R27 OPEN, 15 R23 OPEN, 7 R24 OPEN et 11 portes original Bureau OPEN/0 résolue. Aucune signature indépendante.
+- **Validation attendue, non attestée :** 597 tests Python, 33 assertions C, 162 sources SHA-256, 22 rapports de revue SHA-256 ; PR #1 DRAFT, pas de fusion.
+- `GEN_R30_SOURCE_REVIEW=PUBLISHED`; `GEN_R30_MAC_INTEL=PENDING`; `C11_RACE_FREEDOM=NOT_PROVEN`; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`; `POST_START_SHUTDOWN_SAFETY=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
