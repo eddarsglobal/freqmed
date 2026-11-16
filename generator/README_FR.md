@@ -319,3 +319,16 @@ Le Bureau B07/B09/B10 conserve aussi les 7 risques R29, 5 contrôles R28, 9 R27,
 `RUN_GEN_R30_MAC_INTEL.command` ajoute la revue et 20 tests Python sans émission ; cible Mac Intel **597 Python, 33 C, 162 sources SHA-256 et 22 rapports R20–R30**. **GEN-R30 MAC_INTEL=PENDING** jusqu'à témoin d'exécution du propriétaire.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R31 — Independent Critical Shutdown Path Remediation & Fail-Closed Ownership Design
+
+**Base attestée GEN-R30 : 597 tests Python, 33 assertions C natives, 162 sources SHA-256 et 22 rapports SHA-256 PASS** ; son rapport de sécurité demeure `ADVERSARIAL_COREAUDIO_LIFETIME_GAPS_CONFIRMED_UNCERTIFIED`, dont deux constats critiques non corrigés.
+
+GEN-R31 ajoute `candidates/acoustic_macos_r31.c`, un **nouveau candidat C isolé** qui modifie seulement la phase de fermeture du candidat R29 : la tentative d'arrêt immédiat `AudioQueueStop(ctx->queue,true)` est désormais située **avant** tout retour pour admissions encore actives. Une erreur d'arrêt conserve le contexte/la file et impose une quarantaine ; le cas de file encore occupée conserve aussi les ressources sans disposition. Il s'agit d'une **correction d'ordre du code** et non d'une preuve d'arrêt OS, de non-émission ou de quiescence C11. Ne jamais lier ni activer ce candidat.
+
+Nouveaux contrôles de preuve : **8 R31 OPEN_NOT_PROVEN (2 CRITICAL)** ; les **12 constats R30 (2 CRITICAL)** restent ouverts, ainsi que R29 7, R28 5, R27 9, R23 15, R24 7, Bureau 11 OPEN/0 résolue. Documents : `docs/GEN_R31_SHUTDOWN_REMEDIATION.md`, `docs/GEN_R31_BUREAU_REVIEW.md`, `docs/GEN_R31_PROOF_OBLIGATIONS.md`. Aucun autre C historique n'est modifié.
+
+Lanceur `RUN_GEN_R31_MAC_INTEL.command` : contrôle exact de la portée C, archive R19 originale, rapports R16–R30, compilation `clang -c` uniquement du C31 et des candidats historiques, lien `output_hard_denied.c`, `nm` non émetteur, suite Python et dossier privé de 24 rapports. **Cibles Mac Intel PENDING : 617 tests Python, 33 C, 169 sources SHA-256, 24 rapports SHA-256.** PR #1 DRAFT, sans fusion.
+
+`NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
