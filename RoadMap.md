@@ -289,3 +289,16 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Obligations encore ouvertes :** R36 12 (4 CRITICAL), R35 12 (4), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 ; **Bureau historique 11 OPEN / 0 résolue**.
 - **Cibles Mac Intel, PENDING :** 737 Python, 33 C, 207 sources SHA-256 et 36 rapports SHA-256. `GEN_R37_SOURCE_CANDIDATE=PUBLISHED` ; `GEN_R37_MAC_INTEL=PENDING` ; `GEN_R37_REAL_OS_INTEGRATION=NO` ; `OWNER_LIFETIME=NOT_PROVEN`; `C11_HAPPENS_BEFORE=NOT_PROVEN`; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`; `PHYSICAL_CUTOFF=NOT_PROVEN` ; `BUREAU_CERTIFICATION=PENDING`.
 - `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`. PR #1 DRAFT, non fusionnée.
+
+
+## GEN-R38 — Independent Callback Owner-Alias & Exit-Path Completeness Audit
+
+- **Base réellement attestée :** GEN-R37 Mac Intel logiciel PASS (737 Python, 33 assertions natives C, 207 fichiers source SHA-256, 36 rapports SHA-256), sans certification de sûreté.
+- **Analyse nouvelle :** inventaire statique de **12 relations documentaires d'alias** entre `owner_ctx`, `ctx`, les deux `userdata` CoreAudio, `ptr/data`, `ctx->queue`, l'ancre R36 et le bail R37. Comptage des **2 sites `free(owner_ctx)` prépublication / 0 postpublication** dans le candidat C31 et reconnaissance de `gate_leave` dans output/listener.
+- **Verdict conservateur :** **18 constats ouverts (5 critiques)**, y compris absence de propriété exclusive prouvée, première déréférence de `ctx` avant admission, manque d'appariement `fm37_finish` par vrai callback et absence de certification CoreAudio/physique. Le comptage lexical ne prouve pas que tous les chemins ou alias externes sont connus.
+- **Livrables :** `audits/r38_owner_alias_exit_audit.py`, `tests/test_r38_owner_alias_exit_audit.py` (20 tests source-only et quatre mutations de chaînes), matrice d'alias, revue Bureau B07/B09/B10, obligations adversariales, launcher `RUN_GEN_R38_MAC_INTEL.command` avec chaîne de preuves R16–R37 et 38 rapports SHA-256 R20–R38 conditionnels.
+- **Périmètre inviolable :** aucun fichier C modifié, pas de liaison/exécution des candidats R31/R36/R37, binaire CLI hard-denied ; aucune simulation scientifique, émission acoustique/EM ni exposition biologique.
+- **Obligations héritées non déchargées :** R37 14 OPEN (4 CRITICAL), R36 12 (4), R35 12 (4), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 ; Bureau historique **11 OPEN / 0 résolue**.
+- **Objectifs Mac Intel non encore attestés :** 757 Python, 33 assertions C natives, 213 sources épinglées SHA-256, 38 rapports contrôlés SHA-256 ; candidat objet `COMPILED_UNLINKED`.
+- **Gouvernance :** `GEN_R38_SOURCE_AUDIT=PUBLISHED`; `GEN_R38_MAC_INTEL=PENDING`; `CALLBACK_OWNER_ALIAS_LIFETIME=NOT_PROVEN`; `CALLBACK_EXIT_COMPLETENESS=NOT_PROVEN`; `C11_RACE_FREEDOM=NOT_PROVEN`; `COREAUDIO_QUIESCENCE=NOT_PROVEN`; `PHYSICAL_CUTOFF=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`; PR #1 reste DRAFT, non fusionnée.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
