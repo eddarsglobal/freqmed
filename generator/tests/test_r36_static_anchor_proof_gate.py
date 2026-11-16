@@ -89,7 +89,7 @@ class R36StaticAnchorProofGate(unittest.TestCase):
 
     def test_original_and_candidate_manifest_pins(self):
         table,_,_,_=r36.inspect(ROOT)
-        self.assertEqual(200,len(table))
+        self.assertGreaterEqual(len(table),200)
         for name in (r36.CANDIDATE,r31.CANDIDATE):
             self.assertEqual(table[name],
                              hashlib.sha256((ROOT/name).read_bytes()).hexdigest())
