@@ -78,8 +78,8 @@ class R38OwnerAliasExitAudit(unittest.TestCase):
         import r29_admission_integration_review as r29
         part=r29.function(self.c31,"callback")
         self.assertEqual(1,part.count("fm_r28_gate_leave(&ctx->queue_admission);"))
-        self.assertEqual(1,part.count("active_output_callbacks,1U"))
-        self.assertEqual(1,part.count("active_output_callbacks,1U"))
+        self.assertEqual(1,part.count("atomic_fetch_add_explicit(&ctx->active_output_callbacks,1U"))
+        self.assertEqual(1,part.count("atomic_fetch_sub_explicit(&ctx->active_output_callbacks,1U"))
 
     def test_listener_shared_exit_label(self):
         import r29_admission_integration_review as r29
@@ -131,8 +131,8 @@ class R38OwnerAliasExitAudit(unittest.TestCase):
         self.deny(self.c37,"return fm36_leave(token);","return 0;")
 
     def test_mutation_c36_owner_free_rejected(self):
-        self.deny(self.c36,"return 0;\n}\n\n/* Irreversible seal;",
-                  "free(owner); return 0;\n}\n\n/* Irreversible seal;")
+        self.deny(self.c36,"return -1;\n}\n\n/* Irreversible seal;",
+                  "free(owner); return -1;\n}\n\n/* Irreversible seal;")
 
     def test_real_R16_R37_evidence_chain(self):
         original=os.environ.get("FREQMED_GEN_R19_ARCHIVE_DIR")
