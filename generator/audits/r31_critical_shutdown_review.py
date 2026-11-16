@@ -174,7 +174,7 @@ def anchor(text,section,needle,source_sha):
     require(needle in body,"R31 source proof anchor missing "+section+": "+needle)
     at=start+body.index(needle)
     return {"path":CANDIDATE,"function":section,
-            "line":text.count("\\n",0,at)+1,
+            "line":text.count("\n",0,at)+1,
             "source_sha256":source_sha,"needle":needle}
 
 def audit(root,archive_r19,reports):
