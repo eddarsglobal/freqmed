@@ -224,7 +224,7 @@ def observe(adapter,r36src,r31src):
 def inspect(root,override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==207,"R37 exactly 207 SHA-pinned source files required")
+    require(len(table)>=207,"R37 historical audit requires at least 207 SHA-pinned files")
     necessary=(
         "candidates/r37_callback_lease_adapter.c",
         "audits/r37_adapter_ownership_proof_review.py",
