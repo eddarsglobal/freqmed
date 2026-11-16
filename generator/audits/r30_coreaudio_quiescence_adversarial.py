@@ -61,7 +61,7 @@ ANCHORS=(
   ("callback","if (!fm_r28_gate_try_enter(&ctx->queue_admission)) return;")),
  ("Q30_02_LIVE_QUEUE_EARLY_EXIT",
   ("controller","if (!err && AudioQueueStart(ctx->queue,NULL)!=noErr) err=1;"),
-  ("controller","if (!fm_r28_gate_closed_and_empty(&ctx->queue_admission)) {")),
+  ("controller","return -1;\\n  }\\n  if (ctx->queue) {")),
  ("Q30_03_CONTROLLER_STOP_WITHOUT_LEASE",
   ("controller","request_graceful_queue_drain(ctx);"),
   ("controller","AudioQueueStop(ctx->queue,true)")),
@@ -91,7 +91,7 @@ ANCHORS=(
   ("callback","fm_r28_gate_leave(&ctx->queue_admission);")),
  ("Q30_12_QUARANTINE_NOT_HARDWARE_STOP",
   ("controller","atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);"),
-  ("controller","return -1;")),
+  ("controller","/* Seal admission before OS cleanup.")),
 )
 class R30Error(ValueError): pass
 def require(ok,reason):
