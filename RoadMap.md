@@ -186,3 +186,14 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Validation attendue, non attestée :** 597 tests Python, 33 assertions C, 162 sources SHA-256, 22 rapports de revue SHA-256 ; PR #1 DRAFT, pas de fusion.
 - `GEN_R30_SOURCE_REVIEW=PUBLISHED`; `GEN_R30_MAC_INTEL=PENDING`; `C11_RACE_FREEDOM=NOT_PROVEN`; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`; `POST_START_SHUTDOWN_SAFETY=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`.
 - `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R31 — Independent Critical Shutdown Path Remediation & Fail-Closed Ownership Design
+
+- **Référence :** GEN-R30 validé logiciellement sur Mac Intel (597 Python, 33 C, 162 sources SHA-256, 22 rapports SHA-256 PASS), mais 12 constats source ouverts dont deux critiques ; aucun acquittement C11/OS.
+- **Changement limité :** nouveau `generator/candidates/acoustic_macos_r31.c` isolé, dérivé de R29. La phase de shutdown tente `AudioQueueStop(ctx->queue,true)` **avant le retour sur admission encore active**, et la branche `OSStatus!=noErr` conserve une quarantaine sans disposer ni libérer. **Cette source n'est jamais liée, chargée ou exécutée** ; le moteur original, R26, R29 et R28 restent inchangés.
+- **Limite critique :** tentative de stop réussie ou échouée **ne démontre pas** l'arrêt acoustique physique ou la fin de tous les callbacks ; un échec peut laisser une file active. Ne pas promouvoir les risques `Q30_02` et `Q30_12` en résolus.
+- **Bureau :** 8 nouvelles obligations R31 OPEN, dont 2 CRITICAL. R30 12 OPEN (2 CRITICAL), R29 7 OPEN, R28 5 OPEN, R27 9 OPEN, R23 15 OPEN, R24 7 OPEN, et 11 portes historiques OPEN / 0 résolue. Aucun certificat ni signature.
+- **Validation Mac Intel attendue, non acquise :** 617 tests Python, 33 assertions C, 169 sources SHA-256, 24 dossiers R20–R31 SHA-256 ; audit `nm` et binaire non émetteur maintenus.
+- **Statut :** `GEN_R31_SOURCE_CANDIDATE=PUBLISHED` ; `GEN_R31_MAC_INTEL=PENDING`; `POST_START_SHUTDOWN_SAFETY=NOT_PROVEN`; `PHYSICAL_STOP=NOT_PROVEN`; `C11_RACE_FREEDOM=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`; PR #1 DRAFT, non fusionnée.
+- `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
