@@ -436,3 +436,18 @@ Livrables : `audits/r37_adapter_ownership_proof_review.py` (**14 obligations `OP
 **Cibles Mac Intel GEN-R37 non attestées : 737 Python, 33 C natives, 207 sources SHA-256, 36 rapports SHA-256**. Obligations historiques R36 12 (4 CRITICAL), R35 12 (4), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7, **11 portes Bureau OPEN / 0 résolue**. PR #1 DRAFT et non fusionnée.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R38 — Independent Callback Owner-Alias & Exit-Path Completeness Audit
+
+**Dernier témoin Mac Intel propriétaire réel : GEN-R37 logiciel PASS**, 737/737 tests Python, 33/33 assertions natives C, 207/207 fichiers source SHA-256, 36/36 rapports SHA-256. Ces résultats ne prouvent ni la sécurité OS/C11 ni l'absence de risques matériels.
+
+GEN-R38 **ne modifie aucun C**. L'auditeur `audits/r38_owner_alias_exit_audit.py` recense les alias de `owner_ctx`, `ctx`, les deux `userdata` OS, les alias de callbacks `ptr/data`, `ctx->queue`, la publication atomique R36 et les baux locaux R37 : **12 lignes d'alias documentaires**. Il compte les deux `free(owner_ctx)` visibles avant `AudioQueueNewOutput` dans C31, zéro après, et contrôle les sorties textuelles des deux callbacks. Le scanner ne peut pas établir que tous les chemins C11 exécutés ni les appels CoreAudio tardifs respectent ces sorties, ni qu'aucun autre alias ne libère `owner`.
+
+GEN-R38 déclare **18 obligations `OPEN_NOT_PROVEN`, dont 5 CRITICAL**, chacune avec deux preuves source SHA-pinnées, recalcule la chaîne authentique R16–R37, et maintient les **11 portes historiques du Bureau OPEN / 0 résolue**. `tests/test_r38_owner_alias_exit_audit.py` ajoute **20 tests Python source-only** dont quatre mutations textuelles : insertion d'un `free` après publication, suppression d'un `gate_leave`, omission du `fm36_leave` et libération fautive dans C36. Aucun callback OS n'est lancé ; aucune simulation scientifique.
+
+Documents du Bureau : `docs/GEN_R38_ALIAS_EXIT_PATH_MATRIX.md`, `docs/GEN_R38_BUREAU_REVIEW.md`, `docs/GEN_R38_ADVERSARIAL_PROOF_OBLIGATIONS.md`. `RUN_GEN_R38_MAC_INTEL.command` conserve les objets C31/C36/C37 compilés mais **non liés**, le CLI `output_hard_denied.c`, les vérifications `nm` et conditionne le dossier privé de **38 rapports R20–R38 SHA-256** à la réussite logicielle.
+
+**Cibles GEN-R38 Mac Intel PENDING : 757 Python, 33 assertions C natives, 213 sources SHA-256 et 38 rapports SHA-256.** C31 continue de passer `userdata=ctx` et les propositions C36/C37 ne sont pas intégrées. PR #1 DRAFT, non fusionnée.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
