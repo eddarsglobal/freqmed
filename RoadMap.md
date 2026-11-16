@@ -255,3 +255,16 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Cibles de validation Mac Intel NON attestées** : 697 tests Python, 33 assertions natives C, 193 fichiers source SHA-256, 32 rapports SHA-256 ; CLI `output_hard_denied.c`, candidates `COMPILED_UNLINKED`, audit `nm` obligatoire.
 - **Décision** : `GEN_R35_SOURCE_REVIEW=PUBLISHED` ; `GEN_R35_MAC_INTEL=PENDING` ; `PRE_ADMISSION_USERDATA_LIFETIME=NOT_PROVEN` ; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN` ; `C11_RACE_FREEDOM=NOT_PROVEN` ; `PHYSICAL_CUTOFF=NOT_PROVEN` ; `BUREAU_CERTIFICATION=PENDING`. PR #1 DRAFT, pas de fusion.
 - `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R36 — Independent Pre-Admission Lifetime Containment Architecture & Proof-Gate Design
+
+- **Témoin antérieur Mac Intel réel :** GEN-R35 logiciel PASS (697/697 Python, 33/33 assertions natives C, 193/193 sources SHA-256 et 32/32 rapports SHA-256), mais sûreté OS/C11 et physique non prouvée.
+- **Choix d'architecture concrète :** candidat C11 `generator/candidates/r36_stable_userdata_anchor.c` **isolé, non lié, non exécuté** : `userdata` serait une ancre statique unique et non réutilisable, avec propriétaire atomiquement publié et conservé jusqu'à la fin du processus. Cycle documentaire/atomique `EMPTY→PREPARED→EXPOSED→SEALED` irréversible ; admission compare le pointeur au jeton statique avant de lire le propriétaire.
+- **Limite explicite :** aucune insertion dans C31 ; ses callbacks passent toujours `ctx` directement à CoreAudio. L'ancre C36 n'est **pas** une preuve de quiescence OS, d'appariement des callbacks, de *happens-before* global, de validité d'alias propriétaires ou d'arrêt matériel.
+- **Livrables :** auditeur `r36_static_anchor_proof_gate.py` (12 nouveaux constats **OPEN_NOT_PROVEN, 4 CRITICAL**), 20 tests lexicaux, documentation indépendante B07/B09/B10 et matrice adversariale, compilation C36 `-c` sans liaison, binaire CLI `output_hard_denied.c` et 34 rapports privés SHA-256 R20–R36 après réussite de toutes les étapes.
+- **Périmètre immuable :** code original, candidats C R26/R29/R31 et portail R28 inchangés ; zéro appel CoreAudio actif, simulation, émission acoustique/EM ou essai biologique.
+- **Risques hérités ouverts :** R35 12 (4 CRITICAL), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 et **11 portes Bureau OPEN / 0 résolue**.
+- **Cibles Mac Intel R36, toujours PENDING :** 717 Python, 33 assertions C natives, 200 sources intègres et 34 rapports SHA-256 ; signe `R36_STABLE_ANCHOR_OBJECT=COMPILED_UNLINKED`.
+- **Verrous :** `GEN_R36_SOURCE_CANDIDATE=PUBLISHED`, `GEN_R36_MAC_INTEL=PENDING`, `R36_REAL_OS_INTEGRATION=NO`, `USERDATA_PRE_ADMISSION_LIFETIME_IN_PRODUCTION=NOT_PROVEN`, `C11_RACE_FREEDOM=NOT_PROVEN`, `PHYSICAL_CUTOFF=NOT_PROVEN`, `BUREAU_CERTIFICATION=PENDING`. PR #1 DRAFT et non fusionnée.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
