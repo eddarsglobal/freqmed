@@ -414,3 +414,10 @@ Audit `audits/r36_static_anchor_proof_gate.py` : 12 constats **OPEN_NOT_PROVEN d
 **Cibles Mac Intel GEN-R36 non attestées : 717 tests Python, 33 assertions C natives, 200 fichiers source SHA-256, 34 rapports SHA-256.** R35 12/4 critiques, R34 14/4, R33 12/3, R32 10/2, R31 8/2, R30 12/2, R29 7, R28 5, R27 9, R23 15, R24 7, Bureau historique **11 OPEN / 0 résolue**.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`. PR #1 DRAFT, jamais fusionnée sans contrôle indépendant.
+
+
+### GEN-R36 FIX1 — Rejet typé de mutation pré-admission (16 novembre 2026)
+
+Le journal réel du Mac Intel `Markdown collé(20261116-180812).md` atteste le commit source R36 initial `b27223b42fc4856224f45af0b4386ac01c30bee7` : 200 sources SHA-256 PASS, C36 `COMPILED_UNLINKED`, 33 assertions natives C PASS, tous les audits source R16–R36 PASS. Toutefois, la suite complète s'est arrêtée sur `Ran 717 tests in 31.965s` suivi de `FAILED (errors=1)`. Le seul test en erreur : `test_mutation_owner_early_read_rejected`. Sa mutation remplaçait `*owner_out=NULL;` et l'audit échouait via `ValueError: substring not found` au lieu du `R36Error` attendu.
+
+**GEN-R36 FIX1** ajoute uniquement à `audits/r36_static_anchor_proof_gate.py` une vérification de présence de cinq ancrages d'entrée avant leur indexation ; les mutations manquantes sont désormais rejetées par `R36Error` (fail-closed). **Aucun candidat C, code exécutable, test ou politique d'autorisation modifié.** La source est ré-épinglée par SHA-256. Les cibles demeurent 717 Python, 33 C, 200 fichiers et 34 rapports SHA-256. **`GEN_R36_FIX1_MAC_INTEL=PENDING`** jusqu'au nouvel essai propriétaire : aucune attestation `OWNER_MAC_INTEL_SOFTWARE=PASS` pour R36 n'est revendiquée avant la réussite réelle.
