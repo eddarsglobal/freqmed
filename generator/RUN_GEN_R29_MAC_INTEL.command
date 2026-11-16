@@ -361,6 +361,29 @@ fi
 echo 'R27_NONEMITTING_EXECUTABLE_SYMBOL_AUDIT=PASS'
 echo 'R28_NONEMITTING_EXECUTABLE_SYMBOL_AUDIT=PASS'
 echo 'R29_NONEMITTING_EXECUTABLE_SYMBOL_AUDIT=PASS'
+# FIX1: reject unittest.TestCase.run shadowing BEFORE invoking the suite.
+# This is pure Python syntax-tree inspection, not a callback or simulation.
+python3 -B - "$ROOT/tests/test_r29_admission_integration_review.py" <<'PY'
+import ast
+import sys
+from pathlib import Path
+file=Path(sys.argv[1])
+tree=ast.parse(file.read_text(encoding="utf-8"),filename=str(file))
+classes=[node for node in tree.body if isinstance(node,ast.ClassDef)
+         and node.name=="R29AdmissionIntegrationReview"]
+if len(classes)!=1:
+    raise SystemExit("R29_TESTCASE_RUN_SLOT=BLOCK: missing review class")
+cls=classes[0]
+for node in ast.walk(cls):
+    if isinstance(node,(ast.Assign,ast.AnnAssign)):
+        targets=node.targets if isinstance(node,ast.Assign) else [node.target]
+        for target in targets:
+            if (isinstance(target,ast.Attribute) and target.attr=="run"
+                    and isinstance(target.value,ast.Name)
+                    and target.value.id in ("cls","self")):
+                raise SystemExit("R29_TESTCASE_RUN_SLOT=BLOCK: runner shadows TestCase.run")
+print("R29_TESTCASE_RUN_SLOT=PASS")
+PY
 case "$MODE" in
  selftest)
   "$WORK/freqmed-gen" selftest
