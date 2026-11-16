@@ -230,3 +230,15 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Cible Mac Intel R33, non encore observée :** 657 Python, 33 C, 181 sources épinglées, 28 rapports SHA-256, objets de sortie compilés non liés, CLI non émetteur `nm` PASS.
 - **Gouvernance :** `GEN_R33_SOURCE_CONTRACT=PUBLISHED`, `GEN_R33_MAC_INTEL=PENDING`, `C11_RACE_FREEDOM=NOT_PROVEN`, `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`, `PHYSICAL_CUTOFF=NOT_PROVEN`, `BUREAU_CERTIFICATION=PENDING`, PR #1 DRAFT/non fusionnée.
 - `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R34 — Independent Callback Userdata Lifetime & OS Ownership Proof Review
+
+- **Base Mac Intel attestée :** GEN-R33 = 657 Python PASS, 33 assertions C natives PASS, 181/181 sources SHA-256 PASS, 28/28 rapports SHA-256 PASS ; validation exclusivement logicielle et non émettrice.
+- **Constat prioritaire :** `output_callback` et `queue_running_listener` doivent déréférencer `ctx->queue_admission` avant de pouvoir accepter/rejeter l'admission C11 ; les compteurs de callbacks ne recensent que les entrées après le gate. Fermer le gate et observer zéro bail ne prouve pas une quiescence de l'OS.
+- **Approche :** auditeur indépendant SHA-pinné R34, 14 obligations **OPEN_NOT_PROVEN (4 CRITICAL)**, 11 phases documentaires de lifetime, 20 tests source-only, preuves B07/B09/B10, contrat Apple AudioQueueDispose/Stop/RemovePropertyListener classé selon succès/erreur et nouvelle chaîne de 30 rapports SHA-256.
+- **Périmètre immuable :** aucune modification des sources C originales ou candidates R26/R29/R31/R28 ; aucun callback CoreAudio réel, aucune simulation scientifique, aucune émission et aucune exposition biologique. Le binaire conserve `output_hard_denied.c` et l'audit `nm`.
+- **Risques anciens inchangés :** R33 12 OPEN (3 CRITICAL), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 et 11 portes historiques du Bureau OPEN/0 résolue. Aucune signature externe.
+- **Objectifs Mac Intel, encore PENDING :** 677 Python, 33 C, 187 sources intègres et 30 rapports SHA-256, avec compilation candidate `COMPILED_UNLINKED`.
+- **Gouvernance :** `GEN_R34_SOURCE_REVIEW=PUBLISHED`; `GEN_R34_MAC_INTEL=PENDING`; `C11_RACE_FREEDOM=NOT_PROVEN`; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`; `USERDATA_LIFETIME=NOT_PROVEN`; `PHYSICAL_CUTOFF=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`; PR #1 DRAFT et non fusionnée.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
