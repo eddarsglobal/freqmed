@@ -164,3 +164,13 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Blocages hérités :** 5 contrôles R28 OPEN ; 9 constats R27 OPEN ; 15 obligations R23 OPEN ; 7 constats R24 OPEN ; 11 portes du Bureau OPEN / zéro résolue. Les tests textuels ne prouvent aucune race.
 - **Cible de test Mac Intel non attestée :** 577 Python, 33 assertions natives C, 156 sources SHA-256, 20 rapports SHA-256, compilation R29 uniquement non liée, audit `nm` de l'exécutable non émetteur.
 - **Gouvernance :** `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R29 FIX1 — Réparation de l'infrastructure de tests sans effet sur les sorties
+
+- Témoin réel Mac Intel du 16 novembre 2026 : **intégrité 156 sources PASS**, audit R29 PASS, objets C non liés PASS, **33 assertions natives C PASS**, binaire non émetteur PASS ; **393 tests Python OK**, puis arrêt `TypeError: 'str' object is not callable`.
+- Cause avérée : `tests/test_r29_admission_integration_review.py` donnait une chaîne à `cls.run`, masquant `unittest.TestCase.run`. Aucune preuve de race reproduite, aucune défaillance CoreAudio déclenchée.
+- Correction FIX1 : renommer `cls.run` / `self.run` en `cls.runner` / `self.runner`, ajouter au lanceur R29 un précontrôle AST fail-closed empêchant toute nouvelle affectation `cls.run` ou `self.run` dans la classe de test R29 ; nouveau manifeste épinglé, aucune modification du C.
+- **Statut :** FIX1_SOURCE_CANDIDATE ; MAC_INTEL_FULL_REPLAY_PENDING ; 577 tests Python ciblés, 33 C, 156 sources, 20 rapports du Bureau. `GEN_R29_MAC_INTEL_SOFTWARE` n'est PAS PASS à ce stade.
+- Obligations inchangées : 7 constats R29 OPEN, 5 contrôles R28 OPEN, 9 constats R27 OPEN, 15 preuves R23 OPEN, 7 constats R24 OPEN, 11 portes Bureau OPEN/0 résolue. P0.01 IN_PROGRESS. PR #1 DRAFT, sans fusion.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
