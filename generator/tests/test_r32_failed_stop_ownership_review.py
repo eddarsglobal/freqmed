@@ -124,9 +124,9 @@ class R32FailedStopOwnershipReview(unittest.TestCase):
 
     def test_mutated_quarantine_refused(self):
         self.reject(
-            "if (r31_immediate_stop_status!=noErr) {\\n"
+            "if (r31_immediate_stop_status!=noErr) {\n"
             "      /* CRITICAL: OS stop failed.",
-            "if (r31_immediate_stop_status!=noErr) {\\n"
+            "if (r31_immediate_stop_status!=noErr) {\n"
             "      /* CRITICAL: OS stop acknowledged.")
 
     def test_mutated_callback_admission_rejected(self):
