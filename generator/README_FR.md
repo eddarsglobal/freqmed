@@ -297,3 +297,12 @@ Le contrat n'est **pas une preuve** que les userdata sont encore valides lors de
 Documentation : `docs/GEN_R29_C11_ADMISSION_INTEGRATION.md` et `docs/GEN_R29_BUREAU_REVIEW.md`. PR #1 DRAFT ; aucune autorisation de production, d'exposition ou de sortie.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R29 FIX1 — correction du lanceur des tests Python
+
+Le journal réel propriétaire du **16 novembre 2026** a validé le téléchargement épinglé, **156/156 sources SHA-256**, l'audit statique R29, la compilation non liée des candidats, **33/33 assertions natives C** et l'audit `nm` du binaire non émetteur. La suite `unittest` a exécuté **393 tests OK**, puis a été interrompue avant tous les tests R29 par `TypeError: 'str' object is not callable`. Le code `tests/test_r29_admission_integration_review.py` avait affecté une chaîne à `cls.run`, masquant `unittest.TestCase.run`. **Le témoin complet 577/577 et les 20 rapports du Bureau n'ont pas été produits.**
+
+FIX1 remplace exclusivement l'attribut du lanceur par `cls.runner`, ajoute une vérification AST fail-closed `R29_TESTCASE_RUN_SLOT=PASS` avant la suite, puis réépingle le manifeste source. Les classes conservent 20 tests R29 ; les 577 tests demeurent **cible non attestée** jusqu'à une nouvelle exécution sur Mac Intel. Aucun changement au moteur C original, aux C candidats R26/R29, au portail R28 ni aux composants émetteurs. PR DRAFT, Bureau PENDING, aucune simulation ni émission.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
