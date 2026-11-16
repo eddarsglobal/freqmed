@@ -123,8 +123,11 @@ class R32FailedStopOwnershipReview(unittest.TestCase):
                     "AudioQueueStop(ctx->queue,false);")
 
     def test_mutated_quarantine_refused(self):
-        self.reject("fm_context_quarantined,1,memory_order_release",
-                    "fm_context_quarantined,0,memory_order_release")
+        self.reject(
+            "if (r31_immediate_stop_status!=noErr) {\\n"
+            "      /* CRITICAL: OS stop failed.",
+            "if (r31_immediate_stop_status!=noErr) {\\n"
+            "      /* CRITICAL: OS stop acknowledged.")
 
     def test_mutated_callback_admission_rejected(self):
         self.reject("if (!fm_r28_gate_try_enter(&ctx->queue_admission)) return;",
