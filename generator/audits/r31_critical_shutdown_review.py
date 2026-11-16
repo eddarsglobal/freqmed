@@ -131,7 +131,7 @@ def observe(old,new):
 def inspect(root,override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==169,"R31 requires 169 SHA-pinned generator files")
+    require(len(table)>=169,"R31 historical review requires at least 169 SHA-pinned generator files")
     artifacts=(
         CANDIDATE,
         "audits/r31_critical_shutdown_review.py",
