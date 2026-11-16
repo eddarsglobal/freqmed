@@ -113,7 +113,7 @@ ANCHORS=(
   ("controller","ctx->queue=NULL;")),
  ("PA35_12_ONE_SHOT_RETAIN_NOT_SAFE_SHUTDOWN",
   ("controller","atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);"),
-  ("controller","/* GEN-R3: unconditional hard denial")),
+  ("controller","/* GEN-R26 candidate: diagnostic quiescence does not prove")),
 )
 # Source phases are DOCUMENTARY review checkpoints, not executable states.
 PHASES=(
