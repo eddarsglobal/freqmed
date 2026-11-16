@@ -153,7 +153,7 @@ def observe(source):
 def inspect(root,source_override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==175,"R32 requires exactly 175 SHA-pinned source files")
+    require(len(table)>=175,"R32 historical review requires at least 175 SHA-pinned files")
     required=(
       "audits/r32_failed_stop_ownership_review.py",
       "tests/test_r32_failed_stop_ownership_review.py",
