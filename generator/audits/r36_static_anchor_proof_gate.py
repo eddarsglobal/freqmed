@@ -71,7 +71,7 @@ ANCHORS=(
  ("SA36_09_UNBALANCED_LEAVE_OWNER",("r36","int fm36_leave(void *userdata)"),
   ("r36","atomic_compare_exchange_weak_explicit(")),
  ("SA36_10_OS_ABI_ADAPTER_BOUNDARY",("r31","static void output_callback(void *ptr,"),
-  ("r36","/* The token equality comparison does not dereference untrusted userdata.")),
+  ("r36","* The token equality comparison does not dereference untrusted userdata.")),
  ("SA36_11_NM_UNLINKED_ENFORCEMENT",("r36","#include <stdatomic.h>"),
   ("r36","int fm36_prepare_once(void *owner, void **userdata_out)")),
  ("SA36_12_NO_MEM_MEASUREMENT_CERTIFICATION",("r36","* - C11 admission counters do NOT certify OS callback quiescence."),
