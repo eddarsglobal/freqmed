@@ -369,3 +369,18 @@ Un `noErr` de disposition ne suffit pas à prouver la sûreté d'un `free(owner_
 Documentation : `docs/GEN_R33_FAILURE_STATE_OWNERSHIP.md`, `docs/GEN_R33_BUREAU_REVIEW.md`, `docs/GEN_R33_SAFE_ABANDONMENT_MATRIX.md`. `RUN_GEN_R33_MAC_INTEL.command` doit vérifier 181 sources et conserver les objets candidats non liés. **Cibles Mac Intel R33 non attestées : 657 tests Python, 33 assertions natives C, 181 fichiers source SHA-256 et 28 rapports de preuve SHA-256.** PR #1 DRAFT, non fusionnée.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R34 — Independent Callback Userdata Lifetime & OS Ownership Proof Review
+
+**Dernier témoin Mac Intel réellement validé : GEN-R33, 657/657 tests Python, 33/33 assertions C natives, 181/181 sources et 28/28 rapports SHA-256 PASS.** Ce témoin n'est ni une preuve de sûreté C11, ni une certification CoreAudio ou physique.
+
+GEN-R34 identifie les frontières de durée de vie de `userdata` autour des callbacks `output_callback` et `queue_running_listener`. Dans le candidat C31, chacun accède à `ctx->queue_admission` **avant** qu'un bail atomique soit accepté : l'OS doit donc garantir la validité du contexte **avant l'entrée**. Un compteur atomique égal à zéro n'exclut pas un nouveau callback OS encore pré-admission. **Aucune race ni utilisation de pointeur déjà libéré n'a été effectivement reproduite.**
+
+Livrables : `audits/r34_userdata_lifetime_review.py` (**14 obligations ouvertes, dont 4 critiques**, 11 phases documentaires, deux ancrages C31 et SHA-256 par obligation) ; `tests/test_r34_userdata_lifetime_review.py` (**20 nouveaux tests Python source-only**), revue B07/B09/B10 et matrice `docs/GEN_R34_USERDATA_LIFETIME.md`, `docs/GEN_R34_BUREAU_REVIEW.md`, `docs/GEN_R34_OS_PROOF_WITNESSES.md`. Le runner `RUN_GEN_R34_MAC_INTEL.command` conserve la provenance R16–R33, compile les candidats C en objets non liés, vérifie `nm` et doit créer **30 rapports privés R20–R34 SHA-256** après réussite seulement.
+
+**Cibles Mac Intel GEN-R34 NON encore attestées : 677 tests Python, 33 assertions C natives, 187 sources SHA-256, 30 rapports SHA-256.** Aucun fichier C original ou candidat modifié, aucun backend CoreAudio lié ou activé.
+
+Obligations héritées toujours OPEN : R33 12 (3 CRITICAL), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7, Bureau **11 OPEN/0 résolue**. PR #1 DRAFT et non fusionnée.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
