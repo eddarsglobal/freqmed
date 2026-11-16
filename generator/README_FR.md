@@ -421,3 +421,18 @@ Audit `audits/r36_static_anchor_proof_gate.py` : 12 constats **OPEN_NOT_PROVEN d
 Le journal réel du Mac Intel `Markdown collé(20261116-180812).md` atteste le commit source R36 initial `b27223b42fc4856224f45af0b4386ac01c30bee7` : 200 sources SHA-256 PASS, C36 `COMPILED_UNLINKED`, 33 assertions natives C PASS, tous les audits source R16–R36 PASS. Toutefois, la suite complète s'est arrêtée sur `Ran 717 tests in 31.965s` suivi de `FAILED (errors=1)`. Le seul test en erreur : `test_mutation_owner_early_read_rejected`. Sa mutation remplaçait `*owner_out=NULL;` et l'audit échouait via `ValueError: substring not found` au lieu du `R36Error` attendu.
 
 **GEN-R36 FIX1** ajoute uniquement à `audits/r36_static_anchor_proof_gate.py` une vérification de présence de cinq ancrages d'entrée avant leur indexation ; les mutations manquantes sont désormais rejetées par `R36Error` (fail-closed). **Aucun candidat C, code exécutable, test ou politique d'autorisation modifié.** La source est ré-épinglée par SHA-256. Les cibles demeurent 717 Python, 33 C, 200 fichiers et 34 rapports SHA-256. **`GEN_R36_FIX1_MAC_INTEL=PENDING`** jusqu'au nouvel essai propriétaire : aucune attestation `OWNER_MAC_INTEL_SOFTWARE=PASS` pour R36 n'est revendiquée avant la réussite réelle.
+
+
+## GEN-R37 — Independent Static-Anchor Integration Feasibility & C11 Ownership Proof Review
+
+**Base réelle Mac Intel validée : GEN-R36 FIX1, 717/717 tests Python, 33/33 assertions C natives, 200/200 sources SHA-256 et 34/34 rapports SHA-256 PASS** ; correction `R36Error` attestée. Il ne s'agit pas d'une certification OS/C11 ou physique.
+
+GEN-R37 crée un **second module C11 concret, séparé, non lié et non exécuté**, `candidates/r37_callback_lease_adapter.c`. Il relie conceptuellement l'ancre statique R36 aux deux points d'entrée : `fm37_output_enter` et `fm37_property_enter`. Un bail `FM37Lease` doit être local à chaque callback, initialisé à zéro et non partagé. Le module demande l'admission `fm36_try_enter` avant tout accès au propriétaire, et `fm37_finish` invalide le bail avant de décrémenter le compteur. Cela aide à raisonner sur le double-leave **séquentiel d'un bail local**, mais ne prouve ni le bon appariement sur tous les chemins ni la sûreté en partage/concurrence.
+
+**Le C31 réel est inchangé et remet toujours `userdata=ctx` à CoreAudio.** Le C37 **n'a pas les signatures CoreAudio**, n'est pas raccordé aux callbacks OS et ne peut être utilisé pour émettre. Aucun changement du C36 original ni des autres candidats C, aucun backend émetteur lié.
+
+Livrables : `audits/r37_adapter_ownership_proof_review.py` (**14 obligations `OPEN_NOT_PROVEN` dont 4 CRITICAL**, deux sources SHA-pinnées par obligation et six contrats), `tests/test_r37_adapter_ownership_proof_review.py` (**20 nouveaux tests source-only dont cinq mutations adversariales**), `RUN_GEN_R37_MAC_INTEL.command` (C37 et C36 objets indépendants, binaire `output_hard_denied.c`, `nm` et **36 rapports R20–R37 SHA-256**), documents `docs/GEN_R37_CALLBACK_LEASE_ARCHITECTURE.md`, `docs/GEN_R37_BUREAU_PROOF_GATE.md`, `docs/GEN_R37_ADVERSARIAL_CONTRACT_MATRIX.md`.
+
+**Cibles Mac Intel GEN-R37 non attestées : 737 Python, 33 C natives, 207 sources SHA-256, 36 rapports SHA-256**. Obligations historiques R36 12 (4 CRITICAL), R35 12 (4), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7, **11 portes Bureau OPEN / 0 résolue**. PR #1 DRAFT et non fusionnée.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
