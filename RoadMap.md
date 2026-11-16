@@ -218,3 +218,15 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Validation cible, non attestée :** 637 tests Python, 33 assertions natives C, 175 sources intègres, 26 rapports SHA-256 ; binaire `output_hard_denied.c` avec audit `nm` non émetteur. PR #1 DRAFT, non fusionnée.
 - **États :** `GEN_R32_SOURCE_REVIEW=PUBLISHED`; `GEN_R32_MAC_INTEL=PENDING`; `FAILED_OS_STOP=NOT_TESTED`; `PHYSICAL_STOP=NOT_PROVEN`; `CALLBACK_QUIESCENCE=NOT_PROVEN`; `C11_RACE_FREEDOM=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`.
 - `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R33 — Independent CoreAudio Failure-State Ownership & Safe-Abandonment Contract Design
+
+- **Base Mac Intel attestée :** GEN-R32 637/637 Python, 33/33 assertions C, 175/175 sources SHA-256 et 26/26 rapports SHA-256 PASS ; validation logicielle seulement, aucune sûreté OS/physique certifiée.
+- **Choix du Bureau :** ne pas créer un correctif C prétendument sûr sur les retours d'erreur `AudioQueueStop`/`AudioQueueDispose`. À la place, formaliser les dix situations de propriété (`owner_ctx` avant/après publication, queue OS possiblement active/invalide, listeners et callbacks) et distinguer conservation mémoire, validité de handle et coupure physique.
+- **Nouveaux livrables :** `audits/r33_failure_state_ownership_contract.py`, 12 constats **OPEN_NOT_PROVEN (3 CRITICAL)**, `tests/test_r33_failure_state_ownership_contract.py` (20 contrôles source-only), matrice d'abandon sûr, revue B07/B09/B10, `RUN_GEN_R33_MAC_INTEL.command` et chaîne privée R20–R33 de 28 rapports SHA-256.
+- **Aucun changement C** : code original, candidats R26/R29/R31 et unité atomique R28 byte-identical. Aucune activation CoreAudio, aucune simulation scientifique, aucun matériel ou émission.
+- **Risques hérités :** R32 10 OPEN (2 CRITICAL) ; R31 8 OPEN (2 CRITICAL) ; R30 12 OPEN (2 CRITICAL) ; R29 7 OPEN ; R28 5 OPEN ; R27 9 OPEN ; R23 15 OPEN ; R24 7 OPEN ; 11 portes Bureau OPEN / 0 résolue.
+- **Cible Mac Intel R33, non encore observée :** 657 Python, 33 C, 181 sources épinglées, 28 rapports SHA-256, objets de sortie compilés non liés, CLI non émetteur `nm` PASS.
+- **Gouvernance :** `GEN_R33_SOURCE_CONTRACT=PUBLISHED`, `GEN_R33_MAC_INTEL=PENDING`, `C11_RACE_FREEDOM=NOT_PROVEN`, `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`, `PHYSICAL_CUTOFF=NOT_PROVEN`, `BUREAU_CERTIFICATION=PENDING`, PR #1 DRAFT/non fusionnée.
+- `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
