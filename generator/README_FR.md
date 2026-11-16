@@ -332,3 +332,14 @@ Nouveaux contrôles de preuve : **8 R31 OPEN_NOT_PROVEN (2 CRITICAL)** ; les **1
 Lanceur `RUN_GEN_R31_MAC_INTEL.command` : contrôle exact de la portée C, archive R19 originale, rapports R16–R30, compilation `clang -c` uniquement du C31 et des candidats historiques, lien `output_hard_denied.c`, `nm` non émetteur, suite Python et dossier privé de 24 rapports. **Cibles Mac Intel PENDING : 617 tests Python, 33 C, 169 sources SHA-256, 24 rapports SHA-256.** PR #1 DRAFT, sans fusion.
 
 `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R31 FIX1 — Correction de l'exception des tests adversariaux (16 novembre 2026)
+
+Le témoin réel du propriétaire `Markdown collé(20261116-094411).md` confirme l'intégrité **169/169 sources**, l'audit statique `R31_CRITICAL_SHUTDOWN_REVIEW=PASS`, la compilation `COMPILED_UNLINKED` du C31, **33/33 assertions natives C** et l'audit binaire non émetteur. La suite a lancé **617 tests Python**, mais s'est terminée `FAILED (errors=4)` : quatre mutations de source sont détectées par l'auditeur via `str.index`, lequel levait `ValueError` au lieu de `R31Error`, seule exception attendue par les tests adversariaux.
+
+**FIX1 source-only :** introduction de `anchored_index` dans `audits/r31_critical_shutdown_review.py`, lequel vérifie l'existence du motif via `require` et émet `R31Error` fail-closed avant tout indexage. Neuf sites `piece.index` sont remplacés, **sans affaiblir les assertions ni modifier les 20 tests R31**. Le C31, le C original, les C R26/R29 et le portail R28 restent intacts. Les 24 rapports de revue privés n'ont pas été créés lors de la tentative interrompue.
+
+Le manifeste de **169 sources** est refermé sur les nouveaux octets du vérificateur et du README. **Cibles Mac Intel FIX1 non attestées : 617/617 Python, 33/33 C, 169/169 sources, 24/24 rapports SHA-256.** Les 8 obligations R31 (2 CRITICAL), 12 constats R30 (2 CRITICAL) et les 11 portes originales du Bureau demeurent tous ouverts ; PR #1 DRAFT et aucune émission autorisée.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
