@@ -170,7 +170,12 @@ def inspect(root,override=None):
     return table,manifest,sha(raw),checks
 
 def anchor(text,section,needle,source_sha):
-    return r29.anchor(text,section,needle,source_sha)
+    start,end,body=r27.function_span(text,section)
+    require(needle in body,"R31 source proof anchor missing "+section+": "+needle)
+    at=start+body.index(needle)
+    return {"path":CANDIDATE,"function":section,
+            "line":text.count("\\n",0,at)+1,
+            "source_sha256":source_sha,"needle":needle}
 
 def audit(root,archive_r19,reports):
     table,manifest,csha,checks=inspect(root)
