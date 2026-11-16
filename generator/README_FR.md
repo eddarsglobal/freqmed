@@ -306,3 +306,16 @@ Le journal réel propriétaire du **16 novembre 2026** a validé le télécharge
 FIX1 remplace exclusivement l'attribut du lanceur par `cls.runner`, ajoute une vérification AST fail-closed `R29_TESTCASE_RUN_SLOT=PASS` avant la suite, puis réépingle le manifeste source. Les classes conservent 20 tests R29 ; les 577 tests demeurent **cible non attestée** jusqu'à une nouvelle exécution sur Mac Intel. Aucun changement au moteur C original, aux C candidats R26/R29, au portail R28 ni aux composants émetteurs. PR DRAFT, Bureau PENDING, aucune simulation ni émission.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R30 — Independent CoreAudio Callback Quiescence & Queue Ownership Adversarial Review
+
+**Base attestée :** GEN-R29 FIX1, Mac Intel **577/577 Python, 33/33 assertions natives C, 156/156 fichiers SHA-256 et 20/20 rapports SHA-256**. Le candidat C11 R29 est compilé isolément et non lié.
+
+GEN-R30 approfondit **12 constats adversariaux source-only, dont 2 critiques**, avec ancrages aux lignes réelles de `candidates/acoustic_macos_r29.c` et hashes du manifeste. Observation majeure : lorsque le portail est fermé mais non vide après `AudioQueueStart`, le contrôleur peut quitter la procédure **sans appeler `AudioQueueStop` ni `AudioQueueDispose`**. Ce problème reste non corrigé et **interdit toute activation**. Ni simulation ni callback réel n'est exécuté.
+
+Le Bureau B07/B09/B10 conserve aussi les 7 risques R29, 5 contrôles R28, 9 R27, 15 obligations R23, 7 constats R24 et **11 portes originales OPEN/0 résolue**. Documents : `docs/GEN_R30_COREAUDIO_QUIESCENCE.md`, `docs/GEN_R30_OS_PROOF_MATRIX.md`, `docs/GEN_R30_BUREAU_REVIEW.md`. Le C original et les C candidats R26/R29 et R28 restent inchangés. PR #1 DRAFT, non fusionnée.
+
+`RUN_GEN_R30_MAC_INTEL.command` ajoute la revue et 20 tests Python sans émission ; cible Mac Intel **597 Python, 33 C, 162 sources SHA-256 et 22 rapports R20–R30**. **GEN-R30 MAC_INTEL=PENDING** jusqu'à témoin d'exécution du propriétaire.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
