@@ -128,7 +128,7 @@ def require(ok,msg):
 def sha(data): return hashlib.sha256(data).hexdigest()
 
 def function(source,name):
-    match=list(re.finditer(r"^(?:static\s+)?(?:int|void\s*\*)\s+"+
+    match=list(re.finditer(r"^(?:static\s+)?(?:int|void\s*\*)\s*"+
        re.escape(name)+r"\s*\([^;]*\)\s*\{",source,re.M|re.S))
     require(len(match)==1,"R37 function missing/duplicate: "+name)
     i=source.index("{",match[0].start())
