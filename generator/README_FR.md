@@ -399,3 +399,18 @@ Livrables : `audits/r35_pre_admission_os_contract_review.py`, `tests/test_r35_pr
 Toutes obligations restent OPEN : R34 14/4 critiques, R33 12/3, R32 10/2, R31 8/2, R30 12/2, R29 7, R28 5, R27 9, R23 15, R24 7, Bureau **11 OPEN / 0 résolue**. PR #1 DRAFT, non fusionnée.
 
 `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R36 — Independent Pre-Admission Lifetime Containment Architecture & Proof-Gate Design
+
+**Témoin Mac Intel réel de référence : GEN-R35 logiciel PASS, 697 tests Python, 33 assertions C natives, 193 sources SHA-256 et 32 rapports SHA-256.** Cette preuve n'établit pas la sûreté CoreAudio/C11 ni la coupure physique.
+
+GEN-R36 introduit **un véritable module C11 isolé et non lié**, `candidates/r36_stable_userdata_anchor.c`, proposant un `userdata` sous forme d'une **ancre statique à durée de vie du processus**, au lieu de remettre le `ctx` heap direct à l'OS. Cette ancre ne peut être revendiquée qu'une fois, passe de `PREPARED` à `EXPOSED` puis `SEALED` irréversiblement et ne recycle jamais l'adresse ; le propriétaire doit être retenu jusqu'à la fin du processus. Ces règles sont **des contrats de candidat, pas une intégration**.
+
+Les deux callbacks CoreAudio réels du C31 utilisent **encore** le `userdata=ctx`. GEN-R36 ne modifie aucun code C original ni R26/R29/R31/R28. La nouvelle ancre est compilée **en objet indépendant jamais lié ni exécuté**, sans appeler les APIs `AudioQueue*`, sans simulation scientifique ou signal physique.
+
+Audit `audits/r36_static_anchor_proof_gate.py` : 12 constats **OPEN_NOT_PROVEN dont 4 CRITICAL**, deux ancrages de source R31/R36 par constat, recalcul de la chaîne réelle R16–R35. `tests/test_r36_static_anchor_proof_gate.py` ajoute 20 tests Python source-only dont les mutations adversariales. Dossiers B07/B09/B10 `docs/GEN_R36_STABLE_ANCHOR_ARCHITECTURE.md`, `docs/GEN_R36_BUREAU_PROOF_GATES.md`, `docs/GEN_R36_ADVERSARIAL_INTEGRATION_MATRIX.md`. `RUN_GEN_R36_MAC_INTEL.command` cible 34 rapports privés R20–R36 SHA-256.
+
+**Cibles Mac Intel GEN-R36 non attestées : 717 tests Python, 33 assertions C natives, 200 fichiers source SHA-256, 34 rapports SHA-256.** R35 12/4 critiques, R34 14/4, R33 12/3, R32 10/2, R31 8/2, R30 12/2, R29 7, R28 5, R27 9, R23 15, R24 7, Bureau historique **11 OPEN / 0 résolue**.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`. PR #1 DRAFT, jamais fusionnée sans contrôle indépendant.
