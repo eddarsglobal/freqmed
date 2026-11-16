@@ -207,3 +207,14 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Répétition Mac Intel nécessaire :** objectif non attesté de 617/617 Python, 33/33 C, 169/169 fichiers SHA-256 et 24 rapports SHA-256 ; nouveaux journaux distincts de la tentative initiale.
 - **Bureau :** R31 8 OPEN (2 CRITICAL) ; R30 12 OPEN (2 CRITICAL) ; R29 7 OPEN ; R28 5 OPEN ; R27 9 OPEN ; R23 15 OPEN ; R24 7 OPEN ; portes 11 OPEN / 0 résolue. `C11_RACE_FREEDOM=NOT_PROVEN`, `PHYSICAL_STOP=NOT_PROVEN`, `GEN_R31_FIX1_MAC_INTEL=PENDING`. PR #1 DRAFT, pas de fusion.
 - `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R32 — Independent Failed-Stop Containment & CoreAudio Ownership Safety Review
+
+- **Point de départ :** GEN-R31 FIX1 Mac Intel logiciel PASS (617 Python, 33 assertions C, 169 fichiers source, 24 rapports SHA-256) ; aucune preuve de sûreté CoreAudio active.
+- **Périmètre :** revue adversariale du candidat C31 **sans modification C ni intégration**. L'échec d'`AudioQueueStop(ctx->queue,true)` garde la file et le contexte en quarantaine mais ne prouve ni arrêt acoustique ni innocuité physique ; ne pas ajouter un repli `AudioQueueDispose` forcé ou un retry sans garanties OS.
+- **Livrables :** auditeur source C11/OSStatus R32, **10 nouveaux constats OPEN_NOT_PROVEN (2 CRITICAL)**, 20 tests de non-régression lexicaux, trois dossiers B07/B09/B10, un runner Mac Intel et une nouvelle chaîne de 26 rapports SHA-256 R20–R32. Aucun callback CoreAudio, aucun test de race simulée, aucun instrument ni émission.
+- **Constats non résolus hérités :** R31 8 OPEN (2 CRITICAL), R30 12 OPEN (2 CRITICAL), R29 7 OPEN, R28 5 OPEN, R27 9 OPEN, R23 15 OPEN, R24 7 OPEN, 11 portes Bureau OPEN/0 résolue.
+- **Validation cible, non attestée :** 637 tests Python, 33 assertions natives C, 175 sources intègres, 26 rapports SHA-256 ; binaire `output_hard_denied.c` avec audit `nm` non émetteur. PR #1 DRAFT, non fusionnée.
+- **États :** `GEN_R32_SOURCE_REVIEW=PUBLISHED`; `GEN_R32_MAC_INTEL=PENDING`; `FAILED_OS_STOP=NOT_TESTED`; `PHYSICAL_STOP=NOT_PROVEN`; `CALLBACK_QUIESCENCE=NOT_PROVEN`; `C11_RACE_FREEDOM=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
