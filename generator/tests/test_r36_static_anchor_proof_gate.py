@@ -113,8 +113,8 @@ class R36StaticAnchorProofGate(unittest.TestCase):
                     "&fm36_anchor.phase,&seen,FM36_EXPOSED")
 
     def test_mutation_heap_free_rejected(self):
-        self.reject("return 0;\n}\n\n/* Irreversible seal;",
-                    "free(owner); return 0;\n}\n\n/* Irreversible seal;")
+        self.reject("return -1;\n}\n\n/* Irreversible seal;",
+                    "free(owner); return -1;\n}\n\n/* Irreversible seal;")
 
     def test_actual_owner_r16_to_r35_evidence_chain(self):
         archive=os.environ.get("FREQMED_GEN_R19_ARCHIVE_DIR")
