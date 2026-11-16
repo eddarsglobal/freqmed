@@ -242,3 +242,16 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Objectifs Mac Intel, encore PENDING :** 677 Python, 33 C, 187 sources intègres et 30 rapports SHA-256, avec compilation candidate `COMPILED_UNLINKED`.
 - **Gouvernance :** `GEN_R34_SOURCE_REVIEW=PUBLISHED`; `GEN_R34_MAC_INTEL=PENDING`; `C11_RACE_FREEDOM=NOT_PROVEN`; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`; `USERDATA_LIFETIME=NOT_PROVEN`; `PHYSICAL_CUTOFF=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`; PR #1 DRAFT et non fusionnée.
 - `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R35 — Independent Pre-Admission Callback Lifetime & OS Contract Evidence Review
+
+- **Base réelle Mac Intel** : GEN-R34 logiciel PASS (677/677 Python, 33/33 assertions natives C, 187/187 sources SHA-256, 30/30 rapports SHA-256) ; aucune validation physique ou CoreAudio active.
+- **Problème** : l'OS livre `userdata` aux callbacks et ces fonctions accèdent à `ctx->queue_admission` avant toute admission atomique ; la fermeture du gate C11 ne démontre pas qu'aucune entrée tardive OS ne puisse encore accéder au contexte.
+- **Revue documentaire Apple indépendante** du 16 novembre 2026 : **9 catégories** distinguant synchronie de `AudioQueueStop(true)`, disposition `AudioQueueDispose(true)` et absence de callbacks **après disposition**, matching `userdata` sur listener/remove, et **absence de preuve sur les appels `OSStatus` échoués**. Les pages Apple sont des URLs publiques vivantes, non des certificats ou copies immuables.
+- **Livrables** : audit `r35_pre_admission_os_contract_review.py` avec **12 obligations ouvertes (4 CRITICAL)** et deux ancrages C31 SHA-pinnés par obligation ; 13 phases source, 20 tests Python source-only, matrice de contrat API, décision Bureau B07/B09/B10, runner Mac Intel, revue propriétaire SHA-256 de 32 rapports R20–R35.
+- **Périmètre inviolable** : aucun changement C original, candidats R26/R29/R31 ou portail R28 ; aucun backend CoreAudio lié ou exécuté, aucun callback OS ou mesure, aucune simulation scientifique.
+- **Risques hérités inchangés** : R34 14 OPEN (4 CRITICAL), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 et les 11 portes historiques Bureau OPEN / 0 résolue.
+- **Cibles de validation Mac Intel NON attestées** : 697 tests Python, 33 assertions natives C, 193 fichiers source SHA-256, 32 rapports SHA-256 ; CLI `output_hard_denied.c`, candidates `COMPILED_UNLINKED`, audit `nm` obligatoire.
+- **Décision** : `GEN_R35_SOURCE_REVIEW=PUBLISHED` ; `GEN_R35_MAC_INTEL=PENDING` ; `PRE_ADMISSION_USERDATA_LIFETIME=NOT_PROVEN` ; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN` ; `C11_RACE_FREEDOM=NOT_PROVEN` ; `PHYSICAL_CUTOFF=NOT_PROVEN` ; `BUREAU_CERTIFICATION=PENDING`. PR #1 DRAFT, pas de fusion.
+- `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
