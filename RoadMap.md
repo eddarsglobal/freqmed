@@ -197,3 +197,13 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 - **Validation Mac Intel attendue, non acquise :** 617 tests Python, 33 assertions C, 169 sources SHA-256, 24 dossiers R20–R31 SHA-256 ; audit `nm` et binaire non émetteur maintenus.
 - **Statut :** `GEN_R31_SOURCE_CANDIDATE=PUBLISHED` ; `GEN_R31_MAC_INTEL=PENDING`; `POST_START_SHUTDOWN_SAFETY=NOT_PROVEN`; `PHYSICAL_STOP=NOT_PROVEN`; `C11_RACE_FREEDOM=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`; PR #1 DRAFT, non fusionnée.
 - `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R31 FIX1 — Normalisation fail-closed des exceptions de l'auditeur
+
+- **Témoin réel Mac Intel du 16 novembre 2026 :** lanceur SHA-256 PASS ; 169/169 sources PASS ; audit `R31_CRITICAL_SHUTDOWN_REVIEW=PASS` ; C31 compilé **non lié** ; 33/33 assertions C natives ; `nm` non émetteur PASS. Suite Python exécutée : `Ran 617 tests in 15.539s` puis **`FAILED (errors=4)`**. Aucune certification logicielle R31, aucun dossier final de 24 rapports.
+- **Cause racine :** les quatre mutations ciblées retirent volontairement des motifs C ; dans `observe()`, un `piece.index()` non protégé déclenchait `ValueError`, alors que `tests/test_r31_critical_shutdown_review.py` exige `R31Error`.
+- **FIX1 :** neuf ancrages utilisent `anchored_index()` avec `require()`, renvoyant une erreur contractuelle `R31Error` sur source inattendue. **Les tests adversariaux restent intacts**, aucune tolérance ajoutée pour `ValueError` ; aucun candidat C ou backend original modifié.
+- **Répétition Mac Intel nécessaire :** objectif non attesté de 617/617 Python, 33/33 C, 169/169 fichiers SHA-256 et 24 rapports SHA-256 ; nouveaux journaux distincts de la tentative initiale.
+- **Bureau :** R31 8 OPEN (2 CRITICAL) ; R30 12 OPEN (2 CRITICAL) ; R29 7 OPEN ; R28 5 OPEN ; R27 9 OPEN ; R23 15 OPEN ; R24 7 OPEN ; portes 11 OPEN / 0 résolue. `C11_RACE_FREEDOM=NOT_PROVEN`, `PHYSICAL_STOP=NOT_PROVEN`, `GEN_R31_FIX1_MAC_INTEL=PENDING`. PR #1 DRAFT, pas de fusion.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
