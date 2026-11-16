@@ -112,7 +112,7 @@ def anchor(source,where,needle,source_sha):
 def inspect(root,candidate_override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==156,"R29 requires exactly 156 SHA-pinned generator files")
+    require(len(table)>=156,"R29 historical review requires at least 156 SHA-pinned generator files")
     required=(CANDIDATE,"audits/r29_admission_integration_review.py",
              "tests/test_r29_admission_integration_review.py",
              "RUN_GEN_R29_MAC_INTEL.command",
