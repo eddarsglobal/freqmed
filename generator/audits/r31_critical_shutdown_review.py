@@ -57,6 +57,12 @@ def require(ok,why):
     if not ok: raise R31Error(why)
 def sha(data): return hashlib.sha256(data).hexdigest()
 
+def anchored_index(fragment, token, start=0):
+    """Fail closed with the reviewer's contract error on a missing C anchor."""
+    require(token in fragment[start:],
+            "R31 critical shutdown anchor absent: "+token)
+    return fragment.index(token,start)
+
 def _shutdown_piece(text,start):
     section=r29.function(text,"controller")
     require(section.count(start)==1,"R31 shutdown marker count drift: "+start)
@@ -89,15 +95,15 @@ def observe(old,new):
             new.count("fm_r28_gate_leave(&ctx->queue_admission);")==2 and
             ctrl.count("fm_r28_gate_close(&ctx->queue_admission);")==3,
             "R31 callback admission/lease lifecycle drift")
-    close=piece.index("fm_r28_gate_close(&ctx->queue_admission);")
-    busy=piece.index("const int r31_admission_busy=")
-    first_if=piece.index("if (ctx->queue) {",busy)
-    stop=piece.index("const OSStatus r31_immediate_stop_status=AudioQueueStop(ctx->queue,true);")
-    failure=piece.index("if (r31_immediate_stop_status!=noErr) {")
-    quarantine=piece.index("atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);",failure)
-    fail_return=piece.index("return -1;",failure)
-    busy_guard=piece.index("if (r31_admission_busy) {")
-    busy_return=piece.index("return -1;",busy_guard)
+    close=anchored_index(piece,"fm_r28_gate_close(&ctx->queue_admission);")
+    busy=anchored_index(piece,"const int r31_admission_busy=")
+    first_if=anchored_index(piece,"if (ctx->queue) {",busy)
+    stop=anchored_index(piece,"const OSStatus r31_immediate_stop_status=AudioQueueStop(ctx->queue,true);")
+    failure=anchored_index(piece,"if (r31_immediate_stop_status!=noErr) {")
+    quarantine=anchored_index(piece,"atomic_store_explicit(&fm_context_quarantined,1,memory_order_release);",failure)
+    fail_return=anchored_index(piece,"return -1;",failure)
+    busy_guard=anchored_index(piece,"if (r31_admission_busy) {")
+    busy_return=anchored_index(piece,"return -1;",busy_guard)
     require(close<busy<first_if<stop<failure<quarantine<fail_return<
             busy_guard<busy_return,
             "R31 stop MUST precede any admission-busy return")
