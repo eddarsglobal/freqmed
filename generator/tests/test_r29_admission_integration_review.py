@@ -17,7 +17,7 @@ class R29AdmissionIntegrationReview(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.c=(ROOT/r29.CANDIDATE).read_text(encoding="utf-8")
-        cls.run=(ROOT/"RUN_GEN_R29_MAC_INTEL.command").read_text(encoding="utf-8")
+        cls.runner=(ROOT/"RUN_GEN_R29_MAC_INTEL.command").read_text(encoding="utf-8")
     def reject(self,old,new):
         self.assertIn(old,self.c)
         with self.assertRaises((r29.R29Error,ValueError)):
@@ -51,10 +51,10 @@ class R29AdmissionIntegrationReview(unittest.TestCase):
         table,_,_,_=r29.inspect(ROOT)
         self.assertEqual(156,len(table))
     def test_runner_never_links_r29_to_cli(self):
-        self.assertIn("R29_NONEMITTING_EXECUTABLE_SYMBOL_AUDIT=PASS",self.run)
-        self.assertIn("R29_INTEGRATED_CANDIDATE_OBJECT=COMPILED_UNLINKED",self.run)
+        self.assertIn("R29_NONEMITTING_EXECUTABLE_SYMBOL_AUDIT=PASS",self.runner)
+        self.assertIn("R29_INTEGRATED_CANDIDATE_OBJECT=COMPILED_UNLINKED",self.runner)
     def test_r29_report_dossier_is_sha_checked(self):
-        self.assertIn("R29_BUREAU_REVIEW_DOSSIER=20_FILES_SHA256_PASS",self.run)
+        self.assertIn("R29_BUREAU_REVIEW_DOSSIER=20_FILES_SHA256_PASS",self.runner)
     def test_owner_mac_historical_evidence_chain(self):
         archive=os.environ.get("FREQMED_GEN_R19_ARCHIVE_DIR")
         directory=os.environ.get("FREQMED_GEN_R29_EVIDENCE_DIR")
