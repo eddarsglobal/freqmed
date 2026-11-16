@@ -343,3 +343,16 @@ Le témoin réel du propriétaire `Markdown collé(20261116-094411).md` confirme
 Le manifeste de **169 sources** est refermé sur les nouveaux octets du vérificateur et du README. **Cibles Mac Intel FIX1 non attestées : 617/617 Python, 33/33 C, 169/169 sources, 24/24 rapports SHA-256.** Les 8 obligations R31 (2 CRITICAL), 12 constats R30 (2 CRITICAL) et les 11 portes originales du Bureau demeurent tous ouverts ; PR #1 DRAFT et aucune émission autorisée.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R32 — Independent Failed-Stop Containment & CoreAudio Ownership Safety Review
+
+**Référence Mac Intel propriétaire validée : GEN-R31 FIX1, 617/617 Python, 33/33 C natifs, 169/169 sources SHA-256, 24/24 rapports SHA-256.** GEN-R31 ne prouve toujours ni l'arrêt physique, ni l'absence de races, ni la quiescence des callbacks.
+
+**GEN-R32 est un audit source-only**, sans aucun changement aux sources C (backend original, candidats R26/R29/R31 et portail R28 inchangés). Il qualifie les erreurs `AudioQueueStop(ctx->queue,true)` : quarantaine et conservation de la file en cas de retour non nul ne démontrent pas une coupure acoustique. Les erreurs `AudioQueueDispose`, les listeners, `userdata`, les accès `ctx->queue` et la réentrance PCM restent ouverts.
+
+Ajouts : `audits/r32_failed_stop_ownership_review.py` (**10 constats ouverts, dont 2 CRITICAL**), `tests/test_r32_failed_stop_ownership_review.py` (**20 nouveaux tests logiciels sans simulation**), `RUN_GEN_R32_MAC_INTEL.command`, trois dossiers de revue B07/B09/B10 et une chaîne SHA-256 de preuves R16–R32. Les obligations R31 (8, dont 2 critiques), R30 (12, dont 2 critiques), R29 7, R28 5, R27 9, R23 15, R24 7 et les 11 portes du Bureau restent ouvertes, aucune levée implicite.
+
+**Cibles Mac Intel non exécutées R32 : 637 Python, 33 C, 175 sources SHA-256, 26 rapports R20–R32 SHA-256.** Aucun callback ou matériel activé ; PR #1 DRAFT, pas de fusion, aucun certificat indépendant.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
