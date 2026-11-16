@@ -356,3 +356,16 @@ Ajouts : `audits/r32_failed_stop_ownership_review.py` (**10 constats ouverts, do
 **Cibles Mac Intel non exécutées R32 : 637 Python, 33 C, 175 sources SHA-256, 26 rapports R20–R32 SHA-256.** Aucun callback ou matériel activé ; PR #1 DRAFT, pas de fusion, aucun certificat indépendant.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R33 — CoreAudio Failure-State Ownership & Safe-Abandonment Contract Design
+
+**Témoin logiciel Mac Intel de référence : GEN-R32 637/637 Python, 33/33 C natifs, 175/175 fichiers SHA-256, 26/26 rapports SHA-256 PASS.** Aucun certificat CoreAudio ni physique n'est déduit.
+
+GEN-R33 ajoute **une matrice documentaire de dix états de propriété**, un auditeur source-only de 12 obligations **OPEN_NOT_PROVEN dont 3 critiques**, vingt nouveaux tests lexicaux, une revue B07/B09/B10 et un lanceur Mac Intel. Il distingue `owner_ctx` prépublication, userdata publié, propriété de `ctx->queue` par CoreAudio, callbacks tardifs, échec `AudioQueueStop` et disposition réussie/échouée. **Aucun fichier C n'est modifié** : moteur original, candidats R26/R29/R31 et portail R28 demeurent intacts ; aucun backend de sortie n'est lié ou activé.
+
+Un `noErr` de disposition ne suffit pas à prouver la sûreté d'un `free(owner_ctx)` après publication sans analyse complète des callbacks/OS. Une quarantaine n'établit pas une coupure physique. Les obligations historiques restent R32 10 (2 critiques), R31 8 (2 critiques), R30 12 (2 critiques), R29 7, R28 5, R27 9, R23 15, R24 7, Bureau **11 OPEN / 0 résolue**.
+
+Documentation : `docs/GEN_R33_FAILURE_STATE_OWNERSHIP.md`, `docs/GEN_R33_BUREAU_REVIEW.md`, `docs/GEN_R33_SAFE_ABANDONMENT_MATRIX.md`. `RUN_GEN_R33_MAC_INTEL.command` doit vérifier 181 sources et conserver les objets candidats non liés. **Cibles Mac Intel R33 non attestées : 657 tests Python, 33 assertions natives C, 181 fichiers source SHA-256 et 28 rapports de preuve SHA-256.** PR #1 DRAFT, non fusionnée.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
