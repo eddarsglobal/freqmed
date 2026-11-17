@@ -451,3 +451,20 @@ Documents du Bureau : `docs/GEN_R38_ALIAS_EXIT_PATH_MATRIX.md`, `docs/GEN_R38_BU
 **Cibles GEN-R38 Mac Intel PENDING : 757 Python, 33 assertions C natives, 213 sources SHA-256 et 38 rapports SHA-256.** C31 continue de passer `userdata=ctx` et les propositions C36/C37 ne sont pas intégrées. PR #1 DRAFT, non fusionnée.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R39 — Independent Owner-Lifetime Enforcement & Callback Exit Contract Remediation Design
+
+**Dernière preuve Mac Intel propriétaire réelle : GEN-R38 logiciel PASS (17/11/2026), 757/757 Python, 33/33 assertions natives C, 213/213 sources SHA-256, 38/38 rapports Bureau SHA-256.** Cette validation ne constitue aucune certification C11, CoreAudio ou physique.
+
+GEN-R39 ajoute un **véritable candidat C11 isolé** `candidates/r39_owner_lifetime_exit_ticket.c` : ticket local `FM39Lease` initialisé par `FM39_LEASE_INITIALIZER`, réservation atomique `UNUSED→RESERVING`, admission `fm36_try_enter` avant publication des pointeurs, phase `ACTIVE` en `memory_order_release` et lecteur `memory_order_acquire`, puis CAS atomique **`ACTIVE→FINISHED` avant `fm36_leave`**. Une seule sortie réussie peut décrémenter pour un ticket vivant correctement initialisé : c'est uniquement **AT-MOST-ONCE**, pas EXACTLY-ONCE. Aucune sortie n'est garantie si le futur callback n'appelle pas la fin ; un `fm36_leave` échoué laisse la phase terminale. La durée de vie d'`owner` et du ticket reste une obligation externe, et aucune donnée non atomique du contexte réel n'est certifiée.
+
+Aucun ancien C n'est modifié. Les vrais callbacks C31 passent **encore** `userdata=ctx`. Les candidats C36/C37/C39 sont **non intégrés, non liés, non chargés et non exécutés**. Aucun appel AudioQueue, simulation scientifique, matériel, émission ou essai biologique.
+
+Audit `audits/r39_owner_lifetime_exit_ticket_review.py` : **16 constats `OPEN_NOT_PROVEN`, 4 CRITICAL**, six contrats C11, 32 ancrages source SHA-pinnés C31/C36/C37/C39, recalcul réel de R16–R38 sans effacer les **11 portes Bureau OPEN/0 résolue**. `tests/test_r39_owner_lifetime_exit_ticket_review.py` ajoute **20 tests source-only**, y compris quatre mutations textuelles adversariales. `RUN_GEN_R39_MAC_INTEL.command` cible compilation C39 `clang -c`, `nm`, binaire `output_hard_denied.c` et dossier **40 rapports SHA-256 R20–R39**, uniquement après réussite complète des tests.
+
+Documents : `docs/GEN_R39_OWNER_LIFETIME_ARCHITECTURE.md`, `docs/GEN_R39_BUREAU_PROOF_GATES.md`, `docs/GEN_R39_EXIT_TICKET_ADVERSARIAL_MATRIX.md`.
+
+**Objectifs Mac Intel GEN-R39 encore PENDING : 777 Python, 33 C natives, 220 sources SHA-256 et 40 rapports SHA-256.** Risques R38 18/5 critiques, R37 14/4, R36 12/4, R35 12/4, R34 14/4 et Bureau historique **11 OPEN / 0 résolue**. PR #1 DRAFT, non fusionnée.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
