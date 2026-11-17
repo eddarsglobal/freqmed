@@ -201,7 +201,7 @@ def observe(c40,h40,c39,c31,c36,c37):
 def inspect(root,override=None,header_override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==228,"R40 requires 228 SHA-pinned generator files")
+    require(len(table)>=228,"R40 historical audit accepts later manifests with at least 228 pinned sources")
     needed=(CANDIDATE,HEADER,
             "audits/r40_ticket_copy_completion_review.py",
             "tests/test_r40_ticket_copy_completion_review.py",
