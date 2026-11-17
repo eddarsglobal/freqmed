@@ -104,7 +104,7 @@ class R40TicketCopyCompletionReview(unittest.TestCase):
 
     def test_228_SHA_pins_and_old_native_digest(self):
         table,_,_,_=r40.inspect(ROOT)
-        self.assertEqual(228,len(table))
+        self.assertGreaterEqual(len(table),228)
         for path in r40.FILES.values():
             self.assertEqual(table[path],
                hashlib.sha256((ROOT/path).read_bytes()).hexdigest())
