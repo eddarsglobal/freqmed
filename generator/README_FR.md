@@ -468,3 +468,18 @@ Documents : `docs/GEN_R39_OWNER_LIFETIME_ARCHITECTURE.md`, `docs/GEN_R39_BUREAU_
 **Objectifs Mac Intel GEN-R39 encore PENDING : 777 Python, 33 C natives, 220 sources SHA-256 et 40 rapports SHA-256.** Risques R38 18/5 critiques, R37 14/4, R36 12/4, R35 12/4, R34 14/4 et Bureau historique **11 OPEN / 0 résolue**. PR #1 DRAFT, non fusionnée.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R40 — Independent Ticket Ownership, Copy Prevention & Completion Coverage Review
+
+**Témoin Mac Intel réel de référence : GEN-R39 PASS logiciel**, 777/777 tests Python, 33/33 assertions C natives, 220/220 fichiers source SHA-256 et 40/40 rapports SHA-256. Ces réussites logicielles ne prouvent ni quiescence CoreAudio, ni liberté des races C11 globale, ni arrêt physique.
+
+GEN-R40 ajoute **deux nouveaux fichiers C11 isolés**, `candidates/r40_opaque_ticket.h` et `candidates/r40_opaque_ticket.c`, sans modifier C31, C36, C37, C39 ou le backend original. La définition `struct FM40Ticket` est privée ; le header expose un **type incomplet**, donc un consommateur C correctement typé ne peut **pas** créer/copier le ticket par valeur ni accéder à ses champs. Le lanceur possède un **vrai test négatif `clang -fsyntax-only`** sur `FM40Ticket forbidden_copy;`. Il n'exécute aucun callback et ne simule aucune expérience scientifique.
+
+Le C40 garde **4 emplacements statiques** de durée de vie du processus, à usage unique, sans réallocation ni recyclage. `fm40_begin` réserve un emplacement par CAS, obtient l'admission R36 **avant** de révéler `owner_out`, puis publie `ACTIVE`. `fm40_complete` valide l'identité du pointeur **avant déréférencement**, puis une transition atomique `ACTIVE→FINISHED` limite la sortie à **AT-MOST-ONCE par slot valide**. **Cela ne garantit pas l'appel de `complete` au moins une fois, ne bloque pas la copie des pointeurs `FM40Ticket*` et `owner`, ni la manipulation de mémoire C non conforme.** Quatre slots sont insuffisants pour un flux non borné de callbacks OS : aucune intégration de production n'est envisagée.
+
+Le vrai C31 continue à passer `userdata=ctx` à CoreAudio. Aucun candidat C31/C36/C37/C39/C40 n'est relié ni exécuté dans le CLI. Audit `r40_ticket_copy_completion_review.py` : **18 constats OPEN dont 5 CRITICAL**, six contrats, 36 témoins source SHA-pinnés, preuves R16–R39 recalculées et **11 portes historiques du Bureau OPEN/0 résolue**. `test_r40_ticket_copy_completion_review.py` ajoute **20 tests source-only** avec quatre mutations textuelles. Documents B07/B09/B10 : `GEN_R40_OPAQUE_TICKET_ARCHITECTURE.md`, `GEN_R40_BUREAU_PROOF_REVIEW.md`, `GEN_R40_EXIT_COVERAGE_MATRIX.md`.
+
+**Objectifs Mac Intel GEN-R40 PENDING : 797 Python, 33 C natives, 228 sources SHA-256 et 42 rapports SHA-256.** `RUN_GEN_R40_MAC_INTEL.command` compile C40 en objet non lié, vérifie `nm` et l'exclusion du linker, refuse la copie C par valeur, et ne produit les rapports qu'après succès total. PR #1 DRAFT et non fusionnée.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
