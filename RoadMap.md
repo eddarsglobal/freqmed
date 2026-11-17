@@ -118,7 +118,253 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 
 ## G. Historique et non-régression
 
+- 2026-11-13 : preuve propriétaire GEN-R10 Mac Intel 195/195 tests Python + 33/33 assertions natives C PASS, backend source non lié et sortie bloquée ; **ne vaut pas certification du Bureau**.
+- 2026-11-13 : GEN-R11 FIX1 Mac Intel validé logiciellement : **215/215 tests Python + 33/33 assertions C PASS**, cinq objets natifs non liés, aucune émission. Certification du Bureau toujours PENDING.
+- 2026-11-13 : GEN-R12 Mac Intel première exécution : 70/70 fichiers intègres, 5 objets isolés compilés, 33/33 assertions C, contrôle de symboles PASS; 235 tests Python exécutés, **3 FAIL** hérités R9/R10/R11, donc R12 non validé.
+- 2026-11-13 : GEN-R12 FIX1 validé logiciellement sur Mac Intel : **235/235 tests Python + 33/33 assertions natives C PASS**, cinq objets isolés, aucune émission, Bureau PENDING.
+- 2026-11-13 : GEN-R13 validé logiciellement sur Mac Intel : **255/255 Python PASS + 33/33 assertions C PASS**, 74 fichiers intègres, 5 objets compilés non liés et aucune émission ; certification Bureau PENDING.
+- 2026-11-13 : GEN-R14 validé logiciellement sur Mac Intel : **275/275 tests Python + 33/33 assertions natives C PASS**, 78 fichiers intègres, cinq objets compilés non liés, aucun son ou champ émis, Bureau PENDING.
+- 2026-11-13 : GEN-R15 témoin Mac Intel initial : 82/82 sources intègres, 5 objets compilés **non liés**, 33/33 assertions C et audit de symboles PASS ; **295 tests Python exécutés, 3 FAIL** hérités R9/R10/R11, donc GEN-R15 non validé.
+- 2026-11-13 : GEN-R15 FIX1 **validé logiciellement sur Mac Intel** : **295/295 Python PASS, 33/33 assertions C PASS**, 82/82 sources intègres, cinq objets natifs non liés, aucune émission ; Bureau PENDING, P0.01 IN_PROGRESS.
+- 2026-11-13 : GEN-R16 validé logiciellement sur Mac Intel : **315/315 tests Python PASS, 33/33 assertions C PASS, 25/25 contrôles statiques PASS**, 87 fichiers intègres, cinq objets natifs compilés non liés, aucune émission ; certif. Bureau PENDING, P0.01 IN_PROGRESS.
+- 2026-11-14 : GEN-R17 validé logiciellement sur Mac Intel : **335/335 tests Python PASS, 33/33 assertions C PASS, 25/25 contrôles R16 PASS**, vérificateur indépendant R17 PASS, 92/92 fichiers intègres, cinq objets natifs non liés, aucune émission ; Bureau PENDING, P0.01 IN_PROGRESS.
+- 2026-11-14 : GEN-R18 validé logiciellement sur Mac Intel : **355/355 Python PASS, 33/33 C PASS**, R16/R17/R18 preuves PASS, 13 retours / 4 libérations / 6 relâchements contrôlés, 97/97 sources intègres, cinq objets natifs isolés/non liés, aucune émission. Bureau PENDING, P0.01 IN_PROGRESS.
+- 2026-11-14 : GEN-R19 validé logiciellement sur Mac Intel : **375/375 Python PASS, 33/33 C PASS, 13/13 contrôles adversariaux PASS**, R16/R17/R18 PASS, 103/103 sources intègres, archive privée des quatre JSON créée et vérifiée, backend natif non lié et aucune émission. Bureau PENDING, P0.01 IN_PROGRESS.
+- 2026-11-14 : GEN-R20 validé logiciellement sur Mac Intel : **395/395 Python PASS, 33/33 C PASS**, 108/108 sources intègres ; archive R19 historique de 103 fichiers et quatre JSON revérifiée en lecture seule ; dossier du Bureau créé, **11 portes PENDING**, `REVIEWABLE_NOT_CERTIFIED`, aucun backend de sortie lié ni émission.
+- 2026-11-14 : GEN-R20 FIX1 validé logiciellement sur Mac Intel : **397/397 Python PASS, 33/33 C PASS**, 108/108 fichiers intègres, avertissements invalides de chaînes Python éliminés, archive originale R19 requalifiée documentaire (103 fichiers, quatre JSON), aucune émission ; Bureau PENDING, P0.01 IN_PROGRESS.
+- 2026-11-14 : GEN-R21 validé logiciellement sur Mac Intel : **417/417 Python PASS, 33/33 C PASS**, 113/113 sources intègres, archive historique R19 103 fichiers/4 JSON revérifiée, audit des onze portes `R21_BUREAU_GAP_REVIEW=PASS`, **11 OPEN, 0 résolue**, quatre fichiers du Bureau R20/R21 SHA-256 vérifiés ; sans émission ni simulation, P0.01 IN_PROGRESS et Bureau PENDING.
+- 2026-11-15 : GEN-R22 validé logiciellement sur Mac Intel : **437/437 Python PASS, 33/33 C PASS, 118/118 fichiers sources intègres**, 17 observations statiques, trois risques non prouvés ; dossier privé R20–R22 de six fichiers JSON/Markdown vérifiés SHA-256, archive R19 en lecture seule, 11 portes du Bureau OPEN, 0 résolue, aucune émission.
+- 2026-11-15 : GEN-R23 validé logiciellement sur Mac Intel au commit `e52a18b39c4e29203fef23c3a63c4537317794a5` : **457/457 Python PASS, 33/33 C PASS, 123/123 sources intègres**, 15 obligations de preuve OPEN, 0 acquittée, dossier privé de huit rapports R20–R23 vérifié SHA-256, archive R19 en lecture seule, onze portes du Bureau OPEN, aucune émission ni simulation.
+- 2026-11-15 : GEN-R24 validé logiciellement sur Mac Intel au commit `78d6f8667de4c9834b4b89feb0c36ca39a5e3c87` : **477/477 Python PASS, 33/33 assertions C PASS, 128/128 sources intègres**, 19 champs C11, 112 références lexicales, 11 points d'appel AudioQueue, 7 constats R24 ouverts et 15 obligations R23 ouvertes, dossier privé de 10 rapports R20–R24 vérifiés SHA-256 ; aucune simulation ou émission.
+- 2026-11-15 : GEN-R25 validé sur Mac Intel au commit `646403a02ac9664b97c3fce954cbcf69415cee8e` : **497/497 Python PASS, 33/33 assertions C PASS, 133/133 sources intègres**, neuf remédiations documentaires, zéro patch C appliqué, douze fichiers R20–R25 vérifiés SHA-256, 15 obligations R23 et 7 constats R24 OPEN, 11 portes Bureau OPEN, aucune émission ni simulation.
+- 2026-11-15 : GEN-R26 validé logiciellement sur Mac Intel au commit `55719fbe6f30a96b6142b26c554bbb5656875e7d` : **517/517 Python PASS, 33/33 C PASS, 139/139 sources SHA-256 vérifiées**, trois modifications C dans `generator/candidates/acoustic_macos_r26.c`, zéro changement `generator/src/acoustic_macos.c`, objet natif candidat COMPILED_UNLINKED, quatorze rapports privés R20–R26 vérifiés SHA-256, aucune simulation, callback CoreAudio ni émission.
+- 2026-11-15 : GEN-R27 candidat **Independent Native C11 Patch Adversarial & Ownership Review** : neuf constats source-ancrés ouverts (18 lignes C sous SHA-256), notamment accès concurrent potentiel à `ctx->queue` pendant disposal, `AudioQueueEnqueueBuffer` sous verrou PCM, compteurs d'entrée tardifs, propriété des listeners, erreurs OS et mémoire en quarantaine. Vingt nouveaux tests Python de revue et altérations textuelles fail-closed, chaîne R16–R26 requalifiée, aucune modification C natif, 16 rapports R20–R27 après PASS réel. Deux contrôles de cardinalité R26 changés de ==139 à >=139 pour compatibilité. **537 Python + 33 C attendus, 144 fichiers épinglés, GEN-R27 Mac PENDING**. Neuf risques R27 OPEN_NOT_PROVEN, quinze obligations R23 OPEN, sept constats R24 OPEN, onze portes Bureau OPEN ; aucune race reproduite, simulation ou émission.
+
 - 2026-11-09 : P0.00-R4 gouvernance initiale certifiée ; **l'ancien P0.01 est un audit documentaire, pas une certification du nouveau générateur**.
 - 2026-11-10/12 : séries documentaires R2–R28 ; UI V4/V5 ; moteurs candidats R29–R32 en dehors de la branche officielle.
 - 2026-11-12 : correction impérative de mission par le propriétaire : **FREQMED = générateurs physiques acoustique ET EM**, recherche scientifique sous Bureau. La présente refonte ne crée aucune autorisation d'émission.
 - `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+## GEN-R28 — Independent C11 Queue Lifetime & Callback Admission Remediation Design
+
+- **Statut :** CANDIDATE_SOURCE_ONLY, MAC_INTEL_PENDING, BUREAU_CERTIFICATION=PENDING. **P0.01 reste IN_PROGRESS ; aucune promotion ni signature indépendante.**
+- Référence témoin **GEN-R27 Mac Intel logiciel PASS** : 537 Python, 33 assertions natives C, 144 sources SHA-256, 16 rapports SHA-256 ; neuf risques adversariaux non démontrés ouverts.
+- Contrat C11 isolé `generator/candidates/r28_callback_admission_gate.c` (admission CAS bornée, fermeture atomique irréversible, comptage des leases) : **ne relie pas et n'active pas CoreAudio** ; son état fermé/vide n'établit ni fin des callbacks de l'OS ni validité d'`AudioQueueRef`.
+- Nouveau dossier B07/B09/B10 : **5 obligations de conception OPEN_NOT_PROVEN**, outre les **9 constats R27, 15 obligations R23, 7 constats R24 et 11 portes du Bureau OPEN**. C historique et candidat R26 inchangés ; la PR #1 reste DRAFT.
+- **Validation attendue, non présumée :** 557 tests Python, 33 assertions C, 150 fichiers SHA-256, 18 rapports vérifiés, cinq objets existants et deux candidats compilés en objets séparés non liés, audit `nm` non émetteur.
+- Limites permanentes : `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R29 — Independent C11 Admission Integration & Queue Ownership Proof Review
+
+- **État :** CANDIDATE_SOURCE_ONLY ; MAC_INTEL_PENDING ; BUREAU_CERTIFICATION=PENDING ; RoadMap P0.01 toujours IN_PROGRESS. Pas de progression ni de certification implicite.
+- **Référence :** GEN-R28 réellement exécuté sur Mac Intel, 557 Python + 33 C + 150 source SHA-256 + 18 rapports de Bureau PASS, mais tous les risques C11 et CoreAudio encore ouverts.
+- **Livrable C :** un nouveau candidat `generator/candidates/acoustic_macos_r29.c` issu du candidat R26, intégrant localement le protocole de bail R28 dans l'admission des callbacks/listeners et la fermeture avant disposition, **uniquement compilé en objet isolé**. Aucun changement au backend original, au C R26 ou au C11 R28. Aucune API d'émission n'est liée au binaire non émetteur.
+- **Bureau B07/B09/B10 :** sept nouveaux constats I29 ouverts. La validité de userdata avant l'admission reste une obligation OS; closed-and-empty ne démontre ni qu'aucun callback futur ne se présentera ni la qualification des retours `AudioQueueDispose`. La fermeture avec un bail actif provoque une quarantaine sans disposition et peut conserver des ressources OS. Le risque de réentrance `AudioQueueEnqueueBuffer` sous le verrou PCM reste ouvert.
+- **Blocages hérités :** 5 contrôles R28 OPEN ; 9 constats R27 OPEN ; 15 obligations R23 OPEN ; 7 constats R24 OPEN ; 11 portes du Bureau OPEN / zéro résolue. Les tests textuels ne prouvent aucune race.
+- **Cible de test Mac Intel non attestée :** 577 Python, 33 assertions natives C, 156 sources SHA-256, 20 rapports SHA-256, compilation R29 uniquement non liée, audit `nm` de l'exécutable non émetteur.
+- **Gouvernance :** `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R29 FIX1 — Réparation de l'infrastructure de tests sans effet sur les sorties
+
+- Témoin réel Mac Intel du 16 novembre 2026 : **intégrité 156 sources PASS**, audit R29 PASS, objets C non liés PASS, **33 assertions natives C PASS**, binaire non émetteur PASS ; **393 tests Python OK**, puis arrêt `TypeError: 'str' object is not callable`.
+- Cause avérée : `tests/test_r29_admission_integration_review.py` donnait une chaîne à `cls.run`, masquant `unittest.TestCase.run`. Aucune preuve de race reproduite, aucune défaillance CoreAudio déclenchée.
+- Correction FIX1 : renommer `cls.run` / `self.run` en `cls.runner` / `self.runner`, ajouter au lanceur R29 un précontrôle AST fail-closed empêchant toute nouvelle affectation `cls.run` ou `self.run` dans la classe de test R29 ; nouveau manifeste épinglé, aucune modification du C.
+- **Statut :** FIX1_SOURCE_CANDIDATE ; MAC_INTEL_FULL_REPLAY_PENDING ; 577 tests Python ciblés, 33 C, 156 sources, 20 rapports du Bureau. `GEN_R29_MAC_INTEL_SOFTWARE` n'est PAS PASS à ce stade.
+- Obligations inchangées : 7 constats R29 OPEN, 5 contrôles R28 OPEN, 9 constats R27 OPEN, 15 preuves R23 OPEN, 7 constats R24 OPEN, 11 portes Bureau OPEN/0 résolue. P0.01 IN_PROGRESS. PR #1 DRAFT, sans fusion.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R30 — Independent CoreAudio Callback Quiescence & Queue Ownership Adversarial Review
+
+- **Référence réellement exécutée :** GEN-R29 FIX1 Mac Intel = 577 Python PASS, 33 C natives PASS, 156 sources intègres PASS, 20 rapports SHA-256 PASS ; aucune certification OS/physique.
+- **Découverte prioritaire :** candidat C R29, après `AudioQueueStart`, branche `closed_and_empty == false` qui retourne avec quarantaine sans `AudioQueueStop` ni `AudioQueueDispose`. **CRITICAL — jamais activer**, la quarantaine n'est pas une coupure matérielle.
+- **R30 :** audit indépendant source-only de la quiescence, durée de vie `userdata`, `ctx->queue`, callbacks, listeners, `AudioQueueEnqueueBuffer`, dispose failures et garanties C11 ; **12 constats (2 critiques) OPEN_NOT_PROVEN**, 20 contrôles Python statiques.
+- **Aucune modification du code C** : backend original, C R26/R29 et portail R28 identiques ; objets compilés séparément, aucun backend de sortie lié au CLI. Aucun callback CoreAudio, simulation scientifique, émission physique ou test biologique.
+- **Bureau :** 7 constats R29 OPEN, 5 R28 OPEN, 9 R27 OPEN, 15 R23 OPEN, 7 R24 OPEN et 11 portes original Bureau OPEN/0 résolue. Aucune signature indépendante.
+- **Validation attendue, non attestée :** 597 tests Python, 33 assertions C, 162 sources SHA-256, 22 rapports de revue SHA-256 ; PR #1 DRAFT, pas de fusion.
+- `GEN_R30_SOURCE_REVIEW=PUBLISHED`; `GEN_R30_MAC_INTEL=PENDING`; `C11_RACE_FREEDOM=NOT_PROVEN`; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`; `POST_START_SHUTDOWN_SAFETY=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R31 — Independent Critical Shutdown Path Remediation & Fail-Closed Ownership Design
+
+- **Référence :** GEN-R30 validé logiciellement sur Mac Intel (597 Python, 33 C, 162 sources SHA-256, 22 rapports SHA-256 PASS), mais 12 constats source ouverts dont deux critiques ; aucun acquittement C11/OS.
+- **Changement limité :** nouveau `generator/candidates/acoustic_macos_r31.c` isolé, dérivé de R29. La phase de shutdown tente `AudioQueueStop(ctx->queue,true)` **avant le retour sur admission encore active**, et la branche `OSStatus!=noErr` conserve une quarantaine sans disposer ni libérer. **Cette source n'est jamais liée, chargée ou exécutée** ; le moteur original, R26, R29 et R28 restent inchangés.
+- **Limite critique :** tentative de stop réussie ou échouée **ne démontre pas** l'arrêt acoustique physique ou la fin de tous les callbacks ; un échec peut laisser une file active. Ne pas promouvoir les risques `Q30_02` et `Q30_12` en résolus.
+- **Bureau :** 8 nouvelles obligations R31 OPEN, dont 2 CRITICAL. R30 12 OPEN (2 CRITICAL), R29 7 OPEN, R28 5 OPEN, R27 9 OPEN, R23 15 OPEN, R24 7 OPEN, et 11 portes historiques OPEN / 0 résolue. Aucun certificat ni signature.
+- **Validation Mac Intel attendue, non acquise :** 617 tests Python, 33 assertions C, 169 sources SHA-256, 24 dossiers R20–R31 SHA-256 ; audit `nm` et binaire non émetteur maintenus.
+- **Statut :** `GEN_R31_SOURCE_CANDIDATE=PUBLISHED` ; `GEN_R31_MAC_INTEL=PENDING`; `POST_START_SHUTDOWN_SAFETY=NOT_PROVEN`; `PHYSICAL_STOP=NOT_PROVEN`; `C11_RACE_FREEDOM=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`; PR #1 DRAFT, non fusionnée.
+- `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R31 FIX1 — Normalisation fail-closed des exceptions de l'auditeur
+
+- **Témoin réel Mac Intel du 16 novembre 2026 :** lanceur SHA-256 PASS ; 169/169 sources PASS ; audit `R31_CRITICAL_SHUTDOWN_REVIEW=PASS` ; C31 compilé **non lié** ; 33/33 assertions C natives ; `nm` non émetteur PASS. Suite Python exécutée : `Ran 617 tests in 15.539s` puis **`FAILED (errors=4)`**. Aucune certification logicielle R31, aucun dossier final de 24 rapports.
+- **Cause racine :** les quatre mutations ciblées retirent volontairement des motifs C ; dans `observe()`, un `piece.index()` non protégé déclenchait `ValueError`, alors que `tests/test_r31_critical_shutdown_review.py` exige `R31Error`.
+- **FIX1 :** neuf ancrages utilisent `anchored_index()` avec `require()`, renvoyant une erreur contractuelle `R31Error` sur source inattendue. **Les tests adversariaux restent intacts**, aucune tolérance ajoutée pour `ValueError` ; aucun candidat C ou backend original modifié.
+- **Répétition Mac Intel nécessaire :** objectif non attesté de 617/617 Python, 33/33 C, 169/169 fichiers SHA-256 et 24 rapports SHA-256 ; nouveaux journaux distincts de la tentative initiale.
+- **Bureau :** R31 8 OPEN (2 CRITICAL) ; R30 12 OPEN (2 CRITICAL) ; R29 7 OPEN ; R28 5 OPEN ; R27 9 OPEN ; R23 15 OPEN ; R24 7 OPEN ; portes 11 OPEN / 0 résolue. `C11_RACE_FREEDOM=NOT_PROVEN`, `PHYSICAL_STOP=NOT_PROVEN`, `GEN_R31_FIX1_MAC_INTEL=PENDING`. PR #1 DRAFT, pas de fusion.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R32 — Independent Failed-Stop Containment & CoreAudio Ownership Safety Review
+
+- **Point de départ :** GEN-R31 FIX1 Mac Intel logiciel PASS (617 Python, 33 assertions C, 169 fichiers source, 24 rapports SHA-256) ; aucune preuve de sûreté CoreAudio active.
+- **Périmètre :** revue adversariale du candidat C31 **sans modification C ni intégration**. L'échec d'`AudioQueueStop(ctx->queue,true)` garde la file et le contexte en quarantaine mais ne prouve ni arrêt acoustique ni innocuité physique ; ne pas ajouter un repli `AudioQueueDispose` forcé ou un retry sans garanties OS.
+- **Livrables :** auditeur source C11/OSStatus R32, **10 nouveaux constats OPEN_NOT_PROVEN (2 CRITICAL)**, 20 tests de non-régression lexicaux, trois dossiers B07/B09/B10, un runner Mac Intel et une nouvelle chaîne de 26 rapports SHA-256 R20–R32. Aucun callback CoreAudio, aucun test de race simulée, aucun instrument ni émission.
+- **Constats non résolus hérités :** R31 8 OPEN (2 CRITICAL), R30 12 OPEN (2 CRITICAL), R29 7 OPEN, R28 5 OPEN, R27 9 OPEN, R23 15 OPEN, R24 7 OPEN, 11 portes Bureau OPEN/0 résolue.
+- **Validation cible, non attestée :** 637 tests Python, 33 assertions natives C, 175 sources intègres, 26 rapports SHA-256 ; binaire `output_hard_denied.c` avec audit `nm` non émetteur. PR #1 DRAFT, non fusionnée.
+- **États :** `GEN_R32_SOURCE_REVIEW=PUBLISHED`; `GEN_R32_MAC_INTEL=PENDING`; `FAILED_OS_STOP=NOT_TESTED`; `PHYSICAL_STOP=NOT_PROVEN`; `CALLBACK_QUIESCENCE=NOT_PROVEN`; `C11_RACE_FREEDOM=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R33 — Independent CoreAudio Failure-State Ownership & Safe-Abandonment Contract Design
+
+- **Base Mac Intel attestée :** GEN-R32 637/637 Python, 33/33 assertions C, 175/175 sources SHA-256 et 26/26 rapports SHA-256 PASS ; validation logicielle seulement, aucune sûreté OS/physique certifiée.
+- **Choix du Bureau :** ne pas créer un correctif C prétendument sûr sur les retours d'erreur `AudioQueueStop`/`AudioQueueDispose`. À la place, formaliser les dix situations de propriété (`owner_ctx` avant/après publication, queue OS possiblement active/invalide, listeners et callbacks) et distinguer conservation mémoire, validité de handle et coupure physique.
+- **Nouveaux livrables :** `audits/r33_failure_state_ownership_contract.py`, 12 constats **OPEN_NOT_PROVEN (3 CRITICAL)**, `tests/test_r33_failure_state_ownership_contract.py` (20 contrôles source-only), matrice d'abandon sûr, revue B07/B09/B10, `RUN_GEN_R33_MAC_INTEL.command` et chaîne privée R20–R33 de 28 rapports SHA-256.
+- **Aucun changement C** : code original, candidats R26/R29/R31 et unité atomique R28 byte-identical. Aucune activation CoreAudio, aucune simulation scientifique, aucun matériel ou émission.
+- **Risques hérités :** R32 10 OPEN (2 CRITICAL) ; R31 8 OPEN (2 CRITICAL) ; R30 12 OPEN (2 CRITICAL) ; R29 7 OPEN ; R28 5 OPEN ; R27 9 OPEN ; R23 15 OPEN ; R24 7 OPEN ; 11 portes Bureau OPEN / 0 résolue.
+- **Cible Mac Intel R33, non encore observée :** 657 Python, 33 C, 181 sources épinglées, 28 rapports SHA-256, objets de sortie compilés non liés, CLI non émetteur `nm` PASS.
+- **Gouvernance :** `GEN_R33_SOURCE_CONTRACT=PUBLISHED`, `GEN_R33_MAC_INTEL=PENDING`, `C11_RACE_FREEDOM=NOT_PROVEN`, `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`, `PHYSICAL_CUTOFF=NOT_PROVEN`, `BUREAU_CERTIFICATION=PENDING`, PR #1 DRAFT/non fusionnée.
+- `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R34 — Independent Callback Userdata Lifetime & OS Ownership Proof Review
+
+- **Base Mac Intel attestée :** GEN-R33 = 657 Python PASS, 33 assertions C natives PASS, 181/181 sources SHA-256 PASS, 28/28 rapports SHA-256 PASS ; validation exclusivement logicielle et non émettrice.
+- **Constat prioritaire :** `output_callback` et `queue_running_listener` doivent déréférencer `ctx->queue_admission` avant de pouvoir accepter/rejeter l'admission C11 ; les compteurs de callbacks ne recensent que les entrées après le gate. Fermer le gate et observer zéro bail ne prouve pas une quiescence de l'OS.
+- **Approche :** auditeur indépendant SHA-pinné R34, 14 obligations **OPEN_NOT_PROVEN (4 CRITICAL)**, 11 phases documentaires de lifetime, 20 tests source-only, preuves B07/B09/B10, contrat Apple AudioQueueDispose/Stop/RemovePropertyListener classé selon succès/erreur et nouvelle chaîne de 30 rapports SHA-256.
+- **Périmètre immuable :** aucune modification des sources C originales ou candidates R26/R29/R31/R28 ; aucun callback CoreAudio réel, aucune simulation scientifique, aucune émission et aucune exposition biologique. Le binaire conserve `output_hard_denied.c` et l'audit `nm`.
+- **Risques anciens inchangés :** R33 12 OPEN (3 CRITICAL), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 et 11 portes historiques du Bureau OPEN/0 résolue. Aucune signature externe.
+- **Objectifs Mac Intel, encore PENDING :** 677 Python, 33 C, 187 sources intègres et 30 rapports SHA-256, avec compilation candidate `COMPILED_UNLINKED`.
+- **Gouvernance :** `GEN_R34_SOURCE_REVIEW=PUBLISHED`; `GEN_R34_MAC_INTEL=PENDING`; `C11_RACE_FREEDOM=NOT_PROVEN`; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`; `USERDATA_LIFETIME=NOT_PROVEN`; `PHYSICAL_CUTOFF=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`; PR #1 DRAFT et non fusionnée.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R35 — Independent Pre-Admission Callback Lifetime & OS Contract Evidence Review
+
+- **Base réelle Mac Intel** : GEN-R34 logiciel PASS (677/677 Python, 33/33 assertions natives C, 187/187 sources SHA-256, 30/30 rapports SHA-256) ; aucune validation physique ou CoreAudio active.
+- **Problème** : l'OS livre `userdata` aux callbacks et ces fonctions accèdent à `ctx->queue_admission` avant toute admission atomique ; la fermeture du gate C11 ne démontre pas qu'aucune entrée tardive OS ne puisse encore accéder au contexte.
+- **Revue documentaire Apple indépendante** du 16 novembre 2026 : **9 catégories** distinguant synchronie de `AudioQueueStop(true)`, disposition `AudioQueueDispose(true)` et absence de callbacks **après disposition**, matching `userdata` sur listener/remove, et **absence de preuve sur les appels `OSStatus` échoués**. Les pages Apple sont des URLs publiques vivantes, non des certificats ou copies immuables.
+- **Livrables** : audit `r35_pre_admission_os_contract_review.py` avec **12 obligations ouvertes (4 CRITICAL)** et deux ancrages C31 SHA-pinnés par obligation ; 13 phases source, 20 tests Python source-only, matrice de contrat API, décision Bureau B07/B09/B10, runner Mac Intel, revue propriétaire SHA-256 de 32 rapports R20–R35.
+- **Périmètre inviolable** : aucun changement C original, candidats R26/R29/R31 ou portail R28 ; aucun backend CoreAudio lié ou exécuté, aucun callback OS ou mesure, aucune simulation scientifique.
+- **Risques hérités inchangés** : R34 14 OPEN (4 CRITICAL), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 et les 11 portes historiques Bureau OPEN / 0 résolue.
+- **Cibles de validation Mac Intel NON attestées** : 697 tests Python, 33 assertions natives C, 193 fichiers source SHA-256, 32 rapports SHA-256 ; CLI `output_hard_denied.c`, candidates `COMPILED_UNLINKED`, audit `nm` obligatoire.
+- **Décision** : `GEN_R35_SOURCE_REVIEW=PUBLISHED` ; `GEN_R35_MAC_INTEL=PENDING` ; `PRE_ADMISSION_USERDATA_LIFETIME=NOT_PROVEN` ; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN` ; `C11_RACE_FREEDOM=NOT_PROVEN` ; `PHYSICAL_CUTOFF=NOT_PROVEN` ; `BUREAU_CERTIFICATION=PENDING`. PR #1 DRAFT, pas de fusion.
+- `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R36 — Independent Pre-Admission Lifetime Containment Architecture & Proof-Gate Design
+
+- **Témoin antérieur Mac Intel réel :** GEN-R35 logiciel PASS (697/697 Python, 33/33 assertions natives C, 193/193 sources SHA-256 et 32/32 rapports SHA-256), mais sûreté OS/C11 et physique non prouvée.
+- **Choix d'architecture concrète :** candidat C11 `generator/candidates/r36_stable_userdata_anchor.c` **isolé, non lié, non exécuté** : `userdata` serait une ancre statique unique et non réutilisable, avec propriétaire atomiquement publié et conservé jusqu'à la fin du processus. Cycle documentaire/atomique `EMPTY→PREPARED→EXPOSED→SEALED` irréversible ; admission compare le pointeur au jeton statique avant de lire le propriétaire.
+- **Limite explicite :** aucune insertion dans C31 ; ses callbacks passent toujours `ctx` directement à CoreAudio. L'ancre C36 n'est **pas** une preuve de quiescence OS, d'appariement des callbacks, de *happens-before* global, de validité d'alias propriétaires ou d'arrêt matériel.
+- **Livrables :** auditeur `r36_static_anchor_proof_gate.py` (12 nouveaux constats **OPEN_NOT_PROVEN, 4 CRITICAL**), 20 tests lexicaux, documentation indépendante B07/B09/B10 et matrice adversariale, compilation C36 `-c` sans liaison, binaire CLI `output_hard_denied.c` et 34 rapports privés SHA-256 R20–R36 après réussite de toutes les étapes.
+- **Périmètre immuable :** code original, candidats C R26/R29/R31 et portail R28 inchangés ; zéro appel CoreAudio actif, simulation, émission acoustique/EM ou essai biologique.
+- **Risques hérités ouverts :** R35 12 (4 CRITICAL), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 et **11 portes Bureau OPEN / 0 résolue**.
+- **Cibles Mac Intel R36, toujours PENDING :** 717 Python, 33 assertions C natives, 200 sources intègres et 34 rapports SHA-256 ; signe `R36_STABLE_ANCHOR_OBJECT=COMPILED_UNLINKED`.
+- **Verrous :** `GEN_R36_SOURCE_CANDIDATE=PUBLISHED`, `GEN_R36_MAC_INTEL=PENDING`, `R36_REAL_OS_INTEGRATION=NO`, `USERDATA_PRE_ADMISSION_LIFETIME_IN_PRODUCTION=NOT_PROVEN`, `C11_RACE_FREEDOM=NOT_PROVEN`, `PHYSICAL_CUTOFF=NOT_PROVEN`, `BUREAU_CERTIFICATION=PENDING`. PR #1 DRAFT et non fusionnée.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+### GEN-R36 FIX1 — incident réel Mac Intel et correction locale de l'auditeur
+
+- **Journal propriétaire du 16/11/2026 :** 200/200 fichiers source SHA-256 PASS ; ancre statique C36 SHA-256 PASS ; 33/33 assertions natives C PASS ; C36 et C31 `COMPILED_UNLINKED` ; `R36_STATIC_ANCHOR_REVIEW=PASS` ; résultat intégral **`Ran 717 tests in 31.965s` → `FAILED (errors=1)`**. **34 rapports SHA-256 finaux NON PRODUITS** par le lanceur en arrêt `set -euo pipefail`.
+- **Racine unique :** test mutation `test_mutation_owner_early_read_rejected` remplace `*owner_out=NULL;` ; l'auditeur `observe` tentait `enter.index(...)` sans contrôler l'ancrage, laissant un `ValueError` brut plutôt que le `R36Error` attendu.
+- **FIX1 :** vérifier explicitement cinq ancrages d'admission avant les appels `.index()` ; transformer cette mutation en rejet contrôlé `R36Error` ; conserver intégralement les tests existants et les 12 constats R36 (4 CRITICAL).
+- **Périmètre :** aucun changement C (ancre C36 comprise), aucune liaison ou émission ; Manifeste SHA-256 rescéllé pour le seul auditeur modifié, README et RoadMap.
+- **Gouvernance :** `GEN_R36_INITIAL_MAC_INTEL=FAIL_1_TEST_ERROR` ; `GEN_R36_FIX1_SOURCE=PUBLISHED` ; `GEN_R36_FIX1_MAC_INTEL=PENDING` ; `BUREAU_GATES=11_OPEN` ; `NEVER_SIMULATION=ENFORCED` ; `ACOUSTIC_OUTPUT=LOCKED` ; `EM_OUTPUT=LOCKED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`. PR #1 reste DRAFT, non fusionnée.
+
+
+## GEN-R37 — Independent Static-Anchor Integration Feasibility & C11 Ownership Proof Review
+
+- **Témoin Mac Intel antérieur réel :** GEN-R36 FIX1 PASS (717/717 Python, 33/33 assertions C natives, 200/200 sources SHA-256, 34/34 rapports SHA-256), sans preuve de sécurité C11/OS/physique.
+- **Architecture proposée, sans intégration OS :** nouveau candidat `generator/candidates/r37_callback_lease_adapter.c`, non lié, non exécuté. Il propose deux entrées séparées (sortie et listener), un `FM37Lease` local à la pile du callback avec `UNUSED → ACTIVE → FINISHED`, ancre R36 une seule fois, et délégation des admissions/sorties à `fm36_try_enter` / `fm36_leave` ; aucune allocation ou libération du propriétaire.
+- **Limitations prouvées par inspection :** C31 passe encore `ctx` aux deux callbacks, C37 n'est pas un ABI CoreAudio, les alias du propriétaire peuvent être libérés hors du module, le bail non atomique ne doit jamais être partagé, toutes les sorties et exceptions ne sont pas qualifiées, et `seal` ne garantit aucun arrêt matériel.
+- **Livrables :** auditeur `r37_adapter_ownership_proof_review.py` SHA-pinné (**14 nouvelles obligations ouvertes, 4 CRITICAL**) ; six contrats d'intégration ; 20 tests source-only dont cinq mutations ; trois documents B07/B09/B10 ; compilation `clang -c` séparée des candidats R31/R36/R37 ; `nm` du CLI hard-denied ; génération conditionnelle de 36 rapports SHA-256 R20–R37.
+- **Périmètre :** aucun changement du moteur C d'origine, R31/R36, autres candidats ou chaîne d'émission ; aucun callback CoreAudio réel ni simulation scientifique, émission acoustique/EM ou exposition biologique.
+- **Obligations encore ouvertes :** R36 12 (4 CRITICAL), R35 12 (4), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 ; **Bureau historique 11 OPEN / 0 résolue**.
+- **Cibles Mac Intel, PENDING :** 737 Python, 33 C, 207 sources SHA-256 et 36 rapports SHA-256. `GEN_R37_SOURCE_CANDIDATE=PUBLISHED` ; `GEN_R37_MAC_INTEL=PENDING` ; `GEN_R37_REAL_OS_INTEGRATION=NO` ; `OWNER_LIFETIME=NOT_PROVEN`; `C11_HAPPENS_BEFORE=NOT_PROVEN`; `COREAUDIO_CALLBACK_QUIESCENCE=NOT_PROVEN`; `PHYSICAL_CUTOFF=NOT_PROVEN` ; `BUREAU_CERTIFICATION=PENDING`.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`. PR #1 DRAFT, non fusionnée.
+
+
+## GEN-R38 — Independent Callback Owner-Alias & Exit-Path Completeness Audit
+
+- **Base réellement attestée :** GEN-R37 Mac Intel logiciel PASS (737 Python, 33 assertions natives C, 207 fichiers source SHA-256, 36 rapports SHA-256), sans certification de sûreté.
+- **Analyse nouvelle :** inventaire statique de **12 relations documentaires d'alias** entre `owner_ctx`, `ctx`, les deux `userdata` CoreAudio, `ptr/data`, `ctx->queue`, l'ancre R36 et le bail R37. Comptage des **2 sites `free(owner_ctx)` prépublication / 0 postpublication** dans le candidat C31 et reconnaissance de `gate_leave` dans output/listener.
+- **Verdict conservateur :** **18 constats ouverts (5 critiques)**, y compris absence de propriété exclusive prouvée, première déréférence de `ctx` avant admission, manque d'appariement `fm37_finish` par vrai callback et absence de certification CoreAudio/physique. Le comptage lexical ne prouve pas que tous les chemins ou alias externes sont connus.
+- **Livrables :** `audits/r38_owner_alias_exit_audit.py`, `tests/test_r38_owner_alias_exit_audit.py` (20 tests source-only et quatre mutations de chaînes), matrice d'alias, revue Bureau B07/B09/B10, obligations adversariales, launcher `RUN_GEN_R38_MAC_INTEL.command` avec chaîne de preuves R16–R37 et 38 rapports SHA-256 R20–R38 conditionnels.
+- **Périmètre inviolable :** aucun fichier C modifié, pas de liaison/exécution des candidats R31/R36/R37, binaire CLI hard-denied ; aucune simulation scientifique, émission acoustique/EM ni exposition biologique.
+- **Obligations héritées non déchargées :** R37 14 OPEN (4 CRITICAL), R36 12 (4), R35 12 (4), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 ; Bureau historique **11 OPEN / 0 résolue**.
+- **Objectifs Mac Intel non encore attestés :** 757 Python, 33 assertions C natives, 213 sources épinglées SHA-256, 38 rapports contrôlés SHA-256 ; candidat objet `COMPILED_UNLINKED`.
+- **Gouvernance :** `GEN_R38_SOURCE_AUDIT=PUBLISHED`; `GEN_R38_MAC_INTEL=PENDING`; `CALLBACK_OWNER_ALIAS_LIFETIME=NOT_PROVEN`; `CALLBACK_EXIT_COMPLETENESS=NOT_PROVEN`; `C11_RACE_FREEDOM=NOT_PROVEN`; `COREAUDIO_QUIESCENCE=NOT_PROVEN`; `PHYSICAL_CUTOFF=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`; PR #1 reste DRAFT, non fusionnée.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R39 — Independent Owner-Lifetime Enforcement & Callback Exit Contract Remediation Design
+
+- **Témoin antérieur réel du propriétaire** : GEN-R38 Mac Intel PASS logiciel (757/757 Python, 33/33 assertions natives C, 213/213 fichiers source SHA-256, 38/38 rapports SHA-256), sans preuve de sûreté OS/C11 ou physique.
+- **Correction isolée, non intégrée** : nouveau candidat `generator/candidates/r39_owner_lifetime_exit_ticket.c` avec ticket C11 `FM39Lease` et CAS de terminaison `ACTIVE→FINISHED` avant `fm36_leave`. Publication des pointeurs après admission statique R36 et avant état ACTIVE en release. Le module empêche au plus une double sortie pour **un ticket vivant, initialisé et non copié** ; cette garantie locale **AT-MOST-ONCE n'est PAS une garantie EXACTLY-ONCE**, une preuve d'owner lifetime ni un mécanisme de récupération des chemins d'erreur OS.
+- **Périmètre non régressif** : C31 et ses callbacks OS ne changent pas (`userdata=ctx`), candidats C36/C37 inchangés ; C39 est compilé **en objet non lié et jamais exécuté**, aucune API AudioQueue, émission, simulation scientifique ni test biologique.
+- **Audit indépendant R39** : `r39_owner_lifetime_exit_ticket_review.py`, **16 nouvelles obligations OPEN (4 CRITICAL)**, 32 preuves source SHA-pinnées, six contrats documentaires, chaîne R16–R38 de preuves recalculée, 20 tests Python source-only dont quatre mutations adversariales, trois matrices Bureau B07/B09/B10, runner `RUN_GEN_R39_MAC_INTEL.command`.
+- **Portes de sécurité héritées** : R38 18 OPEN (5 CRITICAL), R37 14 (4), R36 12 (4), R35 12 (4), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 ; Bureau historique **11 OPEN / 0 résolue**.
+- **Cibles de validation propriétaire Mac Intel, PENDING** : 777 tests Python, 33 assertions natives C, 220 sources SHA-256 et 40 rapports SHA-256 R20–R39. Aucun `GEN_R39_MAC_INTEL_SOFTWARE=PASS` tant que le journal natif réel n'est pas reçu.
+- **Décision** : `GEN_R39_CANDIDATE_SOURCE=PUBLISHED`, `GEN_R39_MAC_INTEL=PENDING`, `OWNER_LIFETIME_IN_PRODUCTION=NOT_PROVEN`, `CALLBACK_EXACTLY_ONCE=NOT_PROVEN`, `C11_RACE_FREEDOM=NOT_PROVEN`, `OS_CALLBACK_QUIESCENCE=NOT_PROVEN`, `PHYSICAL_CUTOFF=NOT_PROVEN`, `BUREAU_CERTIFICATION=PENDING`. PR #1 reste **DRAFT, non fusionnée**.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R40 — Independent Ticket Ownership, Copy Prevention & Completion Coverage Review
+
+- **Baseline réelle Mac Intel :** GEN-R39 logiciel PASS (777 tests Python, 33 assertions C natives, 220 sources SHA-256, 40 rapports SHA-256), sans certification de sûreté C11/OS/physique.
+- **Candidat C11 concret, source-only et jamais exécuté** : `generator/candidates/r40_opaque_ticket.h` + `.c`. Le header définit seulement un type incomplet `FM40Ticket`, la structure et **4 slots statiques jamais recyclés** demeurent privés à l'implémentation. Les clients C correctement typés ne peuvent copier le ticket **par valeur**, mais peuvent copier des pointeurs ; cast/mémoire incorrecte et alias `owner` restent hors garantie. **4 tickets par processus ne conviennent pas aux callbacks CoreAudio non bornés.**
+- **Terminaison candidate :** `fm40_begin` CAS `UNUSED→RESERVED`, `fm36_try_enter`, publication `ACTIVE` ; `fm40_complete` vérifie l'identité du pointeur avant de le déréférencer et utilise CAS `ACTIVE→FINISHED` avant un seul `fm36_leave`. Garantie locale **AT-MOST-ONCE** uniquement ; `EXACTLY_ONCE=NOT_PROVEN`, `OWNER_LIFETIME=NOT_PROVEN`.
+- **Preuves adversariales :** `r40_ticket_copy_completion_review.py` (**18 OPEN, 5 CRITICAL**), 36 ancrages SHA-256, 6 contrats ; `test_r40_ticket_copy_completion_review.py` (20 nouveaux tests source-only et 4 mutations) ; trois documents B07/B09/B10 ; `RUN_GEN_R40_MAC_INTEL.command` avec **vrai test négatif de compilation C** vérifiant la non-instanciabilité du type incomplet.
+- **Invariants :** candidats C31/C36/C37/C39 et backend source inchangés ; C40 objet `clang -c` non lié, non chargé, non exécuté ; CLI `output_hard_denied`, symboles CoreAudio émetteurs non liés, aucune émission ou simulation scientifique.
+- **Portes historiques non levées :** R39 16 OPEN (4 CRITICAL), R38 18 (5), R37 14 (4), R36 12 (4), R35 12 (4), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 ; **Bureau historique 11 OPEN / 0 résolue**.
+- **Validation native future (PENDING) :** 797 tests Python, 33 assertions C natives, 228 SHA sources, 42 rapports SHA-256 R20–R40, C31/C36/C37/C39/C40 `COMPILED_UNLINKED`, rejet du type opaque par `clang`.
+- **Décision :** `GEN_R40_SOURCE_REVIEW=PUBLISHED`, `GEN_R40_MAC_INTEL=PENDING`, `COPY_BY_VALUE_TYPED_CLIENT=BLOCKED_CANDIDATE`, `POINTER_ALIASING=NOT_PREVENTED`, `CALLBACK_EXIT_COMPLETENESS=NOT_PROVEN`, `C11_RACE_FREEDOM=NOT_PROVEN`, `OS_CALLBACK_QUIESCENCE=NOT_PROVEN`, `PHYSICAL_CUTOFF=NOT_PROVEN`, `BUREAU_CERTIFICATION=PENDING`. PR #1 DRAFT non fusionnée.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R41 — Independent Ticket Capacity, Pointer Aliasing & Failure-Path Containment Review
+
+- **Baseline propriétaire réelle :** GEN-R40 Mac Intel PASS logiciel (797/797 Python, 33 assertions natives C, 228/228 sources et 42/42 rapports SHA-256), sans certification CoreAudio/C11/physique.
+- **Nouveaux candidats C11 isolés** : `generator/candidates/r41_index_ticket.h` et `.c`. L'API retourne un indice de slot `FM41TicketRef` à la place d'un `FM40Ticket*`. Cette représentation évite d'exposer l'adresse du slot mais **l'indice est copiable, falsifiable et n'est pas une capacité sécurisée**.
+- **Capacité et erreurs** : 4 slots statiques à usage unique, jamais recyclés, saturation refusée avec masque de faute persistant `FM41_FAULT_CAPACITY`. Un masque `atomic_uint` enregistre d'autres échecs locaux (admission, owner nul, index invalide, doublon de sortie, `leave`, inscription, seal). Contrôle du masque avant/après la réservation, mais pas de fermeture atomique avec les autres callbacks ; ce registre n'est **pas** un arrêt CoreAudio.
+- **Contrat de sortie** : borne d'indice contrôlée avant accès, CAS `ACTIVE→FINISHED`, `fm36_leave` au plus une fois par slot. **EXACTLY_ONCE=NOT_PROVEN** (appel de fin manquant ou falsifié). Alias `owner_out` externe et mémoire C11 globale non prouvés. Quatre tickets à vie sont volontairement **incompatibles avec un flux OS non borné**.
+- **Livrables R41** : `audits/r41_capacity_alias_failure_review.py` (**19 OPEN, dont 5 CRITICAL**, 38 témoins SHA-pinnés, six contrats), `tests/test_r41_capacity_alias_failure_review.py` (20 nouveaux tests source-only, trois mutations), trois documents B07/B09/B10, `RUN_GEN_R41_MAC_INTEL.command` compilant C41 `clang -c` en objet non lié, audit `nm`, binaire CLI hard-denied et 44 rapports SHA conditionnels.
+- **Aucune régression de périmètre** : aucun changement du backend original ou C31/C36/C37/C39/C40, aucune liaison ni exécution de leur code, aucun appel CoreAudio actif, aucune simulation scientifique ni émission physique/essai humain ou biologique.
+- **Portes de sécurité** : R41 19 OPEN (5 CRITICAL), R40 18 (5), R39 16 (4), R38 18 (5), R37 14 (4), R36 12 (4), R35 12 (4), R34 14 (4), R33 12 (3), R32 10 (2), R31 8 (2), R30 12 (2), R29 7, R28 5, R27 9, R23 15, R24 7 ; Bureau historique **11 OPEN / 0 résolue**. Les registres se recoupent.
+- **Objectifs Mac Intel à confirmer par journal réel :** 817 tests Python, 33 assertions C natives, 236 sources SHA-256 et 44 rapports SHA-256 ; C41 `COMPILED_UNLINKED` et symboles émetteurs `NOT_LINKED`.
+- **Décision de gouvernance** : `GEN_R41_SOURCE_CANDIDATE=PUBLISHED`, `GEN_R41_MAC_INTEL=PENDING`, `INDEX_TICKET_AUTHENTICITY=NOT_PROVEN`, `OWNER_LIFETIME_IN_PRODUCTION=NOT_PROVEN`, `CALLBACK_EXACTLY_ONCE=NOT_PROVEN`, `C11_RACE_FREEDOM=NOT_PROVEN`, `OS_CALLBACK_QUIESCENCE=NOT_PROVEN`, `PHYSICAL_CUTOFF=NOT_PROVEN`, `BUREAU_CERTIFICATION=PENDING`, PR #1 DRAFT et non fusionnée.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R42 — Independent Index Forgery, Admission Atomicity & Capacity Exhaustion Remediation Review
+
+- **Dernier témoin Mac Intel réel :** GEN-R41 logiciel PASS, 817/817 Python, 33 assertions C natives, 236 sources SHA-256, 44 rapports SHA-256. Ne pas interpréter comme certification C11/OS/physique.
+- **Nouveau candidat isolé C11 :** `generator/candidates/r42_admission_gate_ticket.c` + `.h`, type `FM42Ticket*` opaque et vérification d'adresse avant déréférence. Supprime le simple index entier R41 **sans prouver l'authenticité ni l'exclusivité du pointeur**.
+- **Atomicité locale renforcée :** `fm42_gate` combine bit CLOSED et compteur de permis consommables dans un seul mot C11 ; un CAS ne peut réserver **après** fermeture dans l'ordre de modification de ce mot. Les réservations précédemment gagnantes peuvent toujours publier après fermeture concurrente : **OS_CALLBACK_QUIESCENCE=NOT_PROVEN**.
+- **Capacité et compensations :** seulement quatre slots statiques, jamais recyclés, saturation ferme la porte locale ; quatre chemins de rejet terminal ; post-admission `fm36_leave` compensateur avec contrôle d'erreur ; appels de fin limités à **AT-MOST-ONCE** par CAS pour un ticket valide, **EXACTLY_ONCE_CALLBACK=NOT_PROVEN**. La capacité demeure incompatible avec un flux CoreAudio non borné.
+- **Aucun changement C antérieur :** vrai C31 conserve `userdata=ctx`, C36/C37/C39/C40/C41 et `generator/src` inchangés, C42 objet `clang -c` jamais lié ni exécuté. Zéro callback OS, simulation scientifique, instrument ou émission.
+- **Bureau B07/B09/B10 :** `r42_index_forgery_admission_review.py` (**20 OPEN, dont 6 CRITICAL**), six contrats et 40 preuves SHA-pinnées ; 20 tests source-only dont 4 mutations, trois documents de revue ; calcul historique des rapports R16–R41 et conservation des **11 portes historiques OPEN/0 résolue**.
+- **Cibles propriétaire Mac Intel PENDING :** 837 tests Python, 33 assertions C natives, 244 sources SHA-256, 46 rapports SHA-256 R20–R42 ; C31/C36/C37/C39/C40/C41/C42 `COMPILED_UNLINKED` et CLI `output_hard_denied`.
+- **État de gouvernance :** `GEN_R42_SOURCE_REVIEW=PUBLISHED`; `GEN_R42_MAC_INTEL=PENDING`; `TICKET_ADDRESS_FORGERY=NOT_PREVENTED`; `OWNER_LIFETIME_IN_PRODUCTION=NOT_PROVEN`; `C11_GLOBAL_RACE_FREEDOM=NOT_PROVEN`; `EXACTLY_ONCE_CALLBACK=NOT_PROVEN`; `OS_CALLBACK_QUIESCENCE=NOT_PROVEN`; `PHYSICAL_CUTOFF=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`. PR #1 reste DRAFT, non fusionnée.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R43 — Independent Post-Closure Admission, Ticket Authentication & Lifetime Capacity Review
+
+- **Référence Mac Intel réelle :** GEN-R42 logiciel PASS (837 Python, 33 assertions natives C, 244 sources SHA-256 et 46 rapports SHA-256), aucune preuve de sûreté OS/C11 globale/physique.
+- **Candidat C11 isolé** : `generator/candidates/r43_publication_authority.c` et `.h` ; le mot atomique commun `fm43_gate` associe CLOSED, réservations et **autorisations de publication**. Une autorisation CAS effectuée après CLOSED dans son ordre atomique est refusée, mais l'écriture ultérieure du pointeur au consommateur peut encore intervenir après la fermeture. **POST_CLOSE_POINTER_HANDOFF=NOT_EXCLUDED ; OS_QUIESCENCE=NOT_PROVEN**.
+- **Ticket et appariement** : `fm43_complete(FM43Ticket *,expected_userdata)` valide l'adresse du slot privé, lit la phase en acquire, vérifie le jeton `userdata`, puis CAS terminal `ACTIVE→FINISHED`. **Cette égalité de deux pointeurs n'authentifie aucun détenteur** ; ils peuvent être copiés, la sortie peut être omise et `owner` reste sous contrat de durée de vie externe.
+- **Capacité et erreurs** : 4 tickets statiques non réutilisés, permis comptés à vie, aucun repli mémoire, saturation fail-closed mais **incapacité à traiter un flux CoreAudio non borné**. Les compensations `fm36_leave` et les échecs OS ne sont pas prouvés sûrs.
+- **Livrables** : auditeur `r43_publication_authority_review.py` (**21 obligations OPEN, dont 6 CRITICAL**, 42 ancrages source et 6 contrats), 20 nouveaux tests source-only dont trois mutations, trois matrices Bureau B07/B09/B10, runner Mac Intel avec `clang -c` isolé et `nm`, chainage R16–R42 et 48 rapports SHA-256.
+- **Invariants** : aucune modification du backend original ou C31/C36/C37/C39/C40/C41/C42 ; C43 jamais lié, chargé, exécuté ni branché sur un callback OS, aucune simulation scientifique, mesure, émission ou expérimentation humaine/biologique.
+- **Bureau** : GEN-R43 **21 OPEN / 6 CRITICAL**, GEN-R42 20/6, GEN-R41 19/5, GEN-R40 18/5, GEN-R39 16/4, GEN-R38 18/5 ; Bureau historique **11 OPEN / 0 résolue**. Les registres se recoupent ; ne pas les additionner comme défauts indépendants.
+- **Objectifs propriétaire Mac Intel PENDING** : 857 tests Python, 33 assertions natives C, 252 sources SHA-256, 48 rapports SHA-256 ; objets C31/C36/C37/C39/C40/C41/C42/C43 `COMPILED_UNLINKED`, symboles de sortie CoreAudio `NOT_LINKED`.
+- **Décision** : `GEN_R43_SOURCE_CANDIDATE=PUBLISHED`; `GEN_R43_MAC_INTEL=PENDING`; `POST_CLOSE_HANDOFF=NOT_PROVEN`; `TICKET_AUTHENTICITY=NOT_PROVEN`; `OWNER_LIFETIME=NOT_PROVEN`; `EXACTLY_ONCE_CALLBACK=NOT_PROVEN`; `C11_GLOBAL_RACE_FREEDOM=NOT_PROVEN`; `OS_CALLBACK_QUIESCENCE=NOT_PROVEN`; `PHYSICAL_CUTOFF=NOT_PROVEN`; `BUREAU_CERTIFICATION=PENDING`. PR #1 reste DRAFT non fusionnée.
+- `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
