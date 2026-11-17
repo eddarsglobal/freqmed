@@ -515,3 +515,18 @@ Le véritable C31 transmet encore `userdata=ctx` à l'OS. C31/C36/C37/C39/C40/C4
 `RUN_GEN_R42_MAC_INTEL.command` compile les objets isolés `clang -c`, refuse leur liaison au CLI, contrôle `nm`, et crée conditionnellement un dossier de **46 rapports R20–R42 SHA-256** après les tests. **Cibles Mac Intel GEN-R42 non encore attestées : 837 Python, 33 assertions C natives, 244 sources SHA-256, 46 rapports SHA-256.**
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`. PR #1 reste **DRAFT non fusionnée**.
+
+
+## GEN-R43 — Independent Post-Closure Admission, Ticket Authentication & Lifetime Capacity Review
+
+**Dernier témoin Mac Intel réellement acquis : GEN-R42 logiciel PASS** (17/11/2026 : 837/837 tests Python, 33/33 assertions natives C, 244/244 fichiers source SHA-256, 46/46 rapports SHA-256). Ces résultats logiciels ne qualifient ni la sûreté Apple/CoreAudio ni la coupure physique.
+
+GEN-R43 crée deux fichiers C11 **source-only, non liés et jamais exécutés**, `candidates/r43_publication_authority.c` et `.h`. Le nouveau mot `atomic_uint fm43_gate` combine bit `CLOSED`, nombre de réservations à vie et nombre **d'autorisations**. `fm43_reserve` et `fm43_authorize` emploient chacun un CAS sur cet unique mot. Une **nouvelle autorisation** ne peut gagner après CLOSED dans l'ordre de modification atomique du gate. **ATTENTION : l'autorisation précède l'écriture `owner_out` / `ticket_out`. Cette publication effective peut toujours arriver après CLOSED** ; aucune quiescence de callback ni terminaison OS prouvée.
+
+`fm43_complete(ticket, expected_userdata)` exige la correspondance entre l'adresse du slot privé et le pointeur `os_userdata` du ticket avant le CAS `ACTIVE→FINISHED`. Ce contrôle empêche une partie des erreurs d'appariement, **pas l'usurpation par quelqu'un qui connaît les deux pointeurs**. `fm36_leave` reste au plus une fois par ticket valide, mais aucune sortie exactly-once n'est garantie. Quatre emplacements C11 statiques à durée de vie processus restent non recyclables et impropres à un flux de callbacks non borné. Les alias externes `owner` restent hors contrôle.
+
+Le C31 réel transmet toujours `userdata=ctx` ; les sources C31/C36/C37/C39/C40/C41/C42 restent inchangées et non liées à l'exécutable de contrôle. L'auditeur `audits/r43_publication_authority_review.py` conserve **21 obligations OPEN (6 CRITICAL)**, six contrats, **42 ancrages exacts** SHA-pinnés, et recalcule R16–R42 sans lever les **11 veto historiques du Bureau**. `tests/test_r43_publication_authority_review.py` : **20 tests source-only**, 3 mutations textuelles adversariales. Documents B07/B09/B10 : `docs/GEN_R43_PUBLICATION_HANDOFF_DESIGN.md`, `docs/GEN_R43_BUREAU_PROOF_GATES.md`, `docs/GEN_R43_CAPACITY_BINDING_MATRIX.md`.
+
+`RUN_GEN_R43_MAC_INTEL.command` compile C43 en objet `clang -c` isolé, vérifie `nm`, garde `output_hard_denied.c` et génère conditionnellement **48 rapports SHA-256 R20–R43**. **Objectifs GEN-R43 Mac Intel PENDING : 857 Python, 33 assertions natives C, 252 sources SHA-256, 48 rapports SHA-256**. La réussite de GEN-R42 ne vaut pas preuve GEN-R43.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`. PR #1 demeure **DRAFT, non fusionnée**.
