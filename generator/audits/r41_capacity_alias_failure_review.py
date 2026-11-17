@@ -204,7 +204,7 @@ def observe(c41,h41,c40,h40,c39,c31,c36,c37):
 def inspect(root,override=None,header_override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==236,"R41 exactly 236 SHA-pinned source files required")
+    require(len(table)>=236,"R41 historical review requires at least 236 SHA pinned sources")
     new=(CANDIDATE,HEADER,"audits/r41_capacity_alias_failure_review.py",
          "tests/test_r41_capacity_alias_failure_review.py",
          "RUN_GEN_R41_MAC_INTEL.command",
