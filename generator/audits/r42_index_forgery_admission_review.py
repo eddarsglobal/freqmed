@@ -187,7 +187,7 @@ def observe(c42,h42,c41,h41,c40,h40,c39,c31,c36,c37):
                    "FM42_ACTIVE,memory_order_release",
                    "*owner_out=owner;","*ticket_out=slot;"),
             "R42 admission and owner publication")
-    require(begin.count("FM42_REJECTED,memory_order_release")==3 and
+    require(begin.count("FM42_REJECTED,memory_order_release")==4 and
             begin.count("FM42_CLOSED)!=0u")==2 and
             begin.count("int rc=fm36_leave(userdata);")==2 and
             "fm42_latch(FM42_FAULT_INTERNAL);" in begin,
