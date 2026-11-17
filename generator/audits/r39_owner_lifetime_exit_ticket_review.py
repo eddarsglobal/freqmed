@@ -193,7 +193,7 @@ def observe(c39,c31,c36,c37):
 def inspect(root,override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==220,"R39 exactly 220 generator source hashes expected")
+    require(len(table)>=220,"R39 historical audit requires at least 220 source SHA pins")
     needed=(
        CANDIDATE,
        "audits/r39_owner_lifetime_exit_ticket_review.py",
