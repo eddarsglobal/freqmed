@@ -1326,8 +1326,8 @@ for node in ast.walk(classes[0]):
     if isinstance(node,(ast.Assign,ast.AnnAssign)):
         targets=node.targets if isinstance(node,ast.Assign) else [node.target]
         for t in targets:
-            if isinstance(t,ast.Attribute) and t.attr=="run"
-                and isinstance(t.value,ast.Name) and t.value.id in ("self","cls"):
+            if (isinstance(t,ast.Attribute) and t.attr=="run"
+                and isinstance(t.value,ast.Name) and t.value.id in ("self","cls")):
                 raise SystemExit("R43_TESTCASE_RUN_SLOT=BLOCK: run shadowed")
 print("R43_TESTCASE_RUN_SLOT=PASS")
 PY
