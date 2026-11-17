@@ -500,3 +500,18 @@ Le vrai C31 remet encore `userdata=ctx` aux vrais callbacks CoreAudio ; C31/C36/
 **Cibles Mac Intel GEN-R41 PENDING : 817 Python, 33 assertions C natives, 236 sources SHA-256, 44 rapports SHA-256.** Aucun PASS natif R41 tant que le journal propriétaire n'a pas été reçu. PR #1 DRAFT, non fusionnée.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R42 — Independent Index Forgery, Admission Atomicity & Capacity Exhaustion Remediation Review
+
+**Témoin propriétaire Mac Intel récent réellement acquis : GEN-R41 logiciel PASS, 817 Python, 33 assertions natives C, 236 fichiers sources SHA-256, 44 rapports du Bureau SHA-256 (17 novembre 2026).** Aucun de ces succès ne certifie la sûreté OS/C11 globale ou physique.
+
+GEN-R42 ajoute un candidat C11 isolé, `candidates/r42_admission_gate_ticket.c` + `.h`, qui n'est **ni lié, ni exécuté, ni utilisé par des callbacks CoreAudio**. Contrairement au ticket par indice R41, le consommateur voit un `FM42Ticket*` opaque, mais cette adresse reste copiable, divulguable et falsifiable si connue : aucune garantie d'authentification de capacité. Le type opaque ne représente **pas** une preuve de mémoire sûre.
+
+La conception combine **CLOSED et le compteur de permis à vie dans un même `atomic_uint`** avec réservation par CAS. Dès que CLOSED apparaît dans l'ordre de modification de cet atomique, aucune nouvelle réservation ne peut y réussir. Les réservations antérieures peuvent continuer après fermeture : **aucune garantie d'absence de publication tardive ni de quiescence OS**. Les **4 slots statiques** restent non réutilisables, y compris après échec ; saturation ferme localement et refuse, et ne constitue **pas** un modèle capable de traiter un flux réel de callbacks non borné. `fm42_begin` recontrôle CLOSED avant et après `fm36_try_enter`, compense par `fm36_leave` en vérifiant son retour lorsque la fermeture est observée ; quatre branches de rejet demeurent terminales. `fm42_complete` valide la correspondance à une adresse privée avant déréférencement, puis utilise CAS `ACTIVE→FINISHED` : **AT-MOST-ONCE**, jamais une preuve `EXACTLY_ONCE`.
+
+Le véritable C31 transmet encore `userdata=ctx` à l'OS. C31/C36/C37/C39/C40/C41 historiques et le backend original restent inchangés. L'auditeur `audits/r42_index_forgery_admission_review.py` classe **20 obligations `OPEN_NOT_PROVEN`, dont 6 CRITICAL**, six contrats documentaires et 40 ancrages source SHA-pinnés, recalcule la chaîne réelle R16–R41 et garde les **11 portes du Bureau OPEN / 0 résolue**. `tests/test_r42_index_forgery_admission_review.py` ajoute **20 tests source-only dont 4 mutations textuelles**. Documents : `docs/GEN_R42_ATOMIC_ADMISSION_DESIGN.md`, `docs/GEN_R42_BUREAU_PROOF_GATES.md`, `docs/GEN_R42_FORGERY_CAPACITY_MATRIX.md`.
+
+`RUN_GEN_R42_MAC_INTEL.command` compile les objets isolés `clang -c`, refuse leur liaison au CLI, contrôle `nm`, et crée conditionnellement un dossier de **46 rapports R20–R42 SHA-256** après les tests. **Cibles Mac Intel GEN-R42 non encore attestées : 837 Python, 33 assertions C natives, 244 sources SHA-256, 46 rapports SHA-256.**
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`. PR #1 reste **DRAFT non fusionnée**.
