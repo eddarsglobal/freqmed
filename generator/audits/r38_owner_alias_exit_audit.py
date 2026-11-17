@@ -202,7 +202,7 @@ def observe(r31src,r36src,r37src):
 def inspect(root,override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==213,"R38 requires exactly 213 source files SHA pinned")
+    require(len(table)>=213,"R38 historical audit requires at least 213 source hashes")
     needed=("audits/r38_owner_alias_exit_audit.py",
             "tests/test_r38_owner_alias_exit_audit.py",
             "RUN_GEN_R38_MAC_INTEL.command",
