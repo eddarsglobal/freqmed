@@ -61,7 +61,7 @@ ANCHORS = (
  ("G43_18_NO_C11_HB_FOR_PCM_QUEUE", ("r31", "AudioQueueEnqueueBuffer(ctx->queue,buf,0,NULL)"), ("r31", "ctx->queue=NULL;")),
  ("G43_19_CANDIDATE_C11_NOT_LINKED", ("r43", "* C11 object COMPILED UNLINKED ONLY. Never execute or dispatch OS callbacks."), ("r31", "/* GEN-R3: unconditional hard denial")),
  ("G43_20_FAILED_STOP_DISPOSE_UNKNOWN", ("r31", "if (AudioQueueDispose(ctx->queue,true)!=noErr) {"), ("r43", "* callback quiescence, actual CoreAudio stop, or memory lifetime of owner.")),
- ("G43_21_NO_INDEPENDENT_BUREAU_ATTESTATION", ("h43", "* No Apple callback integration, simulation, audio or EM output."), ("r43", "* No secure authentication.")),
+ ("G43_21_NO_INDEPENDENT_BUREAU_ATTESTATION", ("h43", "* No Apple callback integration, simulation, audio or EM output."), ("r43", "No secure authentication.")),
 )
 CONTRACTS = (
  ("P43_AUTH_CAS", "SINGLE_GATE_RESERVE_AND_AUTHORIZE_CAS", "POSTCLOSE_RETURN_NOT_EXCLUDED"),
