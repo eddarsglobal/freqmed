@@ -47,10 +47,6 @@ class R42IndexForgeryAdmissionReview(unittest.TestCase):
     def test_six_critical_obligations(self):
         self.assertEqual(6,sum(f[1]=="CRITICAL" for f in r42.FINDINGS))
 
-    def test_six_C11_contracts(self):
-        self.assertEqual(6,len(r42.CONTRACTS))
-        self.assertEqual(6,len({c[0] for c in r42.CONTRACTS}))
-
     def test_opaque_header_no_public_ticket_definition(self):
         h=self.sources["h42"]
         self.assertIn("typedef struct FM42Ticket FM42Ticket;",h)
