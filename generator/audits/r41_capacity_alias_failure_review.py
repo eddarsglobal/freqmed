@@ -100,7 +100,7 @@ def require(ok,msg):
 def sha(x): return hashlib.sha256(x).hexdigest()
 
 def fn(src,name):
-    matches=list(re.finditer(r"^(?:static\s+)?(?:int|unsigned)\s+"+
+    matches=list(re.finditer(r"^(?:static\s+)?(?:int|unsigned|void)\s+"+
                   re.escape(name)+r"\s*\([^;]*\)\s*\{",src,re.M|re.S))
     require(len(matches)==1,"R41 function signature missing/duplicated "+name)
     a=matches[0].start()
