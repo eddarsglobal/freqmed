@@ -483,3 +483,20 @@ Le vrai C31 continue à passer `userdata=ctx` à CoreAudio. Aucun candidat C31/C
 **Objectifs Mac Intel GEN-R40 PENDING : 797 Python, 33 C natives, 228 sources SHA-256 et 42 rapports SHA-256.** `RUN_GEN_R40_MAC_INTEL.command` compile C40 en objet non lié, vérifie `nm` et l'exclusion du linker, refuse la copie C par valeur, et ne produit les rapports qu'après succès total. PR #1 DRAFT et non fusionnée.
 
 `NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
+
+
+## GEN-R41 — Independent Ticket Capacity, Pointer Aliasing & Failure-Path Containment Review
+
+**Dernier témoin Mac Intel propriétaire réel : GEN-R40 logiciel PASS (17 novembre 2026), 797/797 tests Python, 33/33 assertions natives C, 228/228 sources SHA-256 et 42/42 rapports SHA-256.** Ce succès logiciel n'établit ni sûreté C11 globale, ni quiescence CoreAudio, ni coupure physique.
+
+GEN-R41 ajoute deux candidats C11 indépendants, **jamais liés, jamais exécutés** : `candidates/r41_index_ticket.h` + `.c`. Ils présentent `FM41TicketRef {unsigned slot_id;}` plutôt qu'un pointeur `FM40Ticket*` : le slot privé n'est pas directement remis au client, mais l'indice est **copiable et falsifiable, sans garantie d'identité ou d'authenticité**. Les **4 slots statiques** sont consommables une fois durant toute la vie du processus. Un échec d'admission consomme un slot et la saturation déclenche un refus explicite (`FM41_FAULT_CAPACITY`). Aucune possibilité de production de callbacks non bornés.
+
+Un registre `atomic_uint` de fautes persistantes (OR atomique, sans reset) conserve les erreurs locales : capacité, admission, owner nul, index invalide, complétion répétée, `fm36_leave` échoué, inscription/scellement refusés. `fm41_begin` refuse les erreurs déjà observées, avant et après CAS de réservation, mais **un défaut nouvellement publié peut survenir après cette seconde vérification** : ce n'est pas une barrière de quiescence OS. `fm41_complete` contrôle l'index avant d'accéder au slot et utilise CAS `ACTIVE→FINISHED` pour limiter `fm36_leave` à **AT-MOST-ONCE**. Il ne force jamais un callback à terminer. `owner_out` reste un alias externe dont la durée de vie ne peut être vérifiée par C41.
+
+Le vrai C31 remet encore `userdata=ctx` aux vrais callbacks CoreAudio ; C31/C36/C37/C39/C40 historiques et `generator/src/acoustic_macos.c` sont inchangés, aucune intégration ni émission. Auditeur `audits/r41_capacity_alias_failure_review.py` : **19 obligations `OPEN_NOT_PROVEN`, dont 5 CRITICAL**, 6 contrats, **38 ancrages de preuve source** SHA-pinnés, recalcul des témoins R16–R40 ; 11 portes du Bureau OPEN/0 résolue. `tests/test_r41_capacity_alias_failure_review.py` ajoute **20 tests Python source-only dont 3 mutations textuelles**. Documents : `docs/GEN_R41_CAPACITY_ALIAS_ARCHITECTURE.md`, `docs/GEN_R41_BUREAU_GATE_REVIEW.md`, `docs/GEN_R41_FAILURE_CONTAINMENT_MATRIX.md`.
+
+`RUN_GEN_R41_MAC_INTEL.command` compile séparément le nouvel objet C41 (non lié), vérifie `nm` et le binaire `output_hard_denied.c`, refuse les changements de sources anciennes et produit conditionnellement **44 rapports R20–R41 JSON/MD SHA-256**.
+
+**Cibles Mac Intel GEN-R41 PENDING : 817 Python, 33 assertions C natives, 236 sources SHA-256, 44 rapports SHA-256.** Aucun PASS natif R41 tant que le journal propriétaire n'a pas été reçu. PR #1 DRAFT, non fusionnée.
+
+`NEVER_SIMULATION=ENFORCED`; `ZERO_COST_FOSS=ENFORCED`; `ACOUSTIC_OUTPUT=LOCKED`; `EM_OUTPUT=LOCKED`; `REAL_OUTPUT=NOT_AUTHORIZED`; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED`; `PRODUCTION=NOT_AUTHORIZED`.
