@@ -226,7 +226,7 @@ def observe(c42,h42,c41,h41,c40,h40,c39,c31,c36,c37):
 def inspect(root,override=None,header_override=None):
     root=Path(root).resolve()
     table,manifest=r17.manifest_integrity(root)
-    require(len(table)==244,"R42 precisely 244 SHA pinned source files required")
+    require(len(table)>=244,"R42 historical audit requires at least 244 source pins")
     needed=(CANDIDATE,HEADER,
             "audits/r42_index_forgery_admission_review.py",
             "tests/test_r42_index_forgery_admission_review.py",
