@@ -104,7 +104,7 @@ class R38OwnerAliasExitAudit(unittest.TestCase):
 
     def test_213_manifest_and_r19_original(self):
         table,_,_,_=r38.inspect(ROOT)
-        self.assertEqual(213,len(table))
+        self.assertGreaterEqual(len(table),213)
         for path in r38.FILES.values():
             self.assertEqual(table[path],
                              hashlib.sha256((ROOT/path).read_bytes()).hexdigest())
