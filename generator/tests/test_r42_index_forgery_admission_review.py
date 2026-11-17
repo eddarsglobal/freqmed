@@ -86,7 +86,7 @@ class R42IndexForgeryAdmissionReview(unittest.TestCase):
     def test_two_post_reservation_close_checks(self):
         f=r42.fn(self.sources["r42"],"fm42_begin")
         self.assertEqual(2,f.count("FM42_CLOSED)!=0u"))
-        self.assertEqual(3,f.count("FM42_REJECTED,memory_order_release"))
+        self.assertEqual(4,f.count("FM42_REJECTED,memory_order_release"))
 
     def test_compensating_leave_checks_result(self):
         f=r42.fn(self.sources["r42"],"fm42_begin")
