@@ -132,6 +132,9 @@ def observe(c43, h43, sources):
             and c43.count("{ATOMIC_VAR_INIT(FM43_UNUSED),NULL}") == 4
             and "static atomic_uint fm43_gate=ATOMIC_VAR_INIT(0u);" in c43
             and "static atomic_uint fm43_faults=ATOMIC_VAR_INIT(0u);" in c43
+            and "FM43_CLOSED=0x80000000u" in c43
+            and "FM43_RESERVATIONS_MASK=0x000000ffu" in c43
+            and "FM43_AUTH_MASK=0x0000ff00u" in c43
             and "FM43_AUTH_INCREMENT=0x00000100u" in c43,
             "R43 ticket structure or joint atomic CAS contract missing")
     for api in ("fm43_register_owner_once", "fm43_begin", "fm43_complete",
