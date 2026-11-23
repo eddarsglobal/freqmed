@@ -1,0 +1,7 @@
+/* R60 compact monitoring - consistent with existing approved console. */
+.fm-r60-lease{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;margin-top:10px;border:1px solid var(--border);border-radius:12px;background:var(--page);font-size:13px;color:var(--muted)}
+.fm-r60-lease strong{margin-inline-start:auto;font-size:12px;font-weight:700;letter-spacing:.02em;color:var(--text)}
+.fm-r60-indicator{width:9px;height:9px;border-radius:100%;background:var(--muted);box-shadow:0 0 0 3px color-mix(in srgb,var(--muted) 16%,transparent);flex-shrink:0}
+.fm-r60-lease[data-valid="true"] .fm-r60-indicator{background:#35c9a5;box-shadow:0 0 0 3px rgba(53,201,165,.14)}
+.fm-r60-lease[data-valid="true"] strong{color:#35c9a5}
+@media(max-width:420px){.fm-r60-lease strong{margin-inline-start:0;width:100%}}
