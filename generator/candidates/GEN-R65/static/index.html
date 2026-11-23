@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>FREQMED · Generator Control</title>
+<link rel="stylesheet" href="/style.css">
+<script src="/app.js" defer></script>
+<link rel="stylesheet" href="/r54.css">
+<link rel="stylesheet" href="/r55.css">
+<link rel="stylesheet" href="/r56.css">
+<link rel="stylesheet" href="/r57.css">
+<link rel="stylesheet" href="/r58.css">
+<link rel="stylesheet" href="/r59.css">
+<link rel="stylesheet" href="/cleanup.css">
+<script src="/r54.js" defer></script>
+<script src="/r55.js" defer></script>
+<script src="/r56.js" defer></script>
+<script src="/r57.js" defer></script>
+<script src="/r58.js" defer></script>
+<script src="/r59.js" defer></script>
+<script src="/r60.js" defer></script>
+<script src="/r61.js" defer></script>
+<script src="/r62.js" defer></script>
+<link rel="stylesheet" href="/r60.css">
+<link rel="stylesheet" href="/r61.css">
+<link rel="stylesheet" href="/r62.css">
+<script src="/cleanup.js" defer></script>
+<link rel="stylesheet" href="/r63.css">
+</head>
+<body>
+<div class="app-shell">
+ <aside class="sidebar">
+  <div class="brand"><div class="brandmark"><i></i><i></i><i></i></div><div><strong>FREQMED</strong><small>GENERATOR LAB · MAC INTEL</small></div></div>
+  <div class="eyebrow" data-t="workspace">WORKSPACE</div>
+  <a class="nav active" href="#command-section"><span>◈</span><span data-t="generator">Generator control</span><em>01</em></a>
+  <a class="nav" href="#hardware-section"><span>◉</span><span data-t="hardware">Physical devices</span><em>02</em></a>
+  <a class="nav" href="#guardian-section"><span>◇</span><span data-t="guardian">Guardian</span><em>03</em></a>
+  <div class="divider"></div>
+  <div class="fm-side-help" data-clean="sideHelp">Sélectionner une sortie, régler la commande, associer la session C puis utiliser STOP.</div>
+  <div class="spacer"></div>
+  <div class="sidebar-bottom"><span class="green-dot"></span><span>LOCALHOST ONLY</span><p data-t="sidebar_note">Native C code. No network or cloud service. Physical output disabled by design.</p></div>
+  <div class="sidebar-caption">FREQMED · LOCAL · MAC INTEL</div>
+ </aside>
+ <main>
+  <header class="topbar">
+   <div class="crumb">FREQMED <span>/</span> <b data-t="generator">Generator control</b></div>
+   <div class="toolbar"><span class="offline">◌ <span data-t="local_mode">LOCAL MODE</span></span>
+    <button id="theme" class="icon-btn" type="button" aria-label="Theme">☾</button>
+    <select id="lang" aria-label="Language"><option value="fr">Français</option><option value="en">English</option><option value="de">Deutsch</option><option value="ar">العربية</option><option value="es">Español</option><option value="pt">Português</option><option value="hr">Hrvatski</option><option value="it">Italiano</option><option value="zh">中文</option><option value="ko">한국어</option></select>
+   </div>
+  </header>
+  <div class="content">
+   <div class="page-top"><div><div class="eyebrow accent">FREQMED / SEGMENTED PCM CORE · GEN-R65</div><h1 data-t="title">Physical frequency generator</h1><p data-t="subtitle">Real native command validation, macOS hardware metadata and strict Guardian control. No mock readings.</p></div><div class="version"><small data-clean="versionLabel">CONSOLE DE COMMANDE</small><strong>v0.9.0</strong><small data-t="no_cert">NOT CERTIFIED</small></div></div>
+   <div class="banner"><div class="banner-icon">!</div><div><strong data-t="warning_title">Physical output is not available in this build</strong><p data-t="warning_body">The C Guardian is intentionally locked. This application can validate commands and observe hardware metadata, but cannot generate acoustic or electromagnetic waves.</p></div><span class="warning-pill">HARD LOCK</span></div>
+
+   <section class="fm-workflow" aria-label="Séquence de commande FREQMED">
+    <div class="fm-workflow-head"><strong data-clean="flowTitle">Parcours de commande</strong><span data-clean="flowSub">Commande numérique · aucune émission</span></div>
+    <ol>
+     <li><a href="#hardware-section"><span class="fm-step-num">01</span><span data-clean="stepRoute">Choisir la sortie réelle</span></a></li>
+     <li><a href="#command-section"><span class="fm-step-num">02</span><span data-clean="stepCommand">Régler la fréquence</span></a></li>
+     <li><a href="#r59-title"><span class="fm-step-num">03</span><span data-clean="stepBind">Associer la session C</span></a></li>
+     <li><a href="#r55-software-stop"><span class="fm-step-num">04</span><span data-clean="stepStop">Arrêter / effacer</span></a></li>
+    </ol>
+   </section>
+   <div class="status-grid">
+    <div class="status-card"><small data-t="native_label">Native C engine</small><strong id="native-status">…</strong><span data-t="native_note">Compiled, linked and executed locally</span><div class="status-line blue"></div></div>
+    <div class="status-card"><small data-t="guardian_state">Guardian state</small><strong id="guardian-state">…</strong><span data-t="guardian_note">State returned by original C module</span><div class="status-line purple"></div></div>
+    <div class="status-card"><small data-t="acoustic_output">Acoustic output</small><strong class="amber">LOCKED</strong><span data-t="acoustic_note">CoreAudio live device route / physical signal hard locked</span><div class="status-line teal"></div></div>
+    <div class="status-card"><small data-t="em_output">EM output</small><strong class="amber">NO DRIVER</strong><span data-t="em_note">No qualified physical EM instrument</span><div class="status-line orange"></div></div>
+   </div>
+   <div class="columns">
+    <section class="panel controls" id="command-section"><div class="panel-header"><div><div class="panel-kicker" data-clean="commandKicker">02 / COMMANDE</div><h2 data-t="command_title">Frequency command</h2><p data-t="command_desc">Values go directly to FREQMED's native C validator. They are not waveforms or measurements.</p></div><div class="chip">C11 / FFI</div></div>
+     <form id="control-form" autocomplete="off">
+      <label class="field-label" data-t="channel">Physical channel</label>
+      <div class="channel-choices" role="group" aria-label="Channel"><label><input type="radio" name="channel" value="acoustic" checked><span>◖ <span data-t="acoustic">Acoustic</span></span></label><label><input type="radio" name="channel" value="em"><span>⌁ <span data-t="electromagnetic">Electromagnetic</span></span></label></div>
+      <div class="form-grid"><label class="field"><span data-t="frequency">Frequency</span><div class="input-unit"><input type="number" id="hz" value="440" min="0.000001" step="any" required><b>Hz</b></div><small data-t="freq_hint">Digital command, not physically verified</small></label>
+       <label class="field"><span data-t="duration">Duration</span><div class="input-unit"><input type="number" id="duration" value="500" min="1" max="4294967295" step="1" required><b>ms</b></div><small data-t="duration_hint">Command duration only</small></label></div>
+      <label class="field"><span data-t="level">Normalized digital level</span><div class="input-unit"><input type="number" id="level" value="0.01" min="0.000001" max="1" step="any" required><b>0–1</b></div><small data-t="level_hint">Not a sound pressure or electromagnetic field strength</small></label>
+      <div class="buttons"><button class="primary" id="validate" type="submit"><span>✓</span><span data-t="validate">Validate with native C</span></button><button id="reset" type="button" class="secondary"><span>■</span><span data-t="reset">Reset Guardian</span></button></div>
+      <button class="disabled-start" type="button" disabled><span>▶</span><span data-t="start_blocked">Start physical output — unavailable</span><span>LOCKED</span></button>
+     </form>
+<section class="r59-panel" aria-labelledby="r59-title">
+       <div class="panel-kicker" data-clean="sessionKicker">03 / SESSION ACOUSTIQUE</div>
+       <h3 id="r59-title">Session acoustique native sans émission</h3>
+       <p id="r59-hint">Associer la sortie CoreAudio sélectionnée à la commande exacte dans une session C native. Les changements de périphérique et STOP invalident la session. Aucune sortie audio n'est créée.</p>
+       <button class="primary" id="r59-bind" type="button"><span id="r59-label">Associer route et commande dans le moteur C</span></button>
+       <div class="r59-result" id="r59-result" role="status" aria-live="polite">Session non liée.</div>
+       <div class="fm-r60-lease" aria-live="off" aria-label="Contrôle natif temporaire de la session">
+        <span class="fm-r60-indicator" id="r60-indicator" aria-hidden="true"></span>
+        <span id="r60-control-label">Contrôle logiciel temporel</span>
+        <strong id="r60-control-status" role="status" aria-live="polite">NON LIÉ</strong>
+       </div>
+       <div class="fm-r61-fault" id="r61-fault-panel" data-fault="false">
+         <span class="fm-r61-dot" aria-hidden="true"></span>
+         <span id="r61-fault-label">Contrôle des défauts natifs</span>
+         <strong id="r61-fault-status" role="status" aria-live="polite">NORMAL · SANS ÉMISSION</strong>
+         <button type="button" id="r61-fault-ack" hidden>Acquitter le défaut</button>
+       </div>
+       <div class="fm-r62-identity" id="r62-identity-panel" data-pinned="false" role="group" aria-label="Identité de la sortie CoreAudio">
+         <span class="fm-r62-dot" aria-hidden="true"></span><span id="r62-identity-label">Identité CoreAudio réelle</span>
+         <strong id="r62-identity-status" role="status" aria-live="polite">NON LIÉE</strong>
+       </div>
+       <div class="fm-r63-preparation" id="r63-panel" aria-label="Digital PCM preparation">
+        <h3 id="r63-title">Préparation PCM numérique · sans émission</h3>
+        <p id="r63-description">Prépare temporairement des échantillons numériques dans le moteur C, puis efface le tampon. Aucun son n'est émis.</p>
+        <button id="r63-prepare" type="button" class="fm-r63-button">Préparer le flux numérique</button>
+        <p id="r63-result" role="status" aria-live="polite">Aucun flux numérique préparé.</p>
+        <button id="r65-prepare" type="button" class="fm-r63-button">Préparer par blocs bornés · R65</button>
+        <p id="r65-result" role="status" aria-live="polite">Aucun bloc R65 préparé.</p>
+       </div>
+       <p id="r59-note">Session de contrat uniquement. Emission absente, aucun AudioQueue accessible, aucun coupe-circuit matériel certifié.</p>
+     </section>
+     <div class="result fm-native-result" id="result" aria-live="polite"><div class="result-label" data-t="result_label">C COMMAND VALIDATION</div><div id="result-title" data-t="result_idle">C validation not requested</div><code id="result-reason">—</code><p id="result-details" data-t="result_info">This is the C command validation result only, separate from digital PCM preparation.</p></div>
+     <details class="fm-advanced" id="fm-advanced">
+       <summary><span data-clean="advancedSummary">Diagnostics avancés — contrôles historiques</span><span class="fm-advanced-tag" data-clean="advancedTag">Ouvrir uniquement pour maintenance</span></summary>
+       <div class="fm-advanced-inner">
+         <p data-clean="advancedHelp">Les anciens contrôles restent disponibles pour le diagnostic. Ils ne constituent ni la commande principale ni une autorisation d’émission.</p>
+         <section class="r56-preflight" aria-labelledby="r56-title">
+       <div class="r56-head"><div class="panel-kicker">GEN-R56 / NATIVE COREAUDIO</div><h3 id="r56-title">Préparation native d’une commande acoustique</h3></div>
+       <p id="r56-hint">Sélectionne une vraie sortie CoreAudio à droite, puis vérifie la commande avec le moteur C. Aucun tampon ni signal audio généré.</p>
+       <button class="primary" id="r56-prepare" type="button">◈ <span id="r56-button-label">Vérifier la route et la commande C</span></button>
+       <div id="r56-result" class="r56-result" role="status" aria-live="polite">Aucune préparation effectuée.</div>
+       <p id="r56-disclaimer">Une commande compatible avec l’horloge numérique ne prouve ni émission physique, ni sécurité acoustique. Démarrage toujours verrouillé.</p>
+     </section>
+         <section class="r57-panel" aria-labelledby="r57-title">
+       <div class="panel-kicker">GEN-R57 / SOURCE-ONLY BACKEND CONTRACT</div>
+       <h3 id="r57-title">Compatibilité avec le backend acoustique</h3>
+       <p id="r57-hint">Contrôle C supplémentaire : la sortie sélectionnée doit correspondre à la sortie par défaut du Mac utilisée par le backend candidat historique. Aucun démarrage.</p>
+       <button class="primary" type="button" id="r57-inspect"><span id="r57-button-label">Vérifier la compatibilité du backend C</span></button>
+       <div id="r57-result" class="r57-result" role="status" aria-live="polite">Aucune vérification du backend effectuée.</div>
+       <p class="r57-foot" id="r57-foot">Backend d'émission non lié · Contrôle de route uniquement · Aucun son · Aucun instrument EM</p>
+     </section>
+         <section class="r58-panel" aria-labelledby="r58-title">
+       <div class="panel-kicker">GEN-R58 / ISOLATED CANDIDATE BINARY</div>
+       <h3 id="r58-title">Liaison isolée du backend acoustique</h3>
+       <p id="r58-hint">Le code CoreAudio historique est compilé et lié séparément, avec son entrée de lecture privée et un refus permanent d'émission. Aucun son.</p>
+       <button class="secondary full" type="button" id="r58-check"><span id="r58-label">Contrôler la liaison native isolée</span></button>
+       <div class="r58-result" id="r58-result" role="status" aria-live="polite">Aucune vérification du binaire candidat.</div>
+       <p id="r58-note">Source compilée ≠ moteur activé. Aucun pilote EM, aucune mesure, aucune coupure physique certifiée.</p>
+     </section>
+         <a class="fm-archive-link" href="/historical/v5" target="_blank" rel="noopener noreferrer" data-clean="historical">Voir l’interface historique V5</a>
+       </div>
+     </details>
+    </section>
+    <section class="stack">
+     <section class="panel device" id="hardware-section"><div class="panel-header"><div><div class="panel-kicker" data-clean="hardwareKicker">01 / PÉRIPHÉRIQUE</div><h2 data-clean="hardwareTitle">Sortie audio et surveillance</h2><p data-clean="hardwareDesc">Sélectionne une sortie macOS réelle. La commande acoustique utilisera cette route.</p></div><div class="chip soft" data-clean="hardwareChip">LECTURE OS</div></div>
+      <div class="r54-device-route" id="r54-device-route">
+       <div class="r54-head"><div><div class="panel-kicker" data-clean="routeKicker">01 / SORTIE COREAUDIO</div><h3 id="r54-route-title">Sorties audio réelles macOS</h3></div><span class="chip soft">LIVE OS</span></div>
+       <p id="r54-route-caption">Périphériques lus via CoreAudio natif. Aucun signal émis.</p>
+       <div class="r54-route-row"><label for="r54-select" id="r54-route-label">Choisir une sortie audio</label>
+        <select id="r54-select" aria-describedby="r54-route-state"><option value="" disabled selected>— Choisir une sortie audio —</option></select></div>
+       <div class="r54-route-actions" role="group" aria-label="Actions de la route CoreAudio">
+        <button class="fm-device-action fm-device-action--primary" type="button" id="r54-bind" disabled aria-controls="r54-route-state"><span class="fm-device-action__icon" aria-hidden="true">◈</span><span id="r54-bind-label">Sélectionner le périphérique</span></button>
+        <button class="fm-device-action fm-device-action--refresh" type="button" id="r54-refresh" aria-controls="r54-select r54-route-state"><span class="fm-device-action__icon" aria-hidden="true">↻</span><span id="r54-refresh-label">Actualiser CoreAudio</span></button>
+        <button class="fm-device-action fm-device-action--clear" type="button" id="r54-clear" aria-controls="r54-route-state"><span class="fm-device-action__icon" aria-hidden="true">✕</span><span id="r54-clear-label">Effacer</span></button>
+       </div>
+       <div class="r54-route-state" id="r54-route-state" role="status" aria-live="polite" data-verified="no">Aucune route associée. Choisissez un périphérique ci-dessus, puis confirmez.</div>
+       <div class="r54-route-disclaimer" id="r54-disclaimer">Identifiants temporaires du système · sélection sans émission · pas de calibrage ni qualification matérielle.</div>
+      </div>
+
+      <div class="r55-live-monitor" id="r55-live-monitor">
+       <div class="r55-monitor-head"><div><div class="panel-kicker" data-clean="monitorKicker">04 / SURVEILLANCE</div><h3 id="r55-title">Surveillance réelle de la route audio</h3></div><span class="chip soft" id="r55-live-chip">EN ATTENTE</span></div>
+       <p id="r55-description">Contrôle périodique de la sortie choisie par CoreAudio. Aucun signal émis.</p>
+       <div class="r55-live-status" role="status" aria-live="polite" id="r55-watch-status">Interrogation matérielle en attente…</div>
+       <div class="r55-monitor-metadata"><span id="r55-checks">0 contrôles OS</span><span class="fm-last-event"><span data-clean="lastEvent">Dernier événement :</span> <span id="r55-event">Aucune sélection active</span></span></div>
+       <p id="r55-idle-note" class="r55-idle-note" role="status" aria-live="polite">Aucune surveillance active. Aucun générateur acoustique ou EM n’a démarré.</p>
+       <button type="button" id="r55-software-stop" class="r55-stop-btn" hidden disabled><span aria-hidden="true">■</span><span id="r55-stop-label">Arrêter la surveillance et libérer la route</span></button>
+       <button type="button" id="r55-resume-monitor" class="r55-stop-btn r55-resume-btn" hidden><span aria-hidden="true">↻</span><span id="r55-resume-label">Reprendre la surveillance OS</span></button>
+       <p id="r55-stop-disclaimer" hidden>Ce bouton arrête seulement la surveillance logicielle et efface la route. Aucun générateur physique ne peut démarrer dans cette version.</p>
+      </div>
+      <details class="fm-os-details" id="fm-os-details"><summary data-clean="osSummary">Autres métadonnées macOS et USB</summary>
+      <div class="fm-os-inside"><div class="device-row"><div class="device-ico">◉</div><div><strong data-t="default_audio">macOS default audio output</strong><p id="audio-value" data-t="not_examined">Not queried yet</p></div></div>
+      <div class="device-row"><div class="device-ico em-ico">⌁</div><div><strong data-t="usb_inventory">USB inventory (EM candidates)</strong><p id="usb-value" data-t="not_examined">Not queried yet</p></div></div>
+<button class="secondary full" type="button" id="probe"><span>↻</span><span data-t="probe">Read physical OS metadata</span></button>
+      <p class="footnote" data-t="hardware_note">The output is OS metadata only. No device identity, calibration or emission performance is certified.</p>
+      </div></details>
+     </section>
+     <section class="panel guardian" id="guardian-section"><div class="panel-header"><div><div class="panel-kicker" data-clean="guardianKicker">05 / ROADMAP GUARDIAN</div><h2 data-t="safety_title">Non-negotiable controls</h2></div><div class="chip warn">BLOCKED</div></div>
+      <div class="guard"><div><span>01</span><strong data-t="no_sim">No scientific simulation</strong></div><small>ENFORCED</small></div>
+      <div class="guard"><div><span>02</span><strong data-t="no_exposure">No biological exposure</strong></div><small>DENIED</small></div>
+      <div class="guard"><div><span>03</span><strong data-t="no_prod">No production or emission authorization</strong></div><small>DENIED</small></div>
+      <div class="guard"><div><span>04</span><strong data-t="no_fake">No fabricated measurements</strong></div><small>ENFORCED</small></div>
+      <div class="guard"><div><span>05</span><strong data-t="p001">P0.01 mission governance</strong></div><small>IN PROGRESS</small></div>
+      <p class="footnote" data-t="safety_note">A PASS from the software tests does not prove a physical output or scientific safety.</p>
+     </section>
+    </section>
+   </div>
+   <footer><span>FREQMED · INDEPENDENT RESEARCH LAB</span><span data-t="footer">No simulation. No emission. Real software integration.</span></footer>
+  </div>
+ </main>
+</div>
+<script src="/r63.js" defer></script>
+<script src="/r65.js" defer></script>
+</body>
+</html>
