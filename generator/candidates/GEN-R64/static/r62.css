@@ -1,0 +1,9 @@
+/* R62 same compact FREQMED console styling, no extra test panel. */
+.fm-r62-identity{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--page);font-size:13px;color:var(--muted)}
+.fm-r62-identity strong{margin-inline-start:auto;font-size:12px;letter-spacing:.01em;color:var(--text)}
+.fm-r62-dot{width:9px;height:9px;flex-shrink:0;background:var(--muted);border-radius:50%}
+.fm-r62-identity[data-pinned="true"] .fm-r62-dot{background:#35c9a5}
+.fm-r62-identity[data-pinned="true"] strong{color:#35c9a5}
+.fm-r62-identity[data-fault="true"]{border-color:#d79b5a}
+.fm-r62-identity[data-fault="true"] .fm-r62-dot{background:#d79b5a}
+@media(max-width:420px){.fm-r62-identity strong{margin-inline-start:0;width:100%}}

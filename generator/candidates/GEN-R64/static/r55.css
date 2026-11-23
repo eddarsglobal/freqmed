@@ -1,0 +1,17 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+.r55-live-monitor{border:1px solid var(--edge);border-radius:16px;padding:18px;margin:12px 0 20px;background:var(--window);display:grid;gap:12px}
+.r55-monitor-head{display:flex;justify-content:space-between;align-items:center;gap:9px}
+.r55-monitor-head h3{font-size:15px;margin:5px 0 0;font-weight:760}
+.r55-live-monitor p{font-size:11px;line-height:1.6;color:var(--muted);margin:0}
+.r55-live-status{border:1px solid var(--edge);border-radius:10px;background:var(--surface);padding:13px;font-size:12px;color:var(--amber);min-height:42px}
+.r55-live-status[data-verified="yes"]{color:var(--aqua)}
+.r55-monitor-metadata{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)}
+.r55-stop-btn{width:100%;padding:14px 16px;border-radius:12px;border:1px solid #e4aa78;background:rgba(210,118,70,.16);font:inherit;color:var(--txt);font-size:12px;font-weight:750;display:flex;align-items:center;justify-content:center;gap:9px}
+.r55-stop-btn:hover{background:rgba(221,116,69,.25)}
+.r55-stop-btn:disabled{opacity:.6;cursor:wait}
+.r55-stop-btn[hidden]{display:none!important}
+.r55-resume-btn{background:rgba(27,166,158,.14);border-color:rgba(39,176,166,.5)}
+.r55-resume-btn:hover{background:rgba(27,166,158,.24)}
+
+.r55-idle-note{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--surface);font-size:12px;line-height:1.5;color:var(--muted)}
+.r55-idle-note[hidden]{display:none!important}

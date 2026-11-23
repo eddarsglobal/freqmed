@@ -1,0 +1,6 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+.r56-preflight{margin-top:18px;padding:21px;background:rgba(34,100,150,.095);border:1px solid rgba(95,174,227,.24);border-radius:17px}
+.r56-head h3{font-size:17px;margin:7px 0 12px}.r56-preflight p{color:var(--muted,#9fb0ce);font-size:12px;line-height:1.65}
+.r56-preflight button{display:block;width:100%;margin:16px 0;padding:13px}
+.r56-result{min-height:72px;padding:14px;border:1px solid rgba(112,158,215,.23);border-radius:12px;background:rgba(10,23,50,.18);white-space:pre-wrap;overflow-wrap:anywhere;font:600 12px/1.65 system-ui,sans-serif}
+.r56-result[data-ok="true"]{border-color:rgba(80,177,151,.5)}
