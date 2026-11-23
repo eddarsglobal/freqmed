@@ -1,0 +1,12 @@
+/* R61 compact fault latch, consistent with user-approved v0.6 console. */
+.fm-r61-fault{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 14px;margin-top:8px;background:var(--page);border:1px solid var(--border);border-radius:12px;font-size:13px;color:var(--muted)}
+.fm-r61-fault strong{margin-inline-start:auto;font-size:12px;color:var(--text);letter-spacing:.01em}
+.fm-r61-dot{width:9px;height:9px;flex-shrink:0;border-radius:50%;background:#35c9a5}
+.fm-r61-fault[data-fault="true"]{border-color:#d79b5a}
+.fm-r61-fault[data-fault="true"] strong{color:#dfad70}
+.fm-r61-fault[data-fault="true"] .fm-r61-dot{background:#d79b5a}
+.fm-r61-fault button{background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;min-height:36px;padding:5px 12px;cursor:pointer}
+.fm-r61-fault button:hover{border-color:var(--text)}
+.fm-r61-fault button:focus-visible{outline:2px solid #7ebaff;outline-offset:3px}
+.fm-r61-fault button[hidden]{display:none}
+@media(max-width:420px){.fm-r61-fault strong{margin-inline-start:0;width:100%}}
