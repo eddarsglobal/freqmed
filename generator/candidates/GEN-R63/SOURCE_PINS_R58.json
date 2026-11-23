@@ -1,0 +1,12 @@
+{
+  "ref": "eddarsglobal/freqmed @ 87c9b87f4f7c63daab012fbd46dc5c56271c5f00",
+  "files": {
+    "acoustic_macos.c": "03f9c27c2f45154e45afcae5e0696c7b33a6874a",
+    "acoustic_route_guard.h": "84eca2011070bc09667cfdd8b5ed95fe610ccc5e",
+    "acoustic_route_guard_macos.c": "9a4b05b56d1a06fef76cffe534f791c698b37ee4",
+    "acoustic_device_pin.h": "34659f6c4fc4b40dfda18617ef6806a5a7bbfa9d",
+    "acoustic_device_pin_macos.c": "a7e11dbbc7bc2db1f4fd7798da0bb3b79f7a5e82"
+  },
+  "mac_required": true,
+  "network_download": "OPT_IN_GITHUB_BLOBS_READONLY_EXACT_SHA_ONLY"
+}
