@@ -1,0 +1,15 @@
+# GEN-PLATFORM-04 — Native Hardware Monitoring Engine
+Candidat préparatoire isolé clause E ; P1.01/P1.02, aucun changement de jalon, main ou RoadMap.md.
+
+## Architecture
+Moteur C11 portable : signal atomique coalescent produit par notification, consommateur unique propriétaire de la session GEN-PLATFORM-03. Notification reçue ou capture incohérente/indisponible => annulation logicielle ; pas de basculement automatique. Le token périmé ne consomme pas les notifications. Les callbacks ne lisent ni ne modifient la session. Les états expiré/annulé nécessitent fermeture explicite. Aucune garantie d'instantané atomique ou de réaction temps réel ; une notification après le dernier contrôle ne peut être traitée qu'au suivant.
+
+macOS : cinq écouteurs AudioObjectAddPropertyListener (liste appareils, sortie par défaut, taux nominal, configuration des flux de sortie, disponibilité du périphérique sélectionné). Retrait exact en ordre inverse avec vérification des retours. Stockage des callbacks statique pour ce processus à usage unique, même si retrait échoue. En cas d'inscription partielle aucun test de session native ; retrait des inscriptions réussies. Capture UID et transport issue du collecteur PLATFORM-03, aucun UID exporté. Vérification de la sortie par défaut avant/après capture. Observation bornée à 20 tours, temporisation de 50 ms par tour, capture réelle ; durée effective variable. Aucun changement de configuration provoqué, aucun signal audio. Une notification réelle peut ne pas survenir. native_callback_observed signifie seulement qu'au moins un callback a été observé, pas que toutes les catégories ont été qualifiées. NO_CHANGE_OBSERVED ne prouve ni absence absolue de changement ni livraison des callbacks. Le test de session est structurel uniquement, jamais une commande de sortie. Pas de watchdog autonome, pas de garantie matérielle d'arrêt.
+
+Linux et Windows : cœur portable, adaptateurs d'événements natifs non implémentés, proposés respectivement udev/Netlink et IMMNotificationClient. Association et surveillance EM non implémentées. Aucun accès RF/USB instrument. Aucune ouverture de flux, simulation physique, mesure ou émission.
+
+## Qualification
+19 blobs historiques vérifiés ; 115 assertions de régression (intégration, horloge, binding), 32 assertions supplémentaires de surveillance, total 147 prévues. Les vecteurs artificiels du test C sont uniquement logiciels. Qualification locale : python3 -B qualify.py REPO. C11 + Git + Python3 ; frameworks système sur Mac ; aucune installation automatique. PASS_SOFTWARE_ONLY ne certifie ni la réception d'un événement réel ni la présence matérielle. Toute erreur de retrait, session ou horloge dans le test natif provoque échec du processus. Les cas sans sortie ou inscription indisponible sont rapportés séparément.
+
+## Bureau
+Revue proposée B04/B07/B09/B10. P0.01 reste IN_PROGRESS_REBASE_REVIEW, P0.02 PENDING. Certification indépendante non délivrée ; aucune autorisation d'émission ni exposition biologique. Cœur FOSS, zéro coût logiciel, aucune simulation physique.
