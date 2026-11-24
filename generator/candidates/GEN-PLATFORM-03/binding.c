@@ -9,7 +9,7 @@ static int valid(const FMSnapshot *s) {
         const FMEndpoint *p=&s->endpoints[i];
         if (!p->uid[0] || !memchr(p->uid,0,sizeof(p->uid)) ||
             p->channels<1 || p->channels>256 || !isfinite(p->rate) || p->rate<=0 ||
-            p->route<FM_ROUTE_UNKNOWN || p->route>FM_ROUTE_OTHER ||
+            (unsigned)p->route>(unsigned)FM_ROUTE_OTHER ||
             (p->is_default!=0 && p->is_default!=1)) return 0;
         defaults+=(unsigned)p->is_default;
         for(unsigned j=0;j<i;j++)
