@@ -1,0 +1,151 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* GEN-R59 UI cleanup: visual organization only; no hardware commands. */
+.fm-side-help{font-size:12px;color:var(--muted);line-height:1.6;padding:9px 14px 15px}
+.fm-workflow{border:1px solid var(--border);background:var(--surface);border-radius:19px;padding:16px 20px;margin:0 0 19px;box-shadow:var(--shadow)}
+.fm-workflow-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.fm-workflow-head strong{font-size:13px;letter-spacing:.005em}
+.fm-workflow-head>span{font-size:11px;color:var(--muted)}
+.fm-workflow ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.fm-workflow li{margin:0;min-width:0}
+.fm-workflow li a{display:flex;align-items:center;gap:9px;font-size:11px;line-height:1.35;font-weight:720;min-height:47px;border-radius:12px;background:var(--page);border:1px solid var(--border);padding:9px 10px;transition:background .18s,border-color .18s}
+.fm-workflow li a:hover{border-color:var(--blue);background:color-mix(in srgb,var(--page),var(--blue) 7%)}
+.fm-step-num{flex:none;width:28px;height:28px;border-radius:9px;color:var(--blue);background:color-mix(in srgb,var(--surface),var(--blue) 10%);display:grid;place-items:center;font-size:10px;font-weight:850}
+.fm-workflow a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.fm-advanced{border:1px solid var(--border);background:var(--surface);border-radius:16px;margin-top:17px;overflow:hidden}
+.fm-advanced>summary{cursor:pointer;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--text);font-size:12px;font-weight:780;list-style-position:inside}
+.fm-advanced>summary:hover,.fm-os-details>summary:hover{background:color-mix(in srgb,var(--page),var(--blue) 7%)}
+.fm-advanced-tag{font-size:10px;font-weight:600;color:var(--muted)}
+.fm-advanced-inner{border-top:1px solid var(--border);padding:0 16px 16px}
+.fm-advanced-inner>p{font-size:12px;line-height:1.6;color:var(--muted)}
+.fm-advanced-inner .r56-preflight,.fm-advanced-inner .r57-panel,.fm-advanced-inner .r58-panel{margin:12px 0}
+.fm-archive-link{display:inline-block;margin-top:12px;color:var(--blue);font-weight:700;font-size:12px;padding:10px 0}
+.fm-os-details{border:1px solid var(--border);border-radius:13px;margin-top:14px;overflow:hidden}
+.fm-os-details>summary{cursor:pointer;padding:13px 14px;font-size:12px;color:var(--muted);font-weight:710}
+.fm-os-inside{border-top:1px solid var(--border);padding:8px 12px 13px}
+.fm-last-event{color:var(--muted);font-size:10px;line-height:1.5}
+.fm-last-event>span:first-child{font-weight:800}
+.fm-native-result{margin-top:14px}
+.app-shell .banner{padding:14px 18px;margin-bottom:15px}
+.app-shell .banner p{font-size:11px;line-height:1.5}
+.app-shell .status-grid{margin-bottom:18px}
+.app-shell .r59-panel{margin-top:17px;background:linear-gradient(128deg,color-mix(in srgb,var(--surface),var(--teal) 5%),color-mix(in srgb,var(--surface),var(--blue) 5%));border:1px solid color-mix(in srgb,var(--border),var(--teal) 25%)}
+.app-shell .r59-panel h3{font-size:17px;margin:6px 0}
+.app-shell .r59-panel p{margin:7px 0;font-size:11px;line-height:1.6}
+.app-shell .r59-result{background:var(--page);border:1px solid var(--border);padding:14px;border-radius:12px;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+.app-shell .r59-result[data-bound="true"]{border-color:color-mix(in srgb,var(--teal),var(--border) 55%);background:color-mix(in srgb,var(--page),var(--teal) 6%)}
+.app-shell .r54-device-route{margin:7px 0 13px;gap:10px}
+.app-shell .r55-live-monitor{margin:12px 0 4px}
+.app-shell .panel-header{margin-bottom:12px}
+@media(max-width:1100px){.fm-workflow ol{grid-template-columns:repeat(2,minmax(0,1fr))}.fm-workflow-head{flex-wrap:wrap}}
+@media(max-width:650px){.fm-workflow ol{grid-template-columns:1fr 1fr}.fm-workflow{padding:14px}.fm-advanced-tag{display:none}.fm-workflow li a{font-size:10px;padding:8px}.fm-side-help{display:none}}
+@media(max-width:380px){.fm-workflow ol{grid-template-columns:1fr}}
+html[dir=rtl] .fm-workflow li a{text-align:right}
+
+
+/* GEN-R59 UI BUTTONS FIX1 — CoreAudio action trio only.
+   Overrides the old R54 generic .secondary look and undefined --edge/--txt
+   tokens in the original R54 stylesheet. Native hooks/IDs remain unchanged. */
+.app-shell .r54-device-route {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+}
+.app-shell .r54-head h3,
+.app-shell .r54-route-row label {color:var(--text)}
+.app-shell .r54-route-row select {
+  width:100%; min-height:46px; padding:10px 14px;
+  background:var(--page); color:var(--text);
+  border:1px solid var(--border);border-radius:12px;
+  font:inherit;font-size:13px;
+}
+.app-shell .r54-route-state {
+  background:var(--page);border:1px solid var(--border);
+  color:var(--muted);border-radius:12px;
+}
+.app-shell .r54-route-state[data-verified="yes"] {color:var(--teal)}
+.app-shell .r54-route-state[data-verified="no"] {color:var(--warn)}
+.app-shell .r54-route-actions {
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);
+  column-gap:9px;row-gap:9px;
+  margin:2px 0 0;
+  align-items:stretch;
+}
+.app-shell .r54-route-actions .fm-device-action {
+  appearance:none;-webkit-appearance:none;
+  box-sizing:border-box;
+  display:inline-flex;justify-content:center;align-items:center;
+  flex:none;gap:9px;min-width:0;width:100%;min-height:45px;
+  padding:10px 13px;margin:0;
+  border:1px solid var(--border);border-radius:12px;
+  background:var(--page);color:var(--blue);
+  font-family:inherit;font-size:12px;font-weight:770;
+  letter-spacing:normal;line-height:1.3;text-align:center;
+  white-space:normal;overflow-wrap:anywhere;
+  box-shadow:0 2px 6px rgba(18,36,75,.035);
+  transition:background-color .16s,box-shadow .16s,border-color .16s,transform .16s;
+  cursor:pointer;
+}
+.app-shell .r54-route-actions .fm-device-action__icon {
+  flex:none;min-width:16px;font-size:17px;line-height:1;
+}
+.app-shell .r54-route-actions .fm-device-action--primary {
+  grid-column:1/-1;
+  color:#fff;
+  background:linear-gradient(100deg,#2879ef,#5863eb);
+  border-color:#4b73d7;
+  box-shadow:0 7px 15px rgba(39,107,231,.17);
+}
+.app-shell .r54-route-actions .fm-device-action--refresh {
+  background:color-mix(in srgb,var(--page),var(--blue) 5%);
+  border-color:color-mix(in srgb,var(--border),var(--blue) 25%);
+}
+.app-shell .r54-route-actions .fm-device-action--clear {
+  color:var(--muted);
+  background:var(--page);
+  border-color:var(--border);
+}
+.app-shell .r54-route-actions .fm-device-action:hover:not(:disabled) {
+  filter:none;
+  box-shadow:0 5px 14px rgba(39,107,231,.13);
+  border-color:var(--blue);
+}
+.app-shell .r54-route-actions .fm-device-action--primary:hover:not(:disabled) {
+  background:linear-gradient(100deg,#1f6ee8,#4d56db);
+  border-color:#4b73d7;
+}
+.app-shell .r54-route-actions .fm-device-action--refresh:hover:not(:disabled) {
+  background:color-mix(in srgb,var(--page),var(--blue) 11%);
+}
+.app-shell .r54-route-actions .fm-device-action--clear:hover:not(:disabled) {
+  background:color-mix(in srgb,var(--page),var(--muted) 9%);
+  border-color:var(--border);
+  color:var(--text);
+}
+.app-shell .r54-route-actions .fm-device-action:active:not(:disabled) {transform:translateY(1px)}
+.app-shell .r54-route-actions .fm-device-action:focus-visible {
+  outline:3px solid var(--blue);outline-offset:3px;
+}
+.app-shell .r54-route-actions .fm-device-action:disabled {
+  opacity:.55;cursor:not-allowed;box-shadow:none;
+}
+@media(max-width:420px) {
+  .app-shell .r54-route-actions {grid-template-columns:minmax(0,1fr)}
+  .app-shell .r54-route-actions .fm-device-action--primary {grid-column:auto}
+}
+@media(prefers-reduced-motion:reduce) {
+  .app-shell .r54-route-actions .fm-device-action {transition:none;transform:none}
+}
+html[dir="rtl"] .app-shell .r54-route-actions .fm-device-action {direction:rtl}
+
+/* GEN-R59 UI SELECTION FIX2 — distinguish available, pending and server-confirmed routes. */
+.app-shell .r54-route-row select:has(option:checked[value=""]) { color:var(--muted); }
+.app-shell .r54-route-state[data-verified="pending"] {
+  color:var(--blue);border-color:color-mix(in srgb,var(--border),var(--blue) 32%);
+  background:color-mix(in srgb,var(--page),var(--blue) 6%);
+}
+.app-shell .r54-route-state[data-verified="yes"] {
+  border-color:color-mix(in srgb,var(--border),var(--teal) 35%);
+  background:color-mix(in srgb,var(--page),var(--teal) 5%);
+}
