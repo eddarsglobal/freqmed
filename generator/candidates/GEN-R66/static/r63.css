@@ -1,0 +1,9 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+.fm-r63-preparation{margin:1rem 0;padding:1rem;border:1px solid var(--border,#d0d8e0);border-radius:16px;background:var(--page,transparent)}
+.fm-r63-preparation h3{font-size:1rem;margin:0 0 .4rem}
+.fm-r63-preparation p{margin:.4rem 0 1rem;font-size:.86rem;color:var(--muted,#5a687a)}
+.fm-r63-button{appearance:none;min-height:45px;padding:.6rem 1rem;background:var(--primary,#4269db);color:#fff;border:0;border-radius:12px;font-weight:600;cursor:pointer}
+.fm-r63-button:hover{filter:brightness(1.07)}
+.fm-r63-button:focus-visible{outline:3px solid var(--text,#293647);outline-offset:3px}
+.fm-r63-button:disabled{opacity:.55;cursor:default}
+.fm-r63-preparation #r63-result{white-space:pre-wrap;overflow-wrap:anywhere}
