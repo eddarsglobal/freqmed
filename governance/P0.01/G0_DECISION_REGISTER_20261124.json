@@ -1,0 +1,51 @@
+{
+  "schema": "freqmed.p001.g0.consolidation.v1",
+  "date": "2026-11-24",
+  "roadmap_blob": "81024a17e9aeafdfb5319455dae30529d85d6a16",
+  "mission": {
+    "decision": "APPROVE_MISSION_V1_REBASE",
+    "reported_on": "2026-11-20",
+    "source": "PRIOR_OWNER_REPORTED_LOCAL_TTY_DECLARATION",
+    "original_receipt": "NOT_RECOVERED_IN_THIS_REVIEW",
+    "identity": "NOT_CRYPTOGRAPHICALLY_AUTHENTICATED",
+    "repeat_required": false,
+    "certifies_p001": false
+  },
+  "rights": {
+    "scope": "SIX_DOCUMENTS_PROPOSED_NOT_ADOPTED",
+    "matching_blob_ids": 6,
+    "root_license": "Apache-2.0",
+    "provenance": "PARTIAL_UNAPPROVED",
+    "third_party_dependency_audit": "P0.03_PENDING"
+  },
+  "bureau": {
+    "B09": "AUTHORITY_UNATTESTED",
+    "B10": "AUTHORITY_UNATTESTED",
+    "review": "AI_ASSISTED_DOCUMENTARY_ONLY",
+    "independent_certification": "NOT_ISSUED"
+  },
+  "gen_r66": {
+    "commit": "54fd4e6cd4a8106da12bb57fa8208ce569a4185b",
+    "pr": 25,
+    "verdict": "PASS_OWNER_REPORTED_MAC_SOFTWARE_ONLY",
+    "tests_total": 734,
+    "passed": 733,
+    "skipped": 1,
+    "skip_reason": "Linux-only OS isolation negative test",
+    "r66_targeted_passed": 42,
+    "checks_reported_passed": 39,
+    "hashes_passed": 85,
+    "manual_safari_repeat": false,
+    "runner_sha256": "ea07d2c3aa63f78b6aaf0d2004073be52e345e9bf6c83a36ebb1f6ccf466d477",
+    "runner_git_integration": "PENDING"
+  },
+  "g0": "REMEDIATE",
+  "p001": "IN_PROGRESS_REBASE_REVIEW",
+  "p002": "PENDING",
+  "p001_certification": "NOT_GRANTED",
+  "real_output": "NOT_AUTHORIZED",
+  "biological_exposure": "NOT_AUTHORIZED",
+  "production": "NOT_AUTHORIZED",
+  "never_simulation": "ENFORCED",
+  "zero_cost_foss": "ENFORCED"
+}
