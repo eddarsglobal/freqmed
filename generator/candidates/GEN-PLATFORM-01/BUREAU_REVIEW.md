@@ -1,0 +1,14 @@
+# GEN-PLATFORM-01 — Native Hardware Discovery Engine
+Préparation logicielle des interfaces de P1.02/P2.01 et de l'inventaire futur P0.04/P5.02, sans promotion de jalon. Orientation propriétaire Windows/Linux/macOS. Aucun changement de RoadMap.md, aucun essai physique.
+
+## Observations natives, pas des capacités qualifiées
+- macOS : compilation des sources historiques CoreAudio/IOKit (quatre blobs Git vérifiés). Comptage des sorties audio pour lesquelles canaux et taux nominaux ont pu être lus, des USB et interfaces USBTMC visibles, et des nœuds série callout. Des sorties virtuelles sont possibles, certains périphériques peuvent être omis par le collecteur historique. Les noms et identifiants ne sont pas exportés.
+- Linux : /proc/asound/pcm (entrées PCM avec lecture), /sys/bus/usb/devices (descripteurs USB), /sys/class/tty (nœuds TTY associés à un périphérique, pas nécessairement des ports d'instrument). Pas d'ouverture de /dev/snd, /dev/tty ou /dev/usbtmc. Dans un conteneur, les vues du noyau peuvent être partielles.
+- Windows : PowerShell intégré, registre MMDevices/Audio/Render (inventaire de métadonnées, incluant des entrées inactives, anciennes ou virtuelles ; pas un contrat public WASAPI), Get-PnpDevice -PresentOnly et CompatibleIds. Comptage de devnodes USB et classe Ports, non équivalent au nombre d'appareils/interfaces USB sur les autres OS. Signature USBTMC uniquement sur un CompatibleId exact. Aucun contournement de politique PowerShell, aucune installation ni accès administrateur demandé. Si indisponible, la collecte échoue ou est marquée indisponible.
+- Les champs numériques peuvent être null (inconnu) ; zéro signifie un compte observé dans la vue interrogée. Un descripteur illisible marque la vue USB PARTIAL. Les signatures USBTMC sont des candidats de transport, pas des générateurs EM. Un instantané n'est ni atomique ni une garantie de présence future. Aucun seuil de sûreté ou plage physique déduite.
+
+## Vérification
+14 tests de parseur/schéma (entrées logicielles uniquement), scan borné à 4096 entrées par liste côté Linux/Windows, vérification de cohérence, rapports agrégés, pas de noms, chemins d'appareil ou numéros de série exportés. Aucun module Python externe. Mac exige Git, cc et frameworks système ; Linux Python 3 ; Windows Python 3 et Windows PowerShell/PnpDevice disponibles. Exécuter python3 -B qualify.py REPO (Windows : py -3 -B qualify.py). --selftest ne collecte rien. Un rapport PARTIAL_OR_UNAVAILABLE ne constitue pas une qualification de l'inventaire.
+
+## Bureau
+Revue proposée B04/B05/B06/B09/B10. Les backends Linux et Windows n'ont pas encore été testés sur leurs systèmes cibles lors de la publication. Aucun instrument qualifié, aucune émission, aucun pilote de commande, aucune simulation physique, aucune mesure ou certification indépendante. Coût logiciel nul, API système explicites. Les règles de sûreté demeurent intactes.
