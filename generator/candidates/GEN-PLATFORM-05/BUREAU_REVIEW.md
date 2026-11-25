@@ -1,0 +1,16 @@
+# GEN-PLATFORM-05 — Native Hardware Event & Recovery Engine
+Candidat préparatoire isolé clause E, P1.01/P1.02. Aucun changement de main ou RoadMap.md. P0.01 en cours ; P0.02 en attente.
+
+## Moteur de récupération
+Cœur C11 raccordé au binding PLATFORM-03 et monitoring PLATFORM-04, avec état DISCOVERY_REQUIRED, CAPTURING, READY, PREPARED ou FAULT. Un consommateur sérialisé ; seul notify est concurrent. Le stockage atomique reste vivant pendant les notifications. Init unique par cycle de vie. Aucune réutilisation de token et aucune réactivation automatique.
+
+Après notification/incohérence, la session logique est invalidée et fermée, le profil effacé. Une redécouverte explicite commence avant les captures ; deux observations du candidat avec UID/format/transport/défaut identiques sont requises. Une notification pendant la collecte force une nouvelle tentative. Une nouvelle session exige un appel prepare distinct avec vérification du profil et du signal atomique. Les échecs d'horloge durant poll passent en FAULT, sans reprise automatique. Le profil READY est une observation logicielle, pas une preuve matérielle ou autorisation. Les captures ne sont pas atomiques ; une notification tardive est traitée au poll suivant. Pas de watchdog ni de garantie de temps réel.
+
+## Test natif macOS
+Cinq écouteurs CoreAudio sur la liste des périphériques, le défaut, le format et la disponibilité du périphérique sélectionné. Session logicielle préparée, observation bornée à 100 cycles de 100 ms (durée effective variable), sans changement provoqué. Si invalidation : fermeture de l'ancienne session, retrait vérifié des écouteurs, tentative d'inscription sur le nouveau défaut, deux nouvelles observations, profil reconstruit si cohérent. Aucun nouveau prepare après récupération dans le test natif. Aucun UID exporté. La collecte native peut échouer, par exemple si un périphérique est retiré et CoreAudio refuse le retrait de son écouteur : l'erreur reste explicite et interrompt la récupération. Le statut NO_CHANGE_OBSERVED n'est pas une preuve de livraison des notifications. native_callback_observed est un indicateur global du processus, pas une attribution causale à une catégorie ou à une invalidation particulière. Une invalidation peut également résulter d'une capture devenue indisponible. Aucun événement matériel réel n'est garanti pendant la fenêtre.
+
+## Qualification
+22 blobs historiques épinglés ; 197 assertions prévues dont 147 régressions et 50 récupération. Les entrées artificielles des tests C sont des vecteurs logiciels, jamais des observations ou simulations physiques. Python3, Git, C11 avec frameworks système Mac ; aucune installation automatique. Exécution native non encore confirmée lors de la publication. PASS_SOFTWARE_ONLY ne prouve pas la réception d'un événement matériel réel ni le succès de la récupération native. Linux/Windows : cœur portable uniquement, adaptateurs d'identité/notification/récupération non raccordés ; pas d'association EM.
+
+## Bureau
+Revue proposée B04/B07/B09/B10. Cœur FOSS, coût logiciel nul, aucune simulation physique. Aucune commande matérielle, ouverture de flux, mesure physique ou émission. Aucune certification indépendante, autorisation de production ni exposition biologique. Les jalons officiels restent inchangés.
