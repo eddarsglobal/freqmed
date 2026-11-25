@@ -152,7 +152,9 @@ int main(void) {
                             if(nanosleep(&delay,NULL)!=0) {error=1;break;}
                             if(!fm_session_clock_ms(&now)) {error=1;break;}
                             ++polls;
+                            int captured=capture_for(device,&a);
                             if(fm_event_read(&latch,&ev)) {
+                                if(!fm_session_clock_ms(&now)) {error=1;break;}
                                 e.category=ev.category;e.event_ms=ev.ms;
                                 /* Explicit handoff of the real callback to the single owner.
                                  * Use the prior valid snapshot; invalidation here is event-driven. */
@@ -168,10 +170,9 @@ int main(void) {
                                 } else {status="EVENT_HANDOFF_FAILED";error=1;}
                                 break;
                             }
-                            int captured=capture_for(device,&a);
                             if(!fm_session_clock_ms(&now)) {error=1;break;}
-                            /* A classified event arriving during capture is handled next turn,
-                               unless another cause already invalidates this session. */
+                            /* A late callback may arrive after this check. Do not
+                               attribute an unclassified invalidation to that event. */
                             FMRecoveryResult q=fm_recovery_poll(&recovery,captured?&a:NULL,token,now);
                             if(q==FM_R_INVALIDATED) {
                                 other_invalidated=1;status="INVALIDATED_WITHOUT_EVENT_HANDOFF";break;
