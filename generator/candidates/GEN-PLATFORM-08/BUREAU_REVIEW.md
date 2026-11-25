@@ -1,0 +1,16 @@
+# GEN-PLATFORM-08 — Native Acoustic Backend Assembly Engine
+Candidat isolé clause E, préparation logicielle de P1.01/P1.02. Aucun changement de main ou RoadMap.md. P0.01 IN_PROGRESS_REBASE_REVIEW, P0.02/P0.04/P1.02/P1.03 PENDING.
+
+## Assemblage fonctionnel
+Le moteur C11 réutilise effectivement la validation structurelle GEN-R66, l'intégration et le moteur de sessions GEN-INTEGRATION-01/02, le binding PLATFORM-03, le monitor PLATFORM-04, la récupération PLATFORM-05 et le contrôle de métadonnées PLATFORM-07. Il valide une commande acoustique sans émettre ni générer d'échantillons, exige deux profils concordants, construit une session préparée et vérifie un troisième profil lors du rafraîchissement. Une modification ou indisponibilité du profil entraîne invalidation et fermeture logicielle ; une expiration ferme également la session. Une erreur d'horloge lors du poll est traitée en FAULT. Un token périmé ne commande pas une nouvelle session. La fermeture logique remet le Guardian à OFF et efface le profil mémorisé. Aucun mécanisme de reprise automatique.
+
+API sérialisée, stockage initialisé une seule fois par cycle de vie, seul notify est concurrent. Les captures sont fournies par le consommateur et doivent rester stables pendant l'appel ; le début de redécouverte efface l'ancien signal de notification, ne prouve pas une absence d'événement pendant les captures fournies. Ce candidat n'installe pas de nouveaux observateurs natifs, ne prétend pas à une surveillance continue et ne qualifie pas la chaîne événementielle PLATFORM-06. Le test de notify utilise des vecteurs logiciels.
+
+## Adaptateur macOS
+Le lanceur vérifie le blob historique exact du collecteur PLATFORM-07, extrait uniquement les fonctions de collecte avant le marqueur unique de présentation, puis les inclut dans le build natif. Pas de copie divergente du collecteur. Trois captures réelles si le profil initial est admissible. PASS_READONLY_ASSEMBLY exige préparation, rafraîchissement, fermeture et rejet du token obsolète ; le Guardian reste OFF et le backend physique demeure indisponible. Une sortie active ou un profil incomplet peut empêcher la préparation. Les captures sont non atomiques. Aucun appel de configuration, ouverture de flux, production de signal audio, simulation physique ou mesure.
+
+## Qualification
+32 blobs historiques épinglés. 292 assertions prévues (262 régressions et 30 assemblage), compilations temporaires nettoyées par TemporaryDirectory à la fin de l'exécution normale. Python >=3.9, Git, C11 et frameworks système. Aucun téléchargement ou installation automatique. Les tests de régression portent sur les sources épinglées, pas sur la qualification native événementielle. Windows/Linux : cœur C11 portable, adaptateurs natifs de cet assemblage non implémentés. Les assertions et le build Mac restent à exécuter lors de la publication.
+
+## Bureau
+Revue B04/B07/B09/B10 proposée. Zéro coût logiciel, cœur FOSS, zéro simulation physique. Les prérequis de banc, l'arrêt indépendant, les limites physiques et la mesure indépendante restent non validés. Pas de pilote de sortie active dans cette révision ; aucune émission, autorisation, certification indépendante ou promotion de jalon.
