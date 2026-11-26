@@ -33,7 +33,7 @@ async function request(path,body){
  try{
   const r=await fetch("/api/"+path,{method:"POST",headers:{"Content-Type":"application/json","X-FIK-Token":secret},body:JSON.stringify(body),cache:"no-store",credentials:"omit",signal:controller.signal});
   const d=await r.json();connection("LOCAL BRIDGE · CONNECTED");
-  if(!r.ok)throw Error(d.reason||"REQUEST_REJECTED");return d;
+  if(!r.ok){const e=Error(d.reason||"REQUEST_REJECTED");e.httpStatus=r.status;throw e;}return d;
  }finally{clearTimeout(timer);}
 }
 function view(j){
@@ -68,6 +68,7 @@ async function poll(my){
   if(active)setTimeout(()=>poll(my),120);
  }catch(e){
   if(my!==epoch)return;
+  if(e.httpStatus===404){active=false;pendingStop=false;clear();status("JOB NO LONGER AVAILABLE");result.textContent="Previous terminal state not confirmed";sync();return;}
   connection("BRIDGE STATUS UNKNOWN");status("STATUS UNKNOWN");result.textContent="Retrying status · "+e.message;
   if(active)setTimeout(()=>poll(my),500);
  }
