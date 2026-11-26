@@ -1,10 +1,12 @@
 /* SPDX-License-Identifier: Apache-2.0 */
+#define _POSIX_C_SOURCE 200809L
 #include "digital_signal.h"
 #include "session_clock.h"
 #include "mac_capture_pinned.inc"
 #include <inttypes.h>
 #include <signal.h>
 #include <time.h>
+#include <string.h>
 static volatile sig_atomic_t stopped=0;
 static void stop_signal(int sig){(void)sig;stopped=1;}
 static int integer(const char *s,unsigned max,unsigned *out){
