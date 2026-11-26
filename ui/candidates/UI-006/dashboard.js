@@ -23,6 +23,7 @@ function empty(){
 }
 function state(s){
  phase=s;const stage=$("dash-stage");stage.textContent=s;
+ $("dash-window-state").textContent=s==="STATUS UNKNOWN"?"Last received graph may be stale · connection unconfirmed":s==="STOP REQUESTED"||s==="STOPPING"?"Stop requested · waiting for native receipt":s==="COMPLETE"?"Final received digital window":"RUNNING"===s?"Waiting for next received digital window":"No received digital window";
  stage.dataset.state=s;document.documentElement.dataset.runtimeState=s;
  $("dash-ring").setAttribute("aria-label","Digital session: "+s);
  if(["IDLE","STARTING","STATUS UNKNOWN","START UNCONFIRMED","JOB NO LONGER AVAILABLE","STOPPED","EXPIRED","INVALIDATED","FAULT","REJECTED"].includes(s))empty();
@@ -37,6 +38,7 @@ function record(j){
  const m=M.metrics(d.samples),p=M.progress(d.processed,d.expected);
  if(!m||p===null||!Number.isFinite(d.digital_level)||d.digital_level<=0||d.digital_level>1||m.peak>d.digital_level)return;
  last={m,p,d};
+ $("dash-window-state").textContent=(j.state==="COMPLETE"?"Final":j.state==="STOPPING"?"Last before stop confirmation":"Latest")+" received digital window · block "+d.sequence+(d.count<4096?" · spectrum unavailable (short window)":"");
  setBar("peak",m.peak,m.peakDb);setBar("rms",m.rms,m.rmsDb);
  $("dash-rate").textContent=d.rate_hz.toLocaleString()+" Hz";
  $("dash-window").textContent=(1000*d.count/d.rate_hz).toFixed(2)+" ms";
