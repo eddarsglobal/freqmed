@@ -35,6 +35,7 @@ window.addEventListener("fik-native-snapshot",e=>{
  const fresh=!source||lastRate!==d.rate_hz;source=d;lastRate=d.rate_hz;frequency=FIKScience.spectrum(d.samples,d.rate_hz);
  if(fresh)resetCursors();else paintCursors();
 });
+window.addEventListener("fik-runtime-state",e=>{if(["IDLE","STARTING","STATUS UNKNOWN","START UNCONFIRMED","JOB NO LONGER AVAILABLE","STOPPED","EXPIRED","INVALIDATED","FAULT","REJECTED"].includes(e.detail)){source=null;frequency=null;lastRate=0;paintCursors();}});
 for(const b of suite.querySelectorAll("[data-sc-mode]"))b.addEventListener("click",()=>{mode=readMode();resetCursors();});
 by("sc-band").addEventListener("change",paintCursors);
 for(let i=0;i<2;i++)controls[i].addEventListener("input",()=>{indices[i]=Number(controls[i].value);paintCursors();});
