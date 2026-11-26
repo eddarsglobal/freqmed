@@ -93,14 +93,14 @@ async function stopJob(){
  catch(e){result.textContent="Stop unconfirmed · "+e.message;pendingStop=false;sync();}
 }
 stop.addEventListener("click",()=>{if(!active)return;pendingStop=true;sync();status("STOP REQUESTED");void stopJob();});
-function dirty(){if(active)return;epoch++;clear();status("IDLE");result.textContent="Draft changed · start a new digital session";}
+function dirty(ev){if(active||(ev&&!ev.isTrusted))return;epoch++;clear();status("IDLE");result.textContent="Draft changed · start a new digital session";}
 for(const id of ["freq","level","duration"])$(id).addEventListener("change",dirty);
 $("fader").addEventListener("input",dirty);
 for(const e of document.querySelectorAll("[data-knob]")){
  e.addEventListener("pointerup",dirty);
- e.addEventListener("keydown",ev=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Home","End"].includes(ev.key))dirty();});
+ e.addEventListener("keydown",ev=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Home","End"].includes(ev.key))dirty(ev);});
 }
-$("reset").addEventListener("click",dirty);$("em").addEventListener("click",()=>{dirty();sync();});$("acoustic").addEventListener("click",sync);
+$("reset").addEventListener("click",dirty);$("em").addEventListener("click",ev=>{dirty(ev);sync();});$("acoustic").addEventListener("click",sync);
 $("language").addEventListener("change",sync);
 sync();clear();status("IDLE");request("ping",{}).catch(()=>connection("BRIDGE STATUS UNKNOWN"));
 })();
