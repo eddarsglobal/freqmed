@@ -36,7 +36,7 @@ main{max-width:1530px;margin:auto;padding:20px 24px}.nav{display:flex;gap:8px;fl
 <section class="panel center"><div class="panel-head"><h2 data-t="generator">Generator</h2><span class="tiny">UI-001 / FIK</span></div><div class="dial-wrap"><div class="dial" id="dial"><div class="dial-content"><div class="dial-title" data-t="frequency">Frequency</div><div class="readout" id="readout">440</div><div class="readout-unit" id="readout-unit">Hz</div><span class="chip" data-t="disconnected">DISCONNECTED</span></div></div></div>
 <div class="monitor"><div class="panel-head"><h2 data-t="monitor">Monitor</h2><span class="tiny" data-t="no_data">NO DATA</span></div><div class="monitor-tabs" id="monitor-tabs"><button data-mode="scope" data-t="scope" aria-pressed="true">Oscilloscope</button><button data-mode="spectrum" data-t="spectrum" aria-pressed="false">Spectrum</button><button data-mode="spectrogram" data-t="spectrogram" aria-pressed="false">Spectrogram</button></div><div class="screen" id="screen"><div class="no-data"><strong data-t="no_data">NO DATA</strong><span class="tiny" id="monitor-caption" data-t="no_source">No acquisition source connected</span></div></div><div class="monitor-footer"><span class="tiny" data-t="grid">Grid scale</span><div class="zoom"><button id="minus" aria-label="Zoom out">−</button><output id="zoom">1×</output><button id="plus" aria-label="Zoom in">+</button></div></div></div></section>
 <section class="panel right"><div class="panel-head"><h2 data-t="hardware">Hardware status</h2><span class="status"><span class="led"></span>UI</span></div><div class="right-body"><div class="meters"><div class="meter-set"><div class="meter" aria-hidden="true"></div><div class="meter-label" data-t="input">Input</div><div class="tiny">—</div></div><div class="meter-set"><div class="meter" aria-hidden="true"></div><div class="meter-label" data-t="output">Output</div><div class="tiny">—</div></div></div><dl class="info"><div><dt data-t="runtime">Runtime</dt><dd class="unavailable" data-t="disconnected">Disconnected</dd></div><div><dt data-t="device">Device</dt><dd>—</dd></div><div><dt data-t="sample_rate">Sample rate</dt><dd>—</dd></div><div><dt data-t="measurement">Measurement</dt><dd data-t="no_data">NO DATA</dd></div></dl><div class="action"><button class="start" disabled data-t="start">START</button><button class="stop" disabled data-t="stop">STOP</button><button class="reset" id="reset" data-t="reset">Reset draft</button></div></div><p class="notice" data-t="notice">Local interface only. No hardware connection or physical command.</p></section>
-</div><footer class="bottom"><span data-t="preview">Isolated design-system candidate</span><span>FIK / UI-001 · OFFLINE · APACHE-2.0</span></footer></main>
+</div><footer class="bottom"><span data-t="preview">Isolated design-system candidate</span><span><button id="selftest" type="button" aria-describedby="test-result">UI check</button> <output id="test-result" aria-live="polite"></output></span><span>FIK / UI-001 · OFFLINE · APACHE-2.0</span></footer></main>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -48,7 +48,7 @@ de:"GETRENNT|Dunkel|Hell|System|Akustisch|Elektromagnetisch|Steuerung|ENTWURF|Fr
 ar:"غير متصل|داكن|فاتح|النظام|صوتي|كهرومغناطيسي|أدوات التحكم|مسودة|التردد|المستوى الرقمي|المدة|شكل الموجة|جيبية|المولد|المراقب|لا بيانات|راسم الإشارة|الطيف|المخطط الطيفي|لا يوجد مصدر اقتناء متصل|مقياس الشبكة|حالة الأجهزة|الدخل|الخرج|التشغيل|الجهاز|معدل العينات|القياس|بدء|إيقاف|إعادة ضبط المسودة|واجهة محلية فقط. لا اتصال أو أمر للأجهزة.|مرشح معزول لنظام التصميم|لا جهاز مؤهل|لا أوامر أجهزة متاحة.",
 es:"DESCONECTADO|Oscuro|Claro|Sistema|Acústico|Electromagnético|Controles|BORRADOR|Frecuencia|Nivel digital|Duración|Forma de onda|Senoidal|Generador|Monitor|SIN DATOS|Osciloscopio|Espectro|Espectrograma|Sin fuente de adquisición conectada|Escala de cuadrícula|Estado del hardware|Entrada|Salida|Ejecución|Dispositivo|Muestreo|Medición|INICIAR|PARAR|Restablecer borrador|Solo interfaz local. Sin conexión ni órdenes al hardware.|Candidato aislado de diseño|Sin dispositivo cualificado|Sin órdenes de hardware disponibles.",
 pt:"DESCONECTADO|Escuro|Claro|Sistema|Acústico|Eletromagnético|Controlos|RASCUNHO|Frequência|Nível digital|Duração|Forma de onda|Senoidal|Gerador|Monitor|SEM DADOS|Osciloscópio|Espectro|Espectrograma|Sem fonte de aquisição ligada|Escala da grelha|Estado do hardware|Entrada|Saída|Execução|Dispositivo|Amostragem|Medição|INICIAR|PARAR|Repor rascunho|Só interface local. Sem ligação ou comandos de hardware.|Candidato isolado de design|Sem dispositivo qualificado|Sem comandos de hardware disponíveis.",
-hr:"ODSPojENO|Tamno|Svijetlo|Sustav|Akustički|Elektromagnetski|Kontrole|NACRT|Frekvencija|Digitalna razina|Trajanje|Valni oblik|Sinus|Generator|Monitor|NEMA PODATAKA|Osciloskop|Spektar|Spektrogram|Izvor snimanja nije povezan|Mjerilo mreže|Stanje hardvera|Ulaz|Izlaz|Izvršavanje|Uređaj|Uzorkovanje|Mjerenje|POKRENI|ZAUSTAVI|Poništi nacrt|Samo lokalno sučelje. Bez veze ili naredbi hardveru.|Izolirani kandidat sustava dizajna|Nema kvalificiranog uređaja|Nema dostupnih hardverskih naredbi.",
+hr:"ODSPOJENO|Tamno|Svijetlo|Sustav|Akustički|Elektromagnetski|Kontrole|NACRT|Frekvencija|Digitalna razina|Trajanje|Valni oblik|Sinus|Generator|Monitor|NEMA PODATAKA|Osciloskop|Spektar|Spektrogram|Izvor snimanja nije povezan|Mjerilo mreže|Stanje hardvera|Ulaz|Izlaz|Izvršavanje|Uređaj|Uzorkovanje|Mjerenje|POKRENI|ZAUSTAVI|Poništi nacrt|Samo lokalno sučelje. Bez veze ili naredbi hardveru.|Izolirani kandidat sustava dizajna|Nema kvalificiranog uređaja|Nema dostupnih hardverskih naredbi.",
 it:"DISCONNESSO|Scuro|Chiaro|Sistema|Acustico|Elettromagnetico|Controlli|BOZZA|Frequenza|Livello digitale|Durata|Forma d’onda|Sinusoide|Generatore|Monitor|NESSUN DATO|Oscilloscopio|Spettro|Spettrogramma|Nessuna sorgente di acquisizione collegata|Scala griglia|Stato hardware|Ingresso|Uscita|Esecuzione|Dispositivo|Campionamento|Misurazione|AVVIA|ARRESTA|Reimposta bozza|Solo interfaccia locale. Nessuna connessione o comando hardware.|Candidato isolato di design|Nessun dispositivo qualificato|Nessun comando hardware disponibile.",
 zh:"未连接|深色|浅色|系统|声学|电磁|控制|草稿|频率|数字电平|时长|波形|正弦波|发生器|监视器|无数据|示波器|频谱|时频谱|未连接采集源|网格比例|硬件状态|输入|输出|运行时|设备|采样率|测量|启动|停止|重置草稿|仅本地界面。无硬件连接或命令。|独立设计系统候选版本|无合格设备|无可用硬件命令。",
 ko:"연결 안 됨|어두움|밝음|시스템|음향|전자기|제어|초안|주파수|디지털 레벨|지속 시간|파형|사인파|발생기|모니터|데이터 없음|오실로스코프|스펙트럼|스펙트로그램|연결된 수집 소스 없음|격자 배율|하드웨어 상태|입력|출력|런타임|장치|샘플링 속도|측정|시작|정지|초안 초기화|로컬 인터페이스 전용. 하드웨어 연결 또는 명령 없음.|독립 디자인 시스템 후보|검증된 장치 없음|사용 가능한 하드웨어 명령 없음."
@@ -94,6 +94,53 @@ for(const b of document.querySelectorAll("[data-mode]"))b.onclick=()=>{monitorMo
 $("theme").onchange=()=>{document.documentElement.dataset.theme=$("theme").value;};
 $("language").onchange=()=>{lang=$("language").value;document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";for(const e of document.querySelectorAll("[data-t]"))e.textContent=tr(e.dataset.t);paint();};
 paint();setZoom(1);
+function runChecks(){
+ const prior={...values},previous={lang,channel,zoom,monitorMode,theme:$("theme").value};
+ let passed=0;const failures=[];
+ const check=(name,ok)=>{if(ok)passed++;else failures.push(name);};
+ const change=(id,value)=>{$(id).value=String(value);$(id).dispatchEvent(new Event("change",{bubbles:true}));};
+ try{
+  $("acoustic").click();$("reset").click();
+  check("reset",values.freq===440&&values.level===0&&values.duration===1000);
+  change("freq",1234);check("numeric edit",values.freq===1234&&$("readout").textContent===new Intl.NumberFormat(lang).format(1234));
+  change("freq",999999);check("upper bound",values.freq===22049);
+  change("freq",-9);check("lower bound",values.freq===1);
+  change("freq","");check("empty rejected",values.freq===1&&$("freq").value==="1");
+  const k=document.querySelector('[data-knob="freq"]');
+  k.dispatchEvent(new KeyboardEvent("keydown",{key:"ArrowUp",bubbles:true}));
+  check("keyboard",values.freq===2&&k.getAttribute("aria-valuenow")==="2");
+  k.dispatchEvent(new KeyboardEvent("keydown",{key:"End",bubbles:true}));
+  check("keyboard end",values.freq===22049);
+  $("fader").value="37";$("fader").dispatchEvent(new Event("input",{bubbles:true}));
+  check("fader",values.level===37&&$("level").value==="37");
+  change("level",12);check("linked value",$("fader").value==="12");
+  change("duration",200);check("duration",values.duration===200);
+  $("em").click();check("EM unavailable",$("ac-controls").classList.contains("hidden")&&$("readout").textContent==="—");
+  $("acoustic").click();check("acoustic restored",!$("ac-controls").classList.contains("hidden")&&values.freq===22049);
+  document.querySelector('[data-mode="spectrum"]').click();
+  check("monitor tabs",monitorMode==="spectrum"&&document.querySelector('[data-mode="spectrum"]').getAttribute("aria-pressed")==="true");
+  $("plus").click();check("zoom",zoom===2&&$("zoom").textContent==="2×");
+  $("minus").click();$("minus").click();check("zoom bound",zoom===.5&&$("minus").disabled);
+  change("theme","light");check("light",document.documentElement.dataset.theme==="light");
+  change("theme","system");check("system",document.documentElement.dataset.theme==="system");
+  change("theme","dark");check("dark",document.documentElement.dataset.theme==="dark");
+  change("language","ar");check("RTL",document.documentElement.dir==="rtl"&&document.documentElement.lang==="ar");
+  change("language","fr");check("French",document.documentElement.dir==="ltr"&&tr("frequency")==="Fréquence");
+  check("10 complete dictionaries",Object.keys(translations).length===10&&Object.values(translations).every(s=>s.split("|").length===keys.length&&s.split("|").every(Boolean)));
+  check("no physical command",document.querySelector(".start").disabled&&document.querySelector(".stop").disabled);
+  check("no acquisition source",document.querySelector(".no-data strong").textContent===tr("no_data"));
+ }catch(err){failures.push(String(err));}
+ finally{
+  Object.assign(values,prior);change("language",previous.lang);change("theme",previous.theme);
+  selectChannel(previous.channel);document.querySelector('[data-mode="'+previous.monitorMode+'"]').click();
+  setZoom(previous.zoom);paint();
+ }
+ const result={passed,failed:failures.length,failures,scope:"UI_DOM_ONLY",physical_output:"NONE"};
+ $("test-result").textContent=passed+"/23 "+(failures.length?"FAIL":"PASS");
+ console.log("FIK_UI001_REPORT="+JSON.stringify(result));
+ return result;
+}
+$("selftest").onclick=runChecks;
 </script>
 </body>
 </html>
