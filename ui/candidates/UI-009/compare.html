@@ -1,0 +1,11 @@
+<section id="compare-suite" class="compare-suite" hidden aria-labelledby="compare-title">
+<div class="panel-head"><h2 id="compare-title">Digital signal comparison</h2><span class="tiny" id="compare-library">0 / 4</span></div>
+<p class="tiny">Final native windows only · equal sample rates · no phase alignment · digital, not physical measurements.</p>
+<div class="compare-tools"><button id="compare-save" type="button" disabled>Save final window</button><button id="compare-delete" type="button">Delete selected B (or A)</button><button id="compare-clear" type="button">Clear library</button></div>
+<div class="compare-tools"><label for="compare-a">A · cyan</label><select id="compare-a"></select><label for="compare-b">B · violet</label><select id="compare-b"></select></div>
+<div id="compare-delta" class="compare-stat" aria-live="polite">Select two compatible references</div>
+<div class="compare-tools"><label for="compare-height">Monitor height</label><input type="range" id="compare-height" min="140" max="360" value="190" step="10"></div>
+<div class="compare-graphs"><div><h3>Waveform · relative ms / digital</h3><canvas id="compare-wave" aria-label="Two selected digital waveforms"></canvas></div><div><h3>FFT · Hz / dBFS</h3><canvas id="compare-fft" aria-label="Two selected digital spectra"></canvas></div></div>
+<div class="compare-stat"><h3>Native archive · completed session</h3><div id="compare-archive-state" role="status">No completed session</div><canvas id="compare-history" aria-label="Spectral replay of validated native windows"></canvas><p class="tiny">Columns: native record sequence. Frequency: 0 to Nyquist, bottom to top. Gray: short window. Color: −100 to 0 dBFS. Not continuous STFT.</p></div>
+<div class="compare-tools"><button id="compare-check" type="button">Workspace checks</button><output id="compare-result" aria-live="polite"></output></div>
+</section>
