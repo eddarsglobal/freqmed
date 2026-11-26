@@ -1,0 +1,35 @@
+<section class="panel science-suite" id="science-suite" aria-labelledby="science-heading">
+ <div class="panel-head science-head"><div><div class="science-kicker">FIK / SCIENTIFIC INSTRUMENTS</div><h2 id="science-heading" data-sc="title">Scientific monitors</h2></div><span id="science-source" class="science-tag" role="status">—</span></div>
+ <div class="science-notice" data-sc="notice">Digital command snapshot only — not a physical measurement. Independent of the draft controls.</div>
+ <div class="science-tabs" role="group" aria-label="Scientific monitor">
+  <button type="button" data-sc-mode="time" data-sc="time" aria-pressed="true">Waveform</button>
+  <button type="button" data-sc-mode="fft" data-sc="fft" aria-pressed="false">FFT spectrum</button>
+  <button type="button" data-sc-mode="stft" data-sc="stft" aria-pressed="false">Spectrogram</button>
+  <button type="button" data-sc-mode="phase" data-sc="phase" aria-pressed="false">Spectral phase</button>
+ </div>
+ <div class="science-metrics">
+  <div><span data-sc="samples">Samples</span><strong id="sc-count">—</strong></div>
+  <div><span data-sc="duration">Duration</span><strong id="sc-duration">—</strong></div>
+  <div><span>RMS · digital</span><strong id="sc-rms">—</strong></div>
+  <div><span data-sc="peak">Peak bin</span><strong id="sc-peak">—</strong></div>
+ </div>
+ <div class="science-workspace">
+  <div class="science-visual">
+   <div id="sc-plot" class="sc-plot"></div>
+   <div id="sc-heat" hidden><canvas id="sc-heatmap" aria-label="Digital STFT heatmap"></canvas><div class="sc-heat-labels"><span id="sc-first">—</span><span id="sc-last">—</span></div><div class="sc-colorbar"><span>−100 dBFS</span><i></i><span>0 dBFS</span></div><div id="sc-stft-meta" class="tiny"></div></div>
+   <div id="sc-phase" hidden><canvas id="sc-phase-canvas" aria-label="Single spectral coefficient phase"></canvas><div id="sc-phase-meta"></div></div>
+   <div id="sc-unavailable" class="sc-empty" hidden data-sc="empty">Digital snapshot unavailable</div>
+  </div>
+  <div class="science-inspector">
+   <div class="science-kicker" data-sc="inspect">Inspector</div>
+   <label id="sc-band-label" for="sc-band" data-sc="band">Frequency range</label>
+   <select id="sc-band"><option value="1000">0–1 kHz</option><option value="5000">0–5 kHz</option><option value="full">0–Nyquist</option></select>
+   <label for="sc-cursor" data-sc="cursor">Cursor</label><input id="sc-cursor" type="range" min="0" max="0" value="0">
+   <label id="sc-second-label" for="sc-second" data-sc="frequency">Frequency bin</label><input id="sc-second" type="range" min="0" max="0" value="0" hidden>
+   <output id="sc-readout" aria-live="polite">—</output>
+   <button id="sc-reset" type="button" data-sc="reset">Reset view</button>
+   <div id="sc-method" class="tiny"></div>
+  </div>
+ </div>
+ <div class="science-foot"><span id="sc-quality" class="tiny">—</span><button id="science-test" type="button" data-sc="check">Scientific checks</button><output id="science-test-result" aria-live="polite"></output></div>
+</section>
