@@ -1,0 +1,8 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+.native-bridge{display:grid;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--edge)}
+.native-bridge button{font-weight:650}.native-bridge #native-calculate{color:var(--cyan);border-color:var(--cyan)}
+.native-bridge #digital-stop{color:var(--red);border-color:var(--red)}.native-bridge output,.native-bridge .tiny{font-size:11px;overflow-wrap:anywhere}
+.native-bridge progress,.native-bridge meter{width:100%;height:12px;accent-color:var(--cyan)}
+.native-bridge #digital-count,.native-bridge #digital-time{color:var(--cyan);font-variant-numeric:tabular-nums}
+.native-bridge .digital-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.monitor .digital-info{font-variant-numeric:tabular-nums}
