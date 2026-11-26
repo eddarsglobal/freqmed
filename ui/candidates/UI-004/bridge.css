@@ -1,0 +1,2 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+.native-bridge{display:grid;gap:8px;margin-top:12px;border-top:1px solid var(--edge);padding-top:12px}.native-bridge button{color:var(--cyan);border-color:var(--cyan);font-weight:650}.native-bridge output{font-size:11px;color:var(--muted);overflow-wrap:anywhere}.native-bridge .tiny{color:var(--amber)}
