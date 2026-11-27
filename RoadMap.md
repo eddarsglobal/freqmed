@@ -1,6 +1,6 @@
 # RoadMap.md — FREQMED | Système de génération physique acoustique et électromagnétique
 
-**Version :** 1.0.0 — refonte radicale de mission demandée par le propriétaire le 12 novembre 2026.
+**Version :** 1.1.0 — amendement stratégique demandé par le propriétaire le 27 novembre 2026 ; revue indépendante du Bureau en attente.
 **Projet :** FREQMED — générateurs physiques de fréquences acoustiques et électromagnétiques.
 **Dépôt officiel :** `eddarsglobal/freqmed` ; dossier Mac : `~/Documents/App_py/freqmed`.
 **Contrainte :** ZERO_COST_FOSS=ENFORCED, NEVER_SIMULATION=ENFORCED, 10 langues, mobile-first, thèmes système/clair/sombre.
@@ -116,9 +116,29 @@ La **construction de candidats sources isolés et sans émission** peut prépare
 **G6** Validation produit multi-plateforme, libre/zéro coût, 10 langues.
 **G7** Expériences biologiques et usages médicaux restent BLOCK hors autorisations distinctes.
 
-## G. Historique et non-régression
+## G. Amendement stratégique du 27 novembre 2026 — retour à la mission physique
+
+Dossier de discussion : [Bureau #54](https://github.com/eddarsglobal/freqmed/issues/54). Les points suivants sont des exigences de développement demandées par le propriétaire ; aucun avis individuel ni quorum du Bureau n'est attesté. Aucun jalon n'est promu par cet amendement.
+
+**Positionnement :** plateforme scientifique ouverte de génération, contrôle et caractérisation des fréquences physiques, à vocation notamment biophysique. L'instrumentation numérique seule ne constitue ni une preuve d'émission ni une innovation exclusive. La recherche médicale et oncologique demeure fondamentale et conditionnée aux autorisations institutionnelles ; aucune promesse thérapeutique.
+
+| Exigence nouvelle ou renforcée | Rattachement aux jalons existants | Preuve attendue |
+|---|---|---|
+| Inventaire des appareils existants en priorité ; distinguer capteur intégré, sortie, instrument indépendant et équipement EM | P0.04, P1.03, P2.01 | Inventaire réel, origine native, identités distinctes, lacunes explicites ; absence de matériel n'est pas un PASS matériel |
+| Adaptateurs natifs modulaires, indépendance des fabricants dans la limite des protocoles réels | P1.02, P2.02, P5.02 | Backend vérifié sur matériel identifié ; aucune prétention RF générique |
+| Deux chaînes acoustique/EM orchestrables avec unités, limites et états séparés | P1.01, P2.01, P4.01 | Contrats distincts et refus fail-closed ; synchronisation expérimentale uniquement après autorisations |
+| Métrologie indépendante de la consigne, étalonnage et incertitudes | P1.03, P3.02, P4.02 | Instrument et chaîne de mesure identifiés, mesures réelles, incertitudes documentées |
+| Reproductibilité et provenance des preuves | P4.03, P5.03 | Identité de configuration, empreintes, paramètres, journaux et verdicts traçables |
+| Comparatif documenté avec WaveForms, Moku, GNU Radio et alternatives | P0.03, P6.01 | Tableau fondé sur capacités vérifiées ; hypothèses de différenciation explicitement non démontrées |
+| Cadrage des usages scientifiques non médicaux et biophysiques | P6.01–P6.03 | Hypothèses, contrôles, revue scientifique ; zéro exposition sans autorisations distinctes |
+
+**Priorité immédiate :** conserver UI-010 comme candidat non certifié ; différer les extensions UI non indispensables. BENCH-01 prépare P0.04 par un inventaire natif en lecture seule des endpoints et instruments compatibles, avec distinction entre découverte et qualification. Les candidats backend P1.01/P1.02/P2.01 restent limités par E. Le séquencement officiel D/F, l'interdiction d'émission et tous les verrous biologiques/production restent intacts. Le coût nul concerne le logiciel ; aucun achat matériel n'est imposé par cet amendement.
+
+## H. Historique et non-régression
 
 - 2026-11-09 : P0.00-R4 gouvernance initiale certifiée ; **l'ancien P0.01 est un audit documentaire, pas une certification du nouveau générateur**.
 - 2026-11-10/12 : séries documentaires R2–R28 ; UI V4/V5 ; moteurs candidats R29–R32 en dehors de la branche officielle.
 - 2026-11-12 : correction impérative de mission par le propriétaire : **FREQMED = générateurs physiques acoustique ET EM**, recherche scientifique sous Bureau. La présente refonte ne crée aucune autorisation d'émission.
 - `NEVER_SIMULATION=ENFORCED` ; `ZERO_COST_FOSS=ENFORCED` ; `REAL_OUTPUT=NOT_AUTHORIZED` ; `BIOLOGICAL_EXPOSURE=NOT_AUTHORIZED` ; `PRODUCTION=NOT_AUTHORIZED`.
+
+- 2026-11-27 : amendement stratégique v1.1.0 demandé par le propriétaire, dossier Bureau #54 ; priorité BENCH-01 en lecture seule, aucun jalon promu.
