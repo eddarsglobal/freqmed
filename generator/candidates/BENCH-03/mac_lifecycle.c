@@ -49,32 +49,44 @@ static int snapshot(AudioDeviceID in,AudioDeviceID out) {
 int main(void) {
     AudioDeviceID in=0,out=0; FMBuffers buffers={0};
     int completed=0,reserved=0;size_t registered=0,removed=0,iv=0,ov=0;
+    const char *stage="DEFAULT_ENDPOINTS";
+    long long inf=-1,outf=-1,irun=-1,orun=-1;
+    int inc=-1,outc=-1;
     atomic_init(&callbacks,0U);
     if(!defaults(&in,&out)||!in||!out||in==out)goto cleanup;
+    stage="PROPERTY_SUBSCRIPTIONS";
     if(!subscribe(kAudioObjectSystemObject,kAudioHardwarePropertyDefaultInputDevice,kAudioObjectPropertyScopeGlobal)||
        !subscribe(kAudioObjectSystemObject,kAudioHardwarePropertyDefaultOutputDevice,kAudioObjectPropertyScopeGlobal)||
        !device(in,kAudioDevicePropertyScopeInput)||!device(out,kAudioDevicePropertyScopeOutput))goto cleanup;
+    stage="FIRST_SNAPSHOT";
     puts("BEGIN_FIRST");
     if(!snapshot(in,out))goto cleanup;
-    long long inf=prop(in,kAudioDevicePropertyBufferFrameSize,kAudioObjectPropertyScopeGlobal);
-    long long outf=prop(out,kAudioDevicePropertyBufferFrameSize,kAudioObjectPropertyScopeGlobal);
-    int inc=channels(in,kAudioDevicePropertyScopeInput),outc=channels(out,kAudioDevicePropertyScopeOutput);
+    stage="BUFFER_DIMENSIONS";
+    inf=prop(in,kAudioDevicePropertyBufferFrameSize,kAudioObjectPropertyScopeGlobal);
+    outf=prop(out,kAudioDevicePropertyBufferFrameSize,kAudioObjectPropertyScopeGlobal);
+    inc=channels(in,kAudioDevicePropertyScopeInput);outc=channels(out,kAudioDevicePropertyScopeOutput);
+    irun=prop(in,kAudioDevicePropertyDeviceIsRunningSomewhere,kAudioObjectPropertyScopeGlobal);
+    orun=prop(out,kAudioDevicePropertyDeviceIsRunningSomewhere,kAudioObjectPropertyScopeGlobal);
     if(inf<=0||inf>16384||outf<=0||outf>16384||inc<=0||inc>64||outc<=0||outc>64)goto cleanup;
-    if(prop(in,kAudioDevicePropertyDeviceIsRunningSomewhere,kAudioObjectPropertyScopeGlobal)!=0||
-       prop(out,kAudioDevicePropertyDeviceIsRunningSomewhere,kAudioObjectPropertyScopeGlobal)!=0)goto cleanup;
+    /* Heap allocation is independent of device activity. No device is opened.
+       Running/unknown activity still blocks native binding in the verdict. */
+    stage="MEMORY_ALLOCATION";
     reserved=fm_reserve(&buffers,(uint32_t)inf,(uint32_t)inc,(uint32_t)outf,(uint32_t)outc);
     if(!reserved)goto cleanup;
     iv=buffers.in_values;ov=buffers.out_values;
     struct timespec duration={0,250000000L};
+    stage="OBSERVATION_SLEEP";
     if(nanosleep(&duration,NULL)!=0)goto cleanup;
+    stage="SECOND_SNAPSHOT";
     puts("BEGIN_SECOND");
     if(!snapshot(in,out))goto cleanup;
-    completed=1;
+    completed=1;stage="COMPLETE";
 cleanup:
     registered=count;removed=unsubscribe_all();
     unsigned observed=atomic_load_explicit(&callbacks,memory_order_relaxed);
     if(observed||!completed||registered!=removed)fm_invalidate(&buffers);
     fm_close(&buffers);
+    printf("DIAG\t%s\t%lld\t%d\t%lld\t%d\t%lld\t%lld\n",stage,inf,inc,outf,outc,irun,orun);
     printf("END\t%zu\t%zu\t%u\t%d\t%d\t%zu\t%zu\t%d\n",
         registered,removed,observed,completed,reserved,iv,ov,
         buffers.state==FM_CLOSED&&!buffers.input&&!buffers.output&&!buffers.in_values&&!buffers.out_values);
