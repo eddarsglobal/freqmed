@@ -1,0 +1,111 @@
+{
+  "schema": "freqmed.bench-06-r4.evidence.v1",
+  "roadmap": {
+    "commit": "d7b44a722300aa72b6434cc4ed3a18a9511fc89a",
+    "blob": "469c6f59d24e92874413ded46bef57de7d884bf0",
+    "version": "1.1.0"
+  },
+  "base": "0652ad4a6ac93a0bc6f0ec4c52f05a038bf79b90",
+  "records": [
+    {
+      "stage": "BENCH-01",
+      "pr": 55,
+      "comment_id": 7216969399,
+      "commit": "c5da76be8f33cd9e927772e6cc492745d180bebd",
+      "scope": "Inventaire natif en lecture seule",
+      "url": "https://github.com/eddarsglobal/freqmed/pull/55#issuecomment-7216969399",
+      "body": "## Qualification propriétaire Mac Intel — 27 novembre 2026\nSource c5da76be8f33cd9e927772e6cc492745d180bebd ; RoadMap v1.1.0 ; ROADMAP_REMOTE_LOCAL_SYNC=PASS, LOCAL_MAIN_UPDATE=PASS (fast-forward) ; BENCH01_SOFTWARE_PASS=12/12 ; BENCH01_EXECUTION=PASS. Deux inventaires identiques. CoreAudio : 4 endpoints disponibles, sortie intégrée stéréo 44100 Hz et entrée intégrée mono 44100 Hz, même domaine d'horloge déclaré non nul ; interface virtuelle 2/2 à 48000 Hz, autre entrée mono à 48000 Hz. USB 10 appareils, 23 interfaces, 4 callout série, 0 USBTMC, inventaire non tronqué. Aucune entrée USB distincte candidate. Métadonnées uniquement : pas de flux micro, émission, mesure, étalonnage, qualification matérielle, arrêt indépendant ni autorisation. Verdict READONLY_INVENTORY_ONLY. Log fourni par le propriétaire, non rejoué indépendamment. PR conservée DRAFT ; aucun jalon certifié. Priorité BENCH-02 : préparation du backend acoustique natif et de la métrologie indépendante sans émission, conformément à la clause E et aux gates.",
+      "provenance": "OWNER_REPORTED_ASSISTANT_TRANSCRIBED_NOT_INDEPENDENT"
+    },
+    {
+      "stage": "BENCH-02",
+      "pr": 56,
+      "comment_id": 7217348631,
+      "commit": "cf797bff3a71e0d790fc7a0a01856200a8becf93",
+      "scope": "Liaison descriptive",
+      "url": "https://github.com/eddarsglobal/freqmed/pull/56#issuecomment-7217348631",
+      "body": "## Qualification propriétaire Mac Intel — 27 novembre 2026\nSource cf797bff3a71e0d790fc7a0a01856200a8becf93 ; FREQMED_LOCAL_WEB_SYNC=PASS ; RoadMap 1.1.0 ; BENCH02_SOFTWARE_PASS=18/18 ; BENCH02_SOURCE_PINS=2/2 PASS ; BENCH02_EXECUTION=PASS. Deux captures identiques ; READONLY_PAIR_CANDIDATE. CoreAudio entrée intégrée mono et sortie intégrée stéréo 44100 Hz nominal, tampons 512 frames chacun ; latences déclarées 40/19 frames (entrée/sortie), safety offsets 114/77 frames ; domaine d'horloge déclaré commun non nul ; endpoints distincts, disponibles, non occupés. Configuration SHA-256 edf1af3169a0493312446400d0e13aee40294a9063dfab9dc8f0f7c02d37363e. Aucune entrée USB indépendante candidate. Aucune synchronisation de flux, mesure aller-retour, calibration, arrêt indépendant, autorisation ou qualification physique démontrée. Aucun flux ouvert, aucune installation, aucun test historique répété. Preuve propriétaire non rejouée indépendamment. PR DRAFT ; aucun jalon officiel promu. Suite proposée BENCH-03 — Native Acoustic Stream Lifecycle & Hardware Binding Engine, préparation non émettrice conformément à la clause E.",
+      "provenance": "OWNER_REPORTED_ASSISTANT_TRANSCRIBED_NOT_INDEPENDENT"
+    },
+    {
+      "stage": "BENCH-03 FIX1",
+      "pr": 57,
+      "comment_id": 7224793945,
+      "commit": "5f78e64bb6824ca03f7ae01cee718b35a26c0385",
+      "scope": "Réservation et retrait des abonnements",
+      "url": "https://github.com/eddarsglobal/freqmed/pull/57#issuecomment-7224793945",
+      "body": "## FIX1 — Retest propriétaire Mac Intel du 27 novembre 2026, 18:43\nSource 5f78e64bb6824ca03f7ae01cee718b35a26c0385. BENCH03_SOURCE_PINS=8/8 PASS ; BENCH03_NATIVE_RESOURCE_LIFECYCLE=PASS ; BENCH03_BINDING=PASS ; BENCH03_RETEST_EXIT=0. Entrée/sortie disponibles, activité déclarée 0/0 ; 512/1024 valeurs réservées en RAM privée, dimensions conformes, 16/16 abonnements retirés, mémoire libérée, deux captures identiques, aucune notification observée. Empreinte de configuration edf1af3169a0493312446400d0e13aee40294a9063dfab9dc8f0f7c02d37363e identique à BENCH-02. Le refus contrôlé antérieur DEVICE_BUSY (exit 75) et le PASS actuel (exit 0) documentent les deux issues de la liaison préparatoire. BENCH-03 FIX1 qualifié dans son périmètre READONLY_LIFECYCLE_ONLY sur preuve propriétaire ; pas de témoin de changement réel, pas d'IOProc, pas de flux, pas d'émission, pas de métrologie indépendante ni d'arrêt physique démontré. Aucune répétition historique. PR DRAFT et RoadMap 1.1.0 inchangée ; aucune certification indépendante. Suite proposée BENCH-04 — Native Audio Buffer Transport & Callback Integration Engine, intégration numérique non émettrice selon E.",
+      "provenance": "OWNER_REPORTED_ASSISTANT_TRANSCRIBED_NOT_INDEPENDENT"
+    },
+    {
+      "stage": "BENCH-04",
+      "pr": 58,
+      "comment_id": 7225270589,
+      "commit": "d9ba65bc0a4d5ef02838384242f78a11503511a0",
+      "scope": "Transport numérique",
+      "url": "https://github.com/eddarsglobal/freqmed/pull/58#issuecomment-7225270589",
+      "body": "## Qualification propriétaire Mac Intel — 27 novembre 2026, 19:11\nSource d9ba65bc0a4d5ef02838384242f78a11503511a0. ROADMAP_SYNC=PASS ; FREQMED_LOCAL_WEB_SYNC=PASS ; BENCH04_SOURCE_PINS=30/30 PASS ; BENCH04_TRANSPORT_ASSERTIONS=29 PASS ; BENCH04_NATIVE_TRANSPORT=PASS ; BENCH04_EXIT=0. Native profile 44100 Hz, input mono 512 frames, output stereo 512 frames. Deux blocs, 1024 frames numériques transférées et 2048 valeurs Float32 stéréo selon le contrat du code. PASS_MEMORY_ONLY_NATIVE_PROFILE ; PRIVATE_RAM_ONLY ; guardian_off=true ; reason=NONE. Aucun IOProc enregistré, aucun flux, aucune émission/acquisition/mesure physique, aucune installation, aucun test historique répété. Qualification technique du transport numérique sur preuve propriétaire, non rejouée indépendamment. PR DRAFT, RoadMap v1.1.0 inchangée, aucune certification indépendante. Suite proposée BENCH-05 — Native Acoustic Backend & Real-Time Callback Engine, préparation non émettrice selon E ; G2/G3 non franchis.",
+      "provenance": "OWNER_REPORTED_ASSISTANT_TRANSCRIBED_NOT_INDEPENDENT"
+    },
+    {
+      "stage": "BENCH-05 FIX1",
+      "pr": 59,
+      "comment_id": 7235589178,
+      "commit": "732ef2a86a4ac85ad2fac4656f295fee27b131bc",
+      "scope": "File concurrente et refus ABI",
+      "url": "https://github.com/eddarsglobal/freqmed/pull/59#issuecomment-7235589178",
+      "body": "## Qualification propriétaire Mac Intel — FIX1, 28 novembre 2026\nSource 732ef2a86a4ac85ad2fac4656f295fee27b131bc. BENCH05_SOURCE_PINS=33/33 PASS ; BENCH05_UNCHANGED_QUEUE_TESTS=NOT_REPEATED ; BENCH05_NATIVE_RT_CONTRACT=PASS ; BENCH05_FIX1_EXIT=0. Compilation Clang native corrigée. Profil réel déclaré : 44100 Hz, entrée mono 512 frames, sortie stéréo 512 frames. Deux blocs / 1024 frames numériques en RAM privée, callback_contract_denied=true, queue_stopped=true, guardian_off=true, reason=NONE. Les 29 assertions et 10000 blocs concurrents ont déjà passé sur Mac au commit initial ; sources de file inchangées, aucun rejeu historique. Qualification technique du candidat dans son périmètre non émetteur sur preuve propriétaire, sans replay indépendant. Aucun IOProc enregistré, aucun flux ni acquisition/émission/mesure physique. Pas de preuve de délais temps réel, de quiescence matérielle ni d'arrêt physique indépendant. G2/G3 non franchis, certification NOT_ISSUED. RoadMap 1.1.0 inchangée, PR DRAFT. Prochaine priorité proposée : préparer l'admission du backend acoustique physique et le dossier de sécurité du banc conformément à P0.04/P1.02/P1.03 et G2/G3, sans activation.",
+      "provenance": "OWNER_REPORTED_ASSISTANT_TRANSCRIBED_NOT_INDEPENDENT"
+    },
+    {
+      "stage": "BENCH-06 R1",
+      "pr": 60,
+      "comment_id": 7238783242,
+      "commit": "b527bb29b87867a1f746ce32911e37b409fa21f6",
+      "scope": "Compatibilité descriptive",
+      "url": "https://github.com/eddarsglobal/freqmed/pull/60#issuecomment-7238783242",
+      "body": "## Qualification propriétaire Mac Intel — BENCH-06 R1 — 28 novembre 2026, 12:45\nSource b527bb29b87867a1f746ce32911e37b409fa21f6. ROADMAP_SYNC=PASS ; FREQMED_LOCAL_WEB_SYNC=PASS ; 8/8 pins ; 13/13 assertions ; BENCH06_NATIVE_DESCRIPTOR_CAPTURE=PASS ; BENCH06_EXIT=0. Deux captures stables ; empreinte 02dd8da04ea9cb809e273b177895e5b81031d576396e1e30d25f5be831e5be5a. CoreAudio rapporte PCM Float32 entrelacé little-endian flags 9, 44100 Hz, entrée mono 4 octets/frame, sortie stéréo 8 octets/frame, formats virtuel/physique identiques par endpoint, 512 frames, périphériques libres. output_float32_layout_candidate=true ; READONLY_PAIR_CANDIDATE. Compatibilité descriptive confirmée, pas de flux ni négociation effective. BENCH06_PHYSICAL_ADMISSION=HARD_DENIED : G2, G3, arrêt indépendant, étalonnage/métrologie et quiescence RT restent non attestés. Aucun IOProc enregistré, aucune acquisition/émission/mesure physique, aucune installation ni répétition historique. Qualification sur preuve propriétaire non rejouée indépendamment. PR DRAFT, pas de promotion RoadMap. Suite proposée R2 — Native Output Resource Lifecycle & Hardware Format Adapter, réutilisation des preuves et préparation non émettrice selon E.",
+      "provenance": "OWNER_REPORTED_ASSISTANT_TRANSCRIBED_NOT_INDEPENDENT"
+    },
+    {
+      "stage": "BENCH-06 R2",
+      "pr": 61,
+      "comment_id": 7239541768,
+      "commit": "435bfb1d6bd682eeb179c90cfdb23456f595e0ec",
+      "scope": "Gestionnaire privé",
+      "url": "https://github.com/eddarsglobal/freqmed/pull/61#issuecomment-7239541768",
+      "body": "## Qualification propriétaire Mac Intel — BENCH-06 R2 — 28 novembre 2026, 13:52\nSource 435bfb1d6bd682eeb179c90cfdb23456f595e0ec. ROADMAP_SYNC=PASS ; FREQMED_LOCAL_WEB_SYNC=PASS ; BENCH06_R2_SOURCE_PINS=38/38 PASS ; BENCH06_R2_RESOURCE_ASSERTIONS=31 PASS ; BENCH06_R2_NATIVE_RESOURCE=PASS ; BENCH06_R2_EXIT=0. Profil déclaré 44100 Hz, 512 frames, 2 canaux ; 2 blocs / 1024 frames numériques / 2048 valeurs Float32 en RAM privée. 9/9 abonnements CoreAudio enregistrés et retirés, resources_closed=true, guardian_off=true, property_change_observed=false, reason=NONE. Qualification technique sur preuve propriétaire, non rejouée indépendamment. Aucun événement matériel effectivement observé, aucun IOProc enregistré, aucun flux ni émission, acquisition ou mesure physique. BENCH06_R2_PHYSICAL_ADMISSION=HARD_DENIED ; authorization=NONE. Aucune installation ni répétition historique. PR DRAFT, RoadMap v1.1.0 inchangée ; certification indépendante et G2/G3 restent en attente. Suite proposée BENCH-06 R3 — Native Output Backend Assembly & Independent Safety Interlock Engine : assemblage non émetteur et contrat d'interverrouillage, sans présenter un arrêt logiciel comme preuve d'arrêt physique indépendant.",
+      "provenance": "OWNER_REPORTED_ASSISTANT_TRANSCRIBED_NOT_INDEPENDENT"
+    },
+    {
+      "stage": "BENCH-06 R3",
+      "pr": 62,
+      "comment_id": 7240753172,
+      "commit": "0652ad4a6ac93a0bc6f0ec4c52f05a038bf79b90",
+      "scope": "Arrêt logiciel et ABI deny-only",
+      "url": "https://github.com/eddarsglobal/freqmed/pull/62#issuecomment-7240753172",
+      "body": "## Qualification propriétaire Mac Intel — BENCH-06 R3 — 28 novembre 2026, 15:31\nSource 0652ad4a6ac93a0bc6f0ec4c52f05a038bf79b90. ROADMAP_SYNC=PASS ; FREQMED_LOCAL_WEB_SYNC=PASS ; BENCH06_R3_SOURCE_PINS=41/41 PASS ; BENCH06_R3_INTERLOCK_ASSERTIONS=28 PASS ; BENCH06_R3_NATIVE_BACKEND=PASS ; BENCH06_R3_EXIT=0. Profil 44100 Hz, 512 frames, 2 canaux, 2 blocs / 1024 frames numériques / 2048 valeurs Float32 en RAM privée. 9 abonnements enregistrés et retirés, resources_closed=true, guardian_off=true, stop_verified_software=true, interlock_reasons=1 (STOP), native_abi_denied=true, property_change_observed=false, reason=NONE. Qualification technique sur preuve propriétaire, non rejouée indépendamment. Aucun événement matériel observé, aucun IOProc enregistré, aucun flux, aucune émission ou mesure physique. Independent physical stop NOT_VERIFIED ; PHYSICAL_ADMISSION=HARD_DENIED ; authorization=NONE. Aucune installation ni répétition historique. PR DRAFT ; pas de promotion RoadMap ni certification indépendante. Suite proposée BENCH-06 R4 — Physical Backend Readiness & Independent Safety Evidence Consolidation : consolider les preuves existantes, identifier les conditions réellement manquantes et préparer une décision d'admission G2/G3, sans répéter les tests historiques ni autoriser de sortie.",
+      "provenance": "OWNER_REPORTED_ASSISTANT_TRANSCRIBED_NOT_INDEPENDENT"
+    }
+  ],
+  "remediation_history": [
+    {
+      "pr": 57,
+      "id": 7223479794,
+      "url": "https://github.com/eddarsglobal/freqmed/pull/57#issuecomment-7223479794",
+      "body": "Retour Mac du 27 novembre : commit initial 396ba90ad892d759e88395a524921c4679b9b4c7, 8/8 pins, 18/18 assertions, 16/16 abonnements retirés, mémoire libérée, réservation non effectuée, NATIVE_LIFECYCLE_NOT_COMPLETED. REMEDIATE, cause exacte non établie. FIX1 5f78e64bb6824ca03f7ae01cee718b35a26c0385 : sépare allocation de RAM et admissibilité de liaison, ajoute diagnostic natif et refus explicites, conserve les protections et les preuves précédentes. Compilation Mac FIX1 en attente ; aucune certification, aucun flux, aucun changement RoadMap."
+    },
+    {
+      "pr": 57,
+      "id": 7223543291,
+      "url": "https://github.com/eddarsglobal/freqmed/pull/57#issuecomment-7223543291",
+      "body": "## Retour propriétaire FIX1 — 27 novembre 2026\nSource 5f78e64bb6824ca03f7ae01cee718b35a26c0385. Pins 8/8, réservation mémoire privée 512/1024 valeurs, dimensions conformes, 16 abonnements ajoutés et retirés, mémoire libérée, métadonnées stables, zéro notification observée. BENCH03_NATIVE_RESOURCE_LIFECYCLE=PASS. CoreAudio input_running=0, output_running=1 ; BENCH03_BINDING=BLOCK_DEVICE_BUSY, exit 75 attendu pour le refus contrôlé. L'activité déclarée n'identifie ni le processus responsable ni un son audible ni une exclusivité. FIX1 corrige la séparation allocation/admissibilité ; liaison libre non encore démontrée pour cette exécution. Pas de régression C11 répétée, pas de flux, pas d'émission, pas de certification. Rejouer uniquement FIX1 sur configuration au repos ; aucun arrêt forcé de processus ni modification de réglage. PR DRAFT. Preuve propriétaire non rejouée indépendamment."
+    },
+    {
+      "pr": 59,
+      "id": 7234854901,
+      "url": "https://github.com/eddarsglobal/freqmed/pull/59#issuecomment-7234854901",
+      "body": "## Qualification propriétaire Mac Intel — 28 novembre 2026\n70f8169390b00fe77dc3e14cbc802cd4c65b60a6 : 33/33 sources PASS ; 29/29 assertions PASS ; 10000/10000 blocs PASS ; compilation native FAIL (5 erreurs -Wnonnull avec Clang 16). FIX1 732ef2a86a4ac85ad2fac4656f295fee27b131bc : appel direct typé avec structures valides privées et vérification du refus sans modification des valeurs sentinelles, des descripteurs et du contexte ; contrôles stricts conservés. Une compilation native ciblée, pas de réexécution des tests de file déjà validés. Aucun flux ni activation. Qualification FIX1 Mac et certification indépendante en attente. RoadMap v1.1.0 inchangée."
+    }
+  ]
+}
