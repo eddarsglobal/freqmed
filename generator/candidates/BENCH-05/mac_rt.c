@@ -65,7 +65,29 @@ int main(void){
     uint64_t token=0,now=0;size_t frames=0,channels_out=0,total=0,blocks=0;
     int ok=0,nonzero=0,closed=0,queue_stopped=0;const char *reason="NATIVE_METADATA_NOT_READY";
     AudioDeviceIOProc native_contract=denied_ioproc;
-    int callback_denied=native_contract(0,NULL,NULL,NULL,NULL,NULL,NULL)==kAudioHardwareIllegalOperationError;
+    /* Direct software call with valid private storage, as required by the SDK.
+     * No hardware callback registration, no native audio data, no device access. */
+    const AudioTimeStamp test_now={0},test_in_time={0},test_out_time={0};
+    float test_input=0.125f,test_output=-0.25f;
+    unsigned test_context=17U;
+    AudioBufferList test_in={0},test_out={0};
+    test_in.mNumberBuffers=1;
+    test_in.mBuffers[0].mNumberChannels=1;
+    test_in.mBuffers[0].mDataByteSize=(UInt32)sizeof(test_input);
+    test_in.mBuffers[0].mData=&test_input;
+    test_out.mNumberBuffers=1;
+    test_out.mBuffers[0].mNumberChannels=1;
+    test_out.mBuffers[0].mDataByteSize=(UInt32)sizeof(test_output);
+    test_out.mBuffers[0].mData=&test_output;
+    OSStatus test_status=native_contract(kAudioObjectUnknown,&test_now,&test_in,
+        &test_in_time,&test_out,&test_out_time,&test_context);
+    int callback_denied=test_status==kAudioHardwareIllegalOperationError &&
+        test_input==0.125f && test_output==-0.25f && test_context==17U &&
+        test_in.mNumberBuffers==1 && test_out.mNumberBuffers==1 &&
+        test_in.mBuffers[0].mData==&test_input && test_out.mBuffers[0].mData==&test_output &&
+        test_in.mBuffers[0].mNumberChannels==1 && test_out.mBuffers[0].mNumberChannels==1 &&
+        test_in.mBuffers[0].mDataByteSize==sizeof(test_input) &&
+        test_out.mBuffers[0].mDataByteSize==sizeof(test_output);
     if(!callback_denied){reason="CALLBACK_CONTRACT_FAILED";goto done;}
     if(!input_capture(&ia)||!capture(&a)||!capture(&b)||fm_readiness_assess(&a,&b)!=FM_RD_METADATA_ONLY)goto done;
     frames=b.buffer_frames;channels_out=b.endpoint.channels;
